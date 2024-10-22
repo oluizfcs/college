@@ -14,7 +14,7 @@ class Pilha {
         if (!isFull()) {
             vetor[topo] = no;
             topo++;
-            System.out.println(no + " - adicionado");
+            System.out.println(no);
         } else {
             System.out.println("Não consegui colocar o nó, pois a pilha está cheia");
         }
@@ -23,7 +23,7 @@ class Pilha {
     void pop() {
         if (!isEmpty()) {
             System.out.println(topo);
-            System.out.println(vetor[topo] + " - removido");
+            System.out.print(vetor[topo]);
             vetor[topo] = null;
             topo--;
         } else {

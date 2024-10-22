@@ -1,19 +1,25 @@
 package aula3;
 
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        Pilha pilha = new Pilha(4);
+        Scanner sc = new Scanner(System.in);
 
-        pilha.push("A");
-        pilha.push("C");
-        pilha.push("B");
-        pilha.pop();
-        pilha.push("F");
-        pilha.pop();
-        pilha.pop();
+        System.out.println("Insira uma palavra para ser invertida");
+        String palavra = sc.next();
 
-        pilha.peek();
+        Pilha pilha = new Pilha(palavra.length());
 
-        pilha.list();
+        for(int i = 0; i < palavra.length(); i++) {
+            String s = String.valueOf(palavra.charAt(i));
+            pilha.push(s);
+        }
+
+        for(int i = 1; i <= palavra.length(); i++) {
+            pilha.pop();
+        }
+
+        sc.close();
     }
 }
