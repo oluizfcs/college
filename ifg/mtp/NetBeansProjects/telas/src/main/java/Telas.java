@@ -17,7 +17,7 @@ public class Telas {
         int contador = 0;
         while(true) {
             mpc.progress(contador);
-            contador += 25;
+            contador += 49;
             TimeUnit.SECONDS.sleep(1);
             if(contador >= 100) {
                 mpc.dispose();
