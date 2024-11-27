@@ -25,6 +25,6 @@ public class Telas {
             }
         }
 
-        new Login();
+        new TelaInicial();
     }
 }
