@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class Telas {
 
     public static void main(String[] args) throws InterruptedException {
-        MeuPrimeiroJFrame mpc = new MeuPrimeiroJFrame();
+        Carregando mpc = new Carregando();
         
         int contador = 0;
         while(true) {

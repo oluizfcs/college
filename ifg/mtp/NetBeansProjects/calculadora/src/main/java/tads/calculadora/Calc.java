@@ -49,6 +49,7 @@ public class Calc extends javax.swing.JFrame {
         jButtonSoma.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         jButtonSoma.setText("+");
         jButtonSoma.setToolTipText("somar");
+        jButtonSoma.setFocusPainted(false);
         jButtonSoma.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonSomaActionPerformed(evt);
@@ -58,6 +59,7 @@ public class Calc extends javax.swing.JFrame {
         jButtonMulti.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         jButtonMulti.setText("×");
         jButtonMulti.setToolTipText("multiplicar");
+        jButtonMulti.setFocusPainted(false);
         jButtonMulti.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonMultiActionPerformed(evt);
@@ -67,6 +69,7 @@ public class Calc extends javax.swing.JFrame {
         jButtonDiv.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         jButtonDiv.setText("÷");
         jButtonDiv.setToolTipText("dividir");
+        jButtonDiv.setFocusPainted(false);
         jButtonDiv.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonDivActionPerformed(evt);
@@ -76,6 +79,7 @@ public class Calc extends javax.swing.JFrame {
         jButtonSub.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         jButtonSub.setText("-");
         jButtonSub.setToolTipText("subtrair");
+        jButtonSub.setFocusPainted(false);
         jButtonSub.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonSubActionPerformed(evt);

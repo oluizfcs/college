@@ -7,12 +7,12 @@
  *
  * @author 20241070130005
  */
-public class MeuPrimeiroJFrame extends javax.swing.JFrame {
+public class Carregando extends javax.swing.JFrame {
 
     /**
      * Creates new form MeuPrimeiroJFrame
      */
-    public MeuPrimeiroJFrame() {
+    public Carregando() {
         initComponents();
         setVisible(true);
     }

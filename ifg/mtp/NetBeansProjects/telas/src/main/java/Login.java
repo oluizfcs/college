@@ -157,7 +157,6 @@ public class Login extends javax.swing.JFrame {
         if(usuarios.containsKey(textFieldUsuario.getText()) && usuarios.get(textFieldUsuario.getText()).equals(pass)) {
             this.dispose();
             new Dashboard(); 
-            new Logado();
         } else {
             jLabelResultado.setText("usuário ou senha incorretos.");
         }
