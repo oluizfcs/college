@@ -1,7 +1,8 @@
 package mtp.projetofinal.view;
 
 /**
- *
+ * Tela de Login
+ * 
  * @author luizf
  */
 public class LoginView extends javax.swing.JFrame {

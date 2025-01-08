@@ -5,7 +5,8 @@ import mtp.projetofinal.Msg;
 import mtp.projetofinal.controller.CadastroController;
 
 /**
- *
+ * Tela de Cadastro
+ * 
  * @author luizf
  */
 public class CadastroView extends javax.swing.JFrame {

@@ -9,7 +9,8 @@ import mtp.projetofinal.Msg;
 import mtp.projetofinal.model.Conexao;
 
 /**
- *
+ * Classe genérica para realizar inserções no banco de dados
+ * 
  * @author luiz
  */
 public class Create extends Conexao {
@@ -29,6 +30,12 @@ public class Create extends Conexao {
     // Contém o resultado da inserção
     private int result;
 
+    /**
+     * Inicia o processo de inserir um novo registro no banco
+     * 
+     * @param tabela nome da tabela onde os dados serão inseridos
+     * @param dados relação chave-valor entre as colunas da tabela
+     */
     public void inserir(String tabela, HashMap<String, Object> dados) {
 
         this.tabela = tabela;
@@ -39,6 +46,9 @@ public class Create extends Conexao {
         this.executarQuery();
     }
 
+    /**
+     * Trabalha o HashMap de dados para construir a string de query dinâmicamente
+     */
     private void construirQuery() {
         
         String colunas = " (" + String.join(", ", dados.keySet()) + ") ";
@@ -48,6 +58,9 @@ public class Create extends Conexao {
         this.query = ("INSERT INTO " + this.tabela + colunas + "VALUES" + interrogacoes);
     }
     
+    /**
+     * Executa a query de inserção
+     */
     private void executarQuery() {
         try {
             
@@ -64,6 +77,11 @@ public class Create extends Conexao {
         
     }
     
+    /**
+     * Vincula as indices das ? com os valores a serem inseridos na query
+     * 
+     * @param stmt 
+     */
     private void setarParametros(PreparedStatement stmt) {
         
         int i = 1;
