@@ -23,12 +23,12 @@ public class CadastroModel extends Conexao {
      * @param dados as informações recebidas da controller
      * @return 
      */
-    public boolean validar(HashMap dados) {
+    public boolean validar(HashMap<String, String> dados) {
 
-        this.nome = (String) dados.get("nome");
-        this.email = (String) dados.get("email");
-        this.senha = (String) dados.get("senha");
-        this.confirmarSenha = (String) dados.get("confirmarSenha");
+        this.nome = dados.get("nome");
+        this.email = dados.get("email");
+        this.senha = dados.get("senha");
+        this.confirmarSenha = dados.get("confirmarSenha");
         
         return this.camposPreenchidos() && this.senhasCoincidem() && this.emailValido();  
     }

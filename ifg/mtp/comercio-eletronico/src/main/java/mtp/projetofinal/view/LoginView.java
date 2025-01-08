@@ -1,5 +1,8 @@
 package mtp.projetofinal.view;
 
+import java.util.HashMap;
+import mtp.projetofinal.controller.LoginController;
+
 /**
  * Tela de Login
  * 
@@ -113,8 +116,18 @@ public class LoginView extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
     private void jButtonEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEntrarActionPerformed
-        // validar dados
-        // abrir lista dos produtos a venda
+        
+        HashMap<String, String> dados = new HashMap<>();
+        
+        dados.put("email", jTextFieldEmail.getText());
+        dados.put("senha", String.valueOf(jPasswordFieldSenha.getPassword()));
+        
+        LoginController lc = new LoginController();
+        
+        if(lc.login(dados)) {
+            new Loja(lc.getUsuario());
+            this.dispose();
+        }
     }//GEN-LAST:event_jButtonEntrarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
