@@ -1,11 +1,11 @@
-package mtp.projetofinal.model.helper;
+package mtp.projetofinal.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import javax.swing.JOptionPane;
+import mtp.projetofinal.Msg;
 
-abstract class Conexao {
+public abstract class Conexao {
 
     private final String url = "jdbc:postgresql://localhost/mtp";
     private final String user = "postgres";
@@ -22,13 +22,13 @@ abstract class Conexao {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "Classe não encontrada: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            Msg.exibirMensagem(e.getMessage(), "Classe não encontrada", 0);
         }
 
         try {
             this.conn = DriverManager.getConnection(this.url, this.user, this.password);
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            Msg.exibirMensagem(e.getMessage(), "Erro SQL", 0);
         }
 
     }
