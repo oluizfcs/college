@@ -18,15 +18,15 @@ public abstract class Conexao {
      * Carrega o driver e cria a conexão com o BD.
      */
     private void conectar() {
-        
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            Msg.exibirMensagem(e.getMessage(), "Classe não encontrada", 0);
-        }
 
         try {
+
+            Class.forName("org.postgresql.Driver");
+
             this.conn = DriverManager.getConnection(this.url, this.user, this.password);
+
+        } catch (ClassNotFoundException e) {
+            Msg.exibirMensagem(e.getMessage(), "Classe não encontrada", 0);
         } catch (SQLException e) {
             Msg.exibirMensagem(e.getMessage(), "Erro SQL", 0);
         }
@@ -35,7 +35,8 @@ public abstract class Conexao {
 
     /**
      * Retorna a conexão com o banco de dados.
-     * @return Connection objeto de conexão com o banco de dados 
+     *
+     * @return Connection objeto de conexão com o banco de dados
      */
     protected Connection getConnection() {
         conectar();

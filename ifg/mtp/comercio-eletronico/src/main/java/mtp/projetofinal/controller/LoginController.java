@@ -1,30 +1,51 @@
 package mtp.projetofinal.controller;
 
-import java.util.HashMap;
-import mtp.projetofinal.model.LoginModel;
+import mtp.projetofinal.model.Usuario;
+import mtp.projetofinal.model.crud.Read;
 
 /**
  *
  * @author luiz
  */
 public class LoginController {
-    
-    HashMap<String, String> usuario;
-    
-    public Boolean login(HashMap dados) {
+
+    Usuario usuario;
+
+    /**
+     * Pega os dados da view e conversa com a model para efetuar o login
+     *
+     * @param email
+     * @param senha
+     * @return true se der certo <br> false se der errado
+     */
+    public Boolean login(String email, String senha) {
+
+        this.usuario = new Usuario();
         
-        LoginModel lm = new LoginModel();
+        this.usuario.setEmail(email);
+        this.usuario.setSenha(senha);
         
-        if(lm.validarLogin(dados)) {
+        Read r = new Read();
+        
+        r.ler(usuario, "email", email);
+        
+        if(!r.getResult().isEmpty()) {
             
-            this.usuario = lm.getUsuario();
+            Usuario u = (Usuario) r.getResult().get(0);
+            this.usuario.setNome(u.getNome());
+            
             return true;
-        } else {
-            return false;
         }
+        
+        return false;
     }
     
-    public HashMap getUsuario() {
+    /**
+     * Devolve um usuário para a view
+     *
+     * @return
+     */
+    public Usuario getUsuario() {
         return this.usuario;
     }
 }

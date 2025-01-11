@@ -1,12 +1,12 @@
 package mtp.projetofinal.view;
 
-import java.util.HashMap;
 import mtp.projetofinal.Msg;
 import mtp.projetofinal.controller.CadastroController;
+import mtp.projetofinal.model.Usuario;
 
 /**
  * Tela de Cadastro
- * 
+ *
  * @author luizf
  */
 public class CadastroView extends javax.swing.JFrame {
@@ -15,13 +15,13 @@ public class CadastroView extends javax.swing.JFrame {
         initComponents();
         setVisible(true);
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        jButtonCancelar = new javax.swing.JButton();
         jTextFieldNome = new javax.swing.JTextField();
         jTextFieldEmail = new javax.swing.JTextField();
         jLabelNome = new javax.swing.JLabel();
@@ -39,12 +39,12 @@ public class CadastroView extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(430, 340));
 
-        jButton2.setBackground(new java.awt.Color(254, 255, 255));
-        jButton2.setFont(new java.awt.Font("Liberation Sans", 0, 15)); // NOI18N
-        jButton2.setText("Cancelar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jButtonCancelar.setBackground(new java.awt.Color(254, 255, 255));
+        jButtonCancelar.setFont(new java.awt.Font("Liberation Sans", 0, 15)); // NOI18N
+        jButtonCancelar.setText("Cancelar");
+        jButtonCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jButtonCancelarActionPerformed(evt);
             }
         });
 
@@ -76,7 +76,7 @@ public class CadastroView extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton1)
                         .addGap(109, 109, 109)
-                        .addComponent(jButton2))
+                        .addComponent(jButtonCancelar))
                     .addComponent(jLabelSenha)
                     .addComponent(jLabelEmail)
                     .addComponent(jLabelNome)
@@ -111,7 +111,7 @@ public class CadastroView extends javax.swing.JFrame {
                 .addGap(28, 28, 28)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(jButtonCancelar))
                 .addContainerGap(42, Short.MAX_VALUE))
         );
 
@@ -131,36 +131,48 @@ public class CadastroView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-     * Manda as informações para a Controller realizar o cadastro, caso tenha um resultado positivo, abre a tela de login
+     * Manda as informações para a Controller realizar o cadastro, caso tenha um
+     * resultado positivo, abre a tela de login
      */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-        HashMap<String, String> dados = new HashMap<>();
-        
-        dados.put("nome", jTextFieldNome.getText());
-        dados.put("email", jTextFieldEmail.getText());
-        dados.put("senha", String.valueOf(jPasswordFieldSenha.getPassword()));
-        dados.put("confirmarSenha", String.valueOf(jPasswordFieldConfirmarSenha.getPassword()));
-        
-        
-        if(CadastroController.cadastrar(dados)) {
-            Msg.exibirMensagem("Usuário cadastrado com sucesso", "Sucesso", 1);
-            new LoginView();
-            this.dispose();
+
+        String nome = jTextFieldNome.getText();
+        String email = jTextFieldEmail.getText();
+        String senha = String.valueOf(jPasswordFieldSenha.getPassword());
+        String confirmarSenha = String.valueOf(jPasswordFieldConfirmarSenha.getPassword());
+
+        if (nome.equals("") || email.equals("") || senha.equals("") || confirmarSenha.equals("")) {
+            Msg.exibirMensagem("Todos os campos devem ser preenchidos", "Aviso", 2);
+        } else if (!senha.equals(confirmarSenha)) {
+            Msg.exibirMensagem("As senhas não coincidem", "Aviso", 2);
+        } else {
+            
+            Usuario usuario = new Usuario();
+            usuario.setNome(nome);
+            usuario.setEmail(email);
+            usuario.setSenha(senha);
+            
+            CadastroController cc = new CadastroController();
+            
+            if(cc.cadastrar(usuario)) {
+                Msg.exibirMensagem("Usuário cadastrado com sucesso!", "Sucesso!", 1);
+                new LoginView();
+                this.dispose();
+            }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
-     * Cancela o cadastro e volta para a tela inicial. 
+     * Cancela o cadastro e volta para a tela inicial.
      */
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
         new TelaInicial();
         this.dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_jButtonCancelarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonCancelar;
     private javax.swing.JLabel jLabelConfirmarSenha;
     private javax.swing.JLabel jLabelEmail;
     private javax.swing.JLabel jLabelNome;

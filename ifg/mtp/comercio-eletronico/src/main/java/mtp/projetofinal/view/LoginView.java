@@ -1,11 +1,11 @@
 package mtp.projetofinal.view;
 
-import java.util.HashMap;
+import mtp.projetofinal.Msg;
 import mtp.projetofinal.controller.LoginController;
 
 /**
  * Tela de Login
- * 
+ *
  * @author luizf
  */
 public class LoginView extends javax.swing.JFrame {
@@ -110,23 +110,33 @@ public class LoginView extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Cancela o login e volta para a tela inicial.
+     */
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
         new TelaInicial();
         this.dispose();
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
+    /**
+     * Manda os dados para a controller validar o login e caso receba um
+     * resultado positivo, abre a tela da loja passando o usuário logado como
+     * parâmetro, fechando a tela de login.
+     */
     private void jButtonEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEntrarActionPerformed
-        
-        HashMap<String, String> dados = new HashMap<>();
-        
-        dados.put("email", jTextFieldEmail.getText());
-        dados.put("senha", String.valueOf(jPasswordFieldSenha.getPassword()));
-        
-        LoginController lc = new LoginController();
-        
-        if(lc.login(dados)) {
-            new Loja(lc.getUsuario());
-            this.dispose();
+
+        String email = jTextFieldEmail.getText();
+        String senha = String.valueOf(jPasswordFieldSenha.getPassword());
+
+        if (email.equals("") | senha.equals("")) {
+            Msg.exibirMensagem("Todos os campos devem ser preenchidos", "Aviso", 2);
+        } else {
+            LoginController lc = new LoginController();
+
+            if (lc.login(email, senha)) {
+                new Loja(lc.getUsuario());
+                this.dispose();
+            }
         }
     }//GEN-LAST:event_jButtonEntrarActionPerformed
 
