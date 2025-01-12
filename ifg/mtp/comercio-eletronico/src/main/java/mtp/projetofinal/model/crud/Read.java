@@ -113,7 +113,7 @@ public class Read extends Conexao {
      * - A query é construida na ordem que os atributos foram declarados.<br>
      * - O resultSet devolve as colunas buscadas nesta mesma ordem.
      *
-     * @param rsó
+     * @param rs
      * @throws SQLException
      * @throws IllegalAccessException
      * @throws InvocationTargetException

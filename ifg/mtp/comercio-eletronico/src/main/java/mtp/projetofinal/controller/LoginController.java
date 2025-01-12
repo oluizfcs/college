@@ -9,7 +9,7 @@ import mtp.projetofinal.model.crud.Read;
  */
 public class LoginController {
 
-    Usuario usuario;
+    Usuario usuarioParaLogar, usuarioDoBanco;
 
     /**
      * Pega os dados da view e conversa com a model para efetuar o login
@@ -20,32 +20,42 @@ public class LoginController {
      */
     public Boolean login(String email, String senha) {
 
-        this.usuario = new Usuario();
-        
-        this.usuario.setEmail(email);
-        this.usuario.setSenha(senha);
-        
+        this.usuarioParaLogar = new Usuario();
+
+        this.usuarioParaLogar.setEmail(email);
+        this.usuarioParaLogar.setSenha(senha);
+
         Read r = new Read();
-        
-        r.ler(usuario, "email", email);
-        
-        if(!r.getResult().isEmpty()) {
-            
-            Usuario u = (Usuario) r.getResult().get(0);
-            this.usuario.setNome(u.getNome());
-            
-            return true;
+
+        r.ler(this.usuarioParaLogar, "email", email);
+
+        if (!r.getResult().isEmpty()) {
+
+            this.usuarioDoBanco = (Usuario) r.getResult().get(0);
+
+            if (this.senhaCorreta()) {
+                return true;
+            }
         }
-        
+
         return false;
     }
-    
+
+    /**
+     * Verifica se a senha coincide com a do banco de dados.
+     *
+     * @return true caso coincida <br> false caso não coincida
+     */
+    private Boolean senhaCorreta() {
+        return this.usuarioParaLogar.getSenha().equals(this.usuarioDoBanco.getSenha());
+    }
+
     /**
      * Devolve um usuário para a view
      *
-     * @return
+     * @return usuário que foi retornado do banco de dados
      */
     public Usuario getUsuario() {
-        return this.usuario;
+        return this.usuarioDoBanco;
     }
 }

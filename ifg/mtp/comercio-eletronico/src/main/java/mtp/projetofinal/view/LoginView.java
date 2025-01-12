@@ -25,7 +25,7 @@ public class LoginView extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabelEmail = new javax.swing.JLabel();
         jTextFieldEmail = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        jLabelSenha = new javax.swing.JLabel();
         jButtonEntrar = new javax.swing.JButton();
         jButtonCancelar = new javax.swing.JButton();
         jPasswordFieldSenha = new javax.swing.JPasswordField();
@@ -38,7 +38,7 @@ public class LoginView extends javax.swing.JFrame {
 
         jLabelEmail.setText("Email");
 
-        jLabel2.setText("Senha");
+        jLabelSenha.setText("Senha");
 
         jButtonEntrar.setBackground(new java.awt.Color(81, 95, 255));
         jButtonEntrar.setForeground(new java.awt.Color(255, 255, 255));
@@ -66,7 +66,7 @@ public class LoginView extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
+                            .addComponent(jLabelSenha)
                             .addComponent(jLabelEmail)
                             .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jPasswordFieldSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -85,7 +85,7 @@ public class LoginView extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(37, 37, 37)
-                .addComponent(jLabel2)
+                .addComponent(jLabelSenha)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPasswordFieldSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(66, 66, 66)
@@ -136,6 +136,8 @@ public class LoginView extends javax.swing.JFrame {
             if (lc.login(email, senha)) {
                 new Loja(lc.getUsuario());
                 this.dispose();
+            } else {
+                Msg.exibirMensagem("Email ou senha incorreta", "Aviso", 2);
             }
         }
     }//GEN-LAST:event_jButtonEntrarActionPerformed
@@ -143,8 +145,8 @@ public class LoginView extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCancelar;
     private javax.swing.JButton jButtonEntrar;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabelEmail;
+    private javax.swing.JLabel jLabelSenha;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField jPasswordFieldSenha;
     private javax.swing.JTextField jTextFieldEmail;

@@ -30,7 +30,7 @@ public class CadastroView extends javax.swing.JFrame {
         jPasswordFieldConfirmarSenha = new javax.swing.JPasswordField();
         jLabelSenha = new javax.swing.JLabel();
         jLabelConfirmarSenha = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        jButtonCadastrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cadastro");
@@ -56,13 +56,13 @@ public class CadastroView extends javax.swing.JFrame {
 
         jLabelConfirmarSenha.setText("Confirmar senha");
 
-        jButton1.setBackground(new java.awt.Color(81, 95, 255));
-        jButton1.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Cadastrar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonCadastrar.setBackground(new java.awt.Color(81, 95, 255));
+        jButtonCadastrar.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
+        jButtonCadastrar.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonCadastrar.setText("Cadastrar");
+        jButtonCadastrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonCadastrarActionPerformed(evt);
             }
         });
 
@@ -74,7 +74,7 @@ public class CadastroView extends javax.swing.JFrame {
                 .addGap(60, 60, 60)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(jButtonCadastrar)
                         .addGap(109, 109, 109)
                         .addComponent(jButtonCancelar))
                     .addComponent(jLabelSenha)
@@ -110,7 +110,7 @@ public class CadastroView extends javax.swing.JFrame {
                 .addComponent(jPasswordFieldConfirmarSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(jButtonCadastrar)
                     .addComponent(jButtonCancelar))
                 .addContainerGap(42, Short.MAX_VALUE))
         );
@@ -134,7 +134,7 @@ public class CadastroView extends javax.swing.JFrame {
      * Manda as informações para a Controller realizar o cadastro, caso tenha um
      * resultado positivo, abre a tela de login
      */
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCadastrarActionPerformed
 
         String nome = jTextFieldNome.getText();
         String email = jTextFieldEmail.getText();
@@ -160,7 +160,7 @@ public class CadastroView extends javax.swing.JFrame {
                 this.dispose();
             }
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonCadastrarActionPerformed
 
     /**
      * Cancela o cadastro e volta para a tela inicial.
@@ -171,7 +171,7 @@ public class CadastroView extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonCadastrar;
     private javax.swing.JButton jButtonCancelar;
     private javax.swing.JLabel jLabelConfirmarSenha;
     private javax.swing.JLabel jLabelEmail;
