@@ -9,6 +9,7 @@ public class Usuario {
     private String nome;
     private String email;
     private String senha;
+    private Boolean admin;
 
     public String getNome() {
         return nome;
@@ -32,5 +33,13 @@ public class Usuario {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+    
+    public Boolean getAdmin() {
+        return this.admin;
+    }
+    
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
     }
 }

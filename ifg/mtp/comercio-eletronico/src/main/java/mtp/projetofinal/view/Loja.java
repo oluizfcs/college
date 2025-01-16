@@ -1,7 +1,9 @@
 package mtp.projetofinal.view;
 
+import java.util.ArrayList;
 import mtp.projetofinal.controller.LojaController;
 import mtp.projetofinal.Msg;
+import mtp.projetofinal.model.Produto;
 import mtp.projetofinal.model.Usuario;
 
 /**
@@ -11,6 +13,7 @@ import mtp.projetofinal.model.Usuario;
 public class Loja extends javax.swing.JFrame {
 
     Usuario usuario;
+    ArrayList<Object> produtos;
 
     /**
      * Creates new form Loja
@@ -19,11 +22,51 @@ public class Loja extends javax.swing.JFrame {
      */
     public Loja(Usuario usuario) {
         this.usuario = usuario;
+
         initComponents();
+
+        jLabelAdicionarProduto.setVisible(usuario.getAdmin());
+
         jLabelUsername.setText(usuario.getNome());
         jTextFieldNome.setText(usuario.getNome());
         jTextFieldEmail.setText(usuario.getEmail());
+
+        jScrollPaneProdutos.getVerticalScrollBar().setUnitIncrement(16);
+        
+        this.produtos = LojaController.getProdutos();
+        
+        if (this.produtos.isEmpty()) {
+            jLabelSemProduto.setVisible(true);
+        } else {
+            jLabelSemProduto.setVisible(false);
+            carregarProdutos();
+        }
+
         setVisible(true);
+    }
+
+    private void carregarProdutos() {
+        int width = 230;
+        int height = 280;
+        int x = 0;
+        int y = 0;
+        int z = 1;
+        for(Object obj : this.produtos) {
+            
+            if(x == 3) {
+                x = 0;
+                y++;
+                z = 1;
+            }
+            
+            Produto p = (Produto) obj;
+            PanelProduto pp = new PanelProduto(p);
+            pp.setSize(width, height);
+            pp.setLocation((width * x) + 50 * z, (height * y) + (50 * (y+1)));
+            jPanelProdutos.add(pp);
+            x++;
+            z++;
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -50,12 +93,30 @@ public class Loja extends javax.swing.JFrame {
         jButtonSalvarSenha = new javax.swing.JButton();
         jButtonCancelar1 = new javax.swing.JButton();
         jLabelTitulo = new javax.swing.JLabel();
+        jDialogAddProduto = new javax.swing.JDialog();
+        jPanelAddProduto = new javax.swing.JPanel();
+        jLabelNomeProduto = new javax.swing.JLabel();
+        jTextFieldNomeProduto = new javax.swing.JTextField();
+        jLabelDescricao = new javax.swing.JLabel();
+        jLabelPreco = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextAreaDescricao = new javax.swing.JTextArea();
+        jLabelFoto = new javax.swing.JLabel();
+        jButtonCarregarArquivo = new javax.swing.JButton();
+        jButtonAdicionar = new javax.swing.JButton();
+        jButtonCancelarProduto = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
+        jTextFieldPreco = new javax.swing.JTextField();
+        jLabelInfo = new javax.swing.JLabel();
         jPanelNavBar = new javax.swing.JPanel();
         jLabelUsername = new javax.swing.JLabel();
         jButtonSair = new javax.swing.JButton();
         jLabelConfig = new javax.swing.JLabel();
         jLabelCarrinho = new javax.swing.JLabel();
+        jLabelAdicionarProduto = new javax.swing.JLabel();
+        jScrollPaneProdutos = new javax.swing.JScrollPane();
         jPanelProdutos = new javax.swing.JPanel();
+        jLabelSemProduto = new javax.swing.JLabel();
 
         jDialogConfig.setTitle("Configurações");
         jDialogConfig.setMinimumSize(new java.awt.Dimension(505, 467));
@@ -236,9 +297,131 @@ public class Loja extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
+        jDialogAddProduto.setTitle("Adicionar Produto");
+        jDialogAddProduto.setLocationByPlatform(true);
+        jDialogAddProduto.setMinimumSize(new java.awt.Dimension(550, 433));
+        jDialogAddProduto.setModal(true);
+        jDialogAddProduto.setResizable(false);
+
+        jPanelAddProduto.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabelNomeProduto.setText("Nome do Produto:");
+
+        jLabelDescricao.setText("Descrição");
+
+        jLabelPreco.setText("Preço R$:");
+
+        jTextAreaDescricao.setColumns(20);
+        jTextAreaDescricao.setLineWrap(true);
+        jTextAreaDescricao.setRows(5);
+        jScrollPane1.setViewportView(jTextAreaDescricao);
+
+        jLabelFoto.setText("Foto");
+
+        jButtonCarregarArquivo.setBackground(new java.awt.Color(254, 255, 255));
+        jButtonCarregarArquivo.setText("Carregar Arquivo");
+
+        jButtonAdicionar.setBackground(new java.awt.Color(81, 95, 255));
+        jButtonAdicionar.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
+        jButtonAdicionar.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonAdicionar.setText("Adicionar");
+
+        jButtonCancelarProduto.setBackground(new java.awt.Color(254, 255, 255));
+        jButtonCancelarProduto.setText("Cancelar");
+
+        jLabelInfo.setFont(new java.awt.Font("Liberation Sans", 0, 11)); // NOI18N
+        jLabelInfo.setForeground(new java.awt.Color(102, 102, 102));
+        jLabelInfo.setText("Utilize . (ponto) para as casas decimais");
+
+        javax.swing.GroupLayout jPanelAddProdutoLayout = new javax.swing.GroupLayout(jPanelAddProduto);
+        jPanelAddProduto.setLayout(jPanelAddProdutoLayout);
+        jPanelAddProdutoLayout.setHorizontalGroup(
+            jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
+                .addGap(48, 48, 48)
+                .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
+                        .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelDescricao)
+                            .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
+                                .addComponent(jLabelPreco)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextFieldPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabelNomeProduto)
+                            .addComponent(jTextFieldNomeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelAddProdutoLayout.createSequentialGroup()
+                        .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelAddProdutoLayout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 129, Short.MAX_VALUE)
+                                .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButtonCarregarArquivo, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelAddProdutoLayout.createSequentialGroup()
+                                        .addComponent(jLabelFoto)
+                                        .addGap(58, 58, 58)))))
+                        .addGap(51, 51, 51))))
+            .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
+                .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
+                        .addGap(163, 163, 163)
+                        .addComponent(jButtonAdicionar)
+                        .addGap(43, 43, 43)
+                        .addComponent(jButtonCancelarProduto))
+                    .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
+                        .addGap(77, 77, 77)
+                        .addComponent(jLabelInfo)))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanelAddProdutoLayout.setVerticalGroup(
+            jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
+                .addGap(43, 43, 43)
+                .addComponent(jLabelNomeProduto)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jTextFieldNomeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(52, 52, 52)
+                .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
+                        .addComponent(jLabelDescricao)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
+                        .addComponent(jLabelFoto)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonCarregarArquivo, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(6, 6, 6)))
+                .addGap(39, 39, 39)
+                .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelPreco)
+                    .addComponent(jTextFieldPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelInfo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonAdicionar)
+                    .addComponent(jButtonCancelarProduto))
+                .addGap(22, 22, 22))
+        );
+
+        javax.swing.GroupLayout jDialogAddProdutoLayout = new javax.swing.GroupLayout(jDialogAddProduto.getContentPane());
+        jDialogAddProduto.getContentPane().setLayout(jDialogAddProdutoLayout);
+        jDialogAddProdutoLayout.setHorizontalGroup(
+            jDialogAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelAddProduto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jDialogAddProdutoLayout.setVerticalGroup(
+            jDialogAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelAddProduto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Comercio Eletrônico");
-        setMinimumSize(new java.awt.Dimension(610, 422));
+        setMaximumSize(new java.awt.Dimension(890, 2147483647));
+        setMinimumSize(new java.awt.Dimension(890, 300));
 
         jLabelUsername.setText("nome");
 
@@ -262,6 +445,15 @@ public class Loja extends javax.swing.JFrame {
         });
 
         jLabelCarrinho.setIcon(new javax.swing.ImageIcon(getClass().getResource("/carrinho.png"))); // NOI18N
+        jLabelCarrinho.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
+        jLabelAdicionarProduto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/adicionar.png"))); // NOI18N
+        jLabelAdicionarProduto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabelAdicionarProduto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabelAdicionarProdutoMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanelNavBarLayout = new javax.swing.GroupLayout(jPanelNavBar);
         jPanelNavBar.setLayout(jPanelNavBarLayout);
@@ -274,7 +466,9 @@ public class Loja extends javax.swing.JFrame {
                 .addGroup(jPanelNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabelUsername)
                     .addComponent(jButtonSair))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 444, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabelAdicionarProduto)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabelCarrinho)
                 .addGap(24, 24, 24))
         );
@@ -283,41 +477,59 @@ public class Loja extends javax.swing.JFrame {
             .addGroup(jPanelNavBarLayout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(jPanelNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabelCarrinho)
                     .addComponent(jLabelConfig)
                     .addGroup(jPanelNavBarLayout.createSequentialGroup()
                         .addComponent(jLabelUsername)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonSair)))
+                        .addComponent(jButtonSair))
+                    .addGroup(jPanelNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jLabelAdicionarProduto)
+                        .addComponent(jLabelCarrinho)))
                 .addGap(10, 10, 10))
         );
 
+        jScrollPaneProdutos.setBackground(new java.awt.Color(255, 255, 255));
+        jScrollPaneProdutos.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
         jPanelProdutos.setBackground(new java.awt.Color(255, 255, 255));
+        jPanelProdutos.setMaximumSize(new java.awt.Dimension(900, 32767));
+        jPanelProdutos.setMinimumSize(new java.awt.Dimension(900, 1010));
+        jPanelProdutos.setPreferredSize(new java.awt.Dimension(900, 1010));
+
+        jLabelSemProduto.setText("Não há produtos a serem exibidos");
 
         javax.swing.GroupLayout jPanelProdutosLayout = new javax.swing.GroupLayout(jPanelProdutos);
         jPanelProdutos.setLayout(jPanelProdutosLayout);
         jPanelProdutosLayout.setHorizontalGroup(
             jPanelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanelProdutosLayout.createSequentialGroup()
+                .addGap(325, 325, 325)
+                .addComponent(jLabelSemProduto)
+                .addContainerGap(353, Short.MAX_VALUE))
         );
         jPanelProdutosLayout.setVerticalGroup(
             jPanelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 348, Short.MAX_VALUE)
+            .addGroup(jPanelProdutosLayout.createSequentialGroup()
+                .addGap(180, 180, 180)
+                .addComponent(jLabelSemProduto)
+                .addContainerGap(812, Short.MAX_VALUE))
         );
+
+        jScrollPaneProdutos.setViewportView(jPanelProdutos);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelProdutos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanelNavBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPaneProdutos, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanelNavBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelProdutos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPaneProdutos, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE))
         );
 
         pack();
@@ -403,23 +615,44 @@ public class Loja extends javax.swing.JFrame {
         jDialogConfig.setVisible(false);
     }//GEN-LAST:event_jButtonCancelar1ActionPerformed
 
+    /**
+     * Abre a tela de gerenciamento de produto que só administradores possuem
+     * acesso
+     */
+    private void jLabelAdicionarProdutoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelAdicionarProdutoMouseClicked
+        jDialogAddProduto.setLocationRelativeTo(this);
+        jDialogAddProduto.setVisible(true);
+    }//GEN-LAST:event_jLabelAdicionarProdutoMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAdicionar;
     private javax.swing.JButton jButtonAlterarNome;
     private javax.swing.JButton jButtonCancelar;
     private javax.swing.JButton jButtonCancelar1;
+    private javax.swing.JButton jButtonCancelarProduto;
+    private javax.swing.JButton jButtonCarregarArquivo;
     private javax.swing.JButton jButtonSair;
     private javax.swing.JButton jButtonSalvarSenha;
+    private javax.swing.JDialog jDialogAddProduto;
     private javax.swing.JDialog jDialogConfig;
+    private javax.swing.JLabel jLabelAdicionarProduto;
     private javax.swing.JLabel jLabelCarrinho;
     private javax.swing.JLabel jLabelConfig;
     private javax.swing.JLabel jLabelConfirmarNovaSenha;
+    private javax.swing.JLabel jLabelDescricao;
     private javax.swing.JLabel jLabelEmail;
     private javax.swing.JLabel jLabelEmailTip;
+    private javax.swing.JLabel jLabelFoto;
+    private javax.swing.JLabel jLabelInfo;
     private javax.swing.JLabel jLabelNome;
+    private javax.swing.JLabel jLabelNomeProduto;
     private javax.swing.JLabel jLabelNovaSenha;
+    private javax.swing.JLabel jLabelPreco;
+    private javax.swing.JLabel jLabelSemProduto;
     private javax.swing.JLabel jLabelSenhaAtual;
     private javax.swing.JLabel jLabelTitulo;
     private javax.swing.JLabel jLabelUsername;
+    private javax.swing.JPanel jPanelAddProduto;
     private javax.swing.JPanel jPanelNavBar;
     private javax.swing.JPanel jPanelNomeEmail;
     private javax.swing.JPanel jPanelProdutos;
@@ -427,8 +660,14 @@ public class Loja extends javax.swing.JFrame {
     private javax.swing.JPasswordField jPasswordFieldConfirmarNovaSenha;
     private javax.swing.JPasswordField jPasswordFieldNovaSenha;
     private javax.swing.JPasswordField jPasswordFieldSenhaAtual;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPaneProdutos;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextArea jTextAreaDescricao;
     private javax.swing.JTextField jTextFieldEmail;
     private javax.swing.JTextField jTextFieldNome;
+    private javax.swing.JTextField jTextFieldNomeProduto;
+    private javax.swing.JTextField jTextFieldPreco;
     // End of variables declaration//GEN-END:variables
 }
