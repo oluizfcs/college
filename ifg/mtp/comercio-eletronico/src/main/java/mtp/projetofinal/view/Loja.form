@@ -353,7 +353,7 @@
                                   <Component id="jLabelNomeProduto" min="-2" max="-2" attributes="0"/>
                                   <Component id="jTextFieldNomeProduto" alignment="0" min="-2" pref="222" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="320" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
@@ -461,6 +461,7 @@
                     <Property name="columns" type="int" value="20"/>
                     <Property name="lineWrap" type="boolean" value="true"/>
                     <Property name="rows" type="int" value="5"/>
+                    <Property name="tabSize" type="int" value="2"/>
                   </Properties>
                 </Component>
               </SubComponents>

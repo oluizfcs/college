@@ -18,6 +18,22 @@ public class Loja extends javax.swing.JFrame {
     private int paginaAtual = 1;
     private int qtdItens = 9;
 
+    public int getPaginaAtual() {
+        return paginaAtual;
+    }
+
+    public void setPaginaAtual(int paginaAtual) {
+        this.paginaAtual = paginaAtual;
+    }
+
+    public int getQtdItens() {
+        return qtdItens;
+    }
+
+    public void setQtdItens(int qtdItens) {
+        this.qtdItens = qtdItens;
+    }
+
     /**
      * Creates new form Loja
      *
@@ -77,7 +93,7 @@ public class Loja extends javax.swing.JFrame {
             }
 
             Produto p = (Produto) obj;
-            PanelProduto pp = new PanelProduto(p, this.usuario);
+            PanelProduto pp = new PanelProduto(this, p, this.usuario);
             pp.setSize(width, height);
             pp.setLocation((width * x) + 50 * z, (height * y) + (50 * (y + 1)));
             jPanelProdutos.add(pp);
@@ -342,6 +358,7 @@ public class Loja extends javax.swing.JFrame {
         jTextAreaDescricao.setColumns(20);
         jTextAreaDescricao.setLineWrap(true);
         jTextAreaDescricao.setRows(5);
+        jTextAreaDescricao.setTabSize(2);
         jScrollPane1.setViewportView(jTextAreaDescricao);
 
         jLabelFoto.setText("Foto (opcional)");
@@ -387,7 +404,7 @@ public class Loja extends javax.swing.JFrame {
                                 .addComponent(jTextFieldPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabelNomeProduto)
                             .addComponent(jTextFieldNomeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(320, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelAddProdutoLayout.createSequentialGroup()
                         .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)

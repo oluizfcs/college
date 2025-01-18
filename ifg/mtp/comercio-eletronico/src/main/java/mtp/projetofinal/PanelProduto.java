@@ -3,8 +3,11 @@ package mtp.projetofinal;
 import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import mtp.projetofinal.controller.ProdutoController;
 import mtp.projetofinal.model.Produto;
 import mtp.projetofinal.model.Usuario;
+import mtp.projetofinal.view.Loja;
 
 /**
  *
@@ -12,21 +15,25 @@ import mtp.projetofinal.model.Usuario;
  */
 public class PanelProduto extends javax.swing.JPanel {
 
-    private final Produto produto;
+    private final Loja loja;
+
+    private Produto produto;
 
     private final Usuario usuario;
 
     /**
      * Creates new form PanelProduto
      *
+     * @param loja
      * @param produto
      * @param usuario
      */
-    public PanelProduto(Produto produto, Usuario usuario) {
+    public PanelProduto(Loja loja, Produto produto, Usuario usuario) {
 
+        this.loja = loja;
         this.produto = produto;
         this.usuario = usuario;
-        
+
         initComponents();
 
         jLabelNome.setText(produto.getNome());
@@ -40,11 +47,26 @@ public class PanelProduto extends javax.swing.JPanel {
         setVisible(true);
     }
 
+    /**
+     * Coloca as informações do produto no card de detalhamento
+     */
+    private void atualizarDetalhesProduto() {
+        jTextAreaDescricao.setText(this.produto.getDescricao());
+        jLabelInfoPreco.setText("R$: " + String.valueOf(this.produto.getPreco()));
+
+        if (!this.usuario.getAdmin()) {
+            jButtonEditar.setVisible(false);
+            jButtonExcluir.setVisible(false);
+        }
+
+        jDialogDetalhesProduto.setTitle(this.produto.getNome());
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jDialogAddCarrinho = new javax.swing.JDialog();
+        jDialogDetalhesProduto = new javax.swing.JDialog();
         jPanel1 = new javax.swing.JPanel();
         jLabelTitulo = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -54,13 +76,29 @@ public class PanelProduto extends javax.swing.JPanel {
         jLabelInfoPreco = new javax.swing.JLabel();
         jButtonEditar = new javax.swing.JButton();
         jButtonExcluir = new javax.swing.JButton();
+        jDialogConfigProduto = new javax.swing.JDialog();
+        jPanel2 = new javax.swing.JPanel();
+        jLabelProdutoNome = new javax.swing.JLabel();
+        jTextFieldProdutoNome = new javax.swing.JTextField();
+        jLabelProdutoDescricao = new javax.swing.JLabel();
+        jLabelProdutoFoto = new javax.swing.JLabel();
+        jButtonCarregarArquivo = new javax.swing.JButton();
+        jButtonSalvarAlteracoes = new javax.swing.JButton();
+        jButtonCancelarProduto = new javax.swing.JButton();
+        jLabelProdutoInfo = new javax.swing.JLabel();
+        jLabelProdutoPreco = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextAreaProdutoDescricao = new javax.swing.JTextArea();
+        jSeparator2 = new javax.swing.JSeparator();
+        jTextFieldProdutoPreco = new javax.swing.JTextField();
         jLabelPreco = new javax.swing.JLabel();
         jLabelNome = new javax.swing.JLabel();
         jLabelFoto = new javax.swing.JLabel();
 
-        jDialogAddCarrinho.setTitle(this.produto.getNome());
-        jDialogAddCarrinho.setMinimumSize(new java.awt.Dimension(400, 465));
-        jDialogAddCarrinho.setResizable(false);
+        jDialogDetalhesProduto.setTitle(this.produto.getNome());
+        jDialogDetalhesProduto.setAlwaysOnTop(true);
+        jDialogDetalhesProduto.setMinimumSize(new java.awt.Dimension(400, 465));
+        jDialogDetalhesProduto.setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setMinimumSize(new java.awt.Dimension(400, 465));
@@ -157,16 +195,152 @@ public class PanelProduto extends javax.swing.JPanel {
                 .addContainerGap(97, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout jDialogAddCarrinhoLayout = new javax.swing.GroupLayout(jDialogAddCarrinho.getContentPane());
-        jDialogAddCarrinho.getContentPane().setLayout(jDialogAddCarrinhoLayout);
-        jDialogAddCarrinhoLayout.setHorizontalGroup(
-            jDialogAddCarrinhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout jDialogDetalhesProdutoLayout = new javax.swing.GroupLayout(jDialogDetalhesProduto.getContentPane());
+        jDialogDetalhesProduto.getContentPane().setLayout(jDialogDetalhesProdutoLayout);
+        jDialogDetalhesProdutoLayout.setHorizontalGroup(
+            jDialogDetalhesProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        jDialogAddCarrinhoLayout.setVerticalGroup(
-            jDialogAddCarrinhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jDialogAddCarrinhoLayout.createSequentialGroup()
+        jDialogDetalhesProdutoLayout.setVerticalGroup(
+            jDialogDetalhesProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialogDetalhesProdutoLayout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        jDialogConfigProduto.setTitle("Editar Produto");
+        jDialogConfigProduto.setAlwaysOnTop(true);
+        jDialogConfigProduto.setMinimumSize(new java.awt.Dimension(650, 450));
+        jDialogConfigProduto.setPreferredSize(new java.awt.Dimension(650, 450));
+        jDialogConfigProduto.setResizable(false);
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setMinimumSize(new java.awt.Dimension(650, 450));
+        jPanel2.setPreferredSize(new java.awt.Dimension(650, 450));
+
+        jLabelProdutoNome.setText("Nome:");
+
+        jLabelProdutoDescricao.setText("Descrição");
+
+        jLabelProdutoFoto.setText("Foto (opcional)");
+
+        jButtonCarregarArquivo.setBackground(new java.awt.Color(254, 255, 255));
+        jButtonCarregarArquivo.setText("Carregar Arquivo");
+
+        jButtonSalvarAlteracoes.setBackground(new java.awt.Color(81, 95, 255));
+        jButtonSalvarAlteracoes.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
+        jButtonSalvarAlteracoes.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonSalvarAlteracoes.setText("Salvar Alterações");
+        jButtonSalvarAlteracoes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSalvarAlteracoesActionPerformed(evt);
+            }
+        });
+
+        jButtonCancelarProduto.setBackground(new java.awt.Color(254, 255, 255));
+        jButtonCancelarProduto.setText("Cancelar");
+        jButtonCancelarProduto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCancelarProdutoActionPerformed(evt);
+            }
+        });
+
+        jLabelProdutoInfo.setFont(new java.awt.Font("Liberation Sans", 0, 11)); // NOI18N
+        jLabelProdutoInfo.setForeground(new java.awt.Color(102, 102, 102));
+        jLabelProdutoInfo.setText("Utilize . (ponto) para as casas decimais");
+
+        jLabelProdutoPreco.setText("Preço R$:");
+
+        jTextAreaProdutoDescricao.setColumns(20);
+        jTextAreaProdutoDescricao.setLineWrap(true);
+        jTextAreaProdutoDescricao.setRows(5);
+        jTextAreaProdutoDescricao.setTabSize(2);
+        jScrollPane3.setViewportView(jTextAreaProdutoDescricao);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(142, 142, 142)
+                .addComponent(jButtonSalvarAlteracoes)
+                .addGap(89, 89, 89)
+                .addComponent(jButtonCancelarProduto)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(89, 89, 89)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(98, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(75, 75, 75)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(59, 59, 59)
+                        .addComponent(jLabelProdutoInfo))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabelProdutoNome)
+                            .addComponent(jLabelProdutoDescricao)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabelProdutoPreco)
+                                .addGap(18, 18, 18)
+                                .addComponent(jTextFieldProdutoPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextFieldProdutoNome)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(8, 8, 8)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonCarregarArquivo, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabelProdutoFoto)
+                        .addGap(26, 26, 26)))
+                .addGap(59, 59, 59))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabelProdutoFoto)
+                        .addGap(9, 9, 9)
+                        .addComponent(jButtonCarregarArquivo, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(115, 115, 115))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabelProdutoNome)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextFieldProdutoNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
+                        .addComponent(jLabelProdutoDescricao)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(36, 36, 36)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabelProdutoPreco)
+                            .addComponent(jTextFieldProdutoPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelProdutoInfo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonCancelarProduto)
+                    .addComponent(jButtonSalvarAlteracoes))
+                .addGap(17, 17, 17))
+        );
+
+        javax.swing.GroupLayout jDialogConfigProdutoLayout = new javax.swing.GroupLayout(jDialogConfigProduto.getContentPane());
+        jDialogConfigProduto.getContentPane().setLayout(jDialogConfigProdutoLayout);
+        jDialogConfigProdutoLayout.setHorizontalGroup(
+            jDialogConfigProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialogConfigProdutoLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jDialogConfigProdutoLayout.setVerticalGroup(
+            jDialogConfigProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialogConfigProdutoLayout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -228,7 +402,8 @@ public class PanelProduto extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-     * Cria uma borda azul em volta do card do produto quando o mouse está em cima dele 
+     * Cria uma borda azul em volta do card do produto quando o mouse está em
+     * cima dele
      */
     private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
         this.setBorder(BorderFactory.createLineBorder(new Color(81, 95, 255), 1, true));
@@ -242,50 +417,121 @@ public class PanelProduto extends javax.swing.JPanel {
     }//GEN-LAST:event_formMouseExited
 
     /**
-     * Abre o dialog de detalhes do produto 
+     * Abre o dialog de detalhes do produto
      */
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
-        jDialogAddCarrinho.setLocationRelativeTo(this);
-        jTextAreaDescricao.setText(this.produto.getDescricao());
-        jLabelInfoPreco.setText("R$: " + String.valueOf(this.produto.getPreco()));
-        
-        if (!this.usuario.getAdmin()) {
-            jButtonEditar.setVisible(false);
-            jButtonExcluir.setVisible(false);
-        }
-        
-        jDialogAddCarrinho.setVisible(true);
+        jDialogDetalhesProduto.setLocationRelativeTo(this);
+
+        atualizarDetalhesProduto();
+
+        jDialogDetalhesProduto.setVisible(true);
     }//GEN-LAST:event_formMouseClicked
 
     /**
-     * Fecha a aba de "detalhamento" do produto 
+     * Fecha a aba de "detalhamento" do produto
      */
     private void jButtonFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFecharActionPerformed
-        jDialogAddCarrinho.setVisible(false);
+        jDialogDetalhesProduto.setVisible(false);
     }//GEN-LAST:event_jButtonFecharActionPerformed
 
+    /**
+     * Abre a janela que permite editar o produto
+     */
     private void jButtonEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarActionPerformed
-        // TODO add your handling code here:
+        jTextFieldProdutoNome.setText(this.produto.getNome());
+        jTextAreaProdutoDescricao.setText(this.produto.getDescricao());
+        jTextFieldProdutoPreco.setText(String.valueOf(this.produto.getPreco()));
+
+        jDialogConfigProduto.setVisible(true);
+        jDialogConfigProduto.setLocationRelativeTo(this);
     }//GEN-LAST:event_jButtonEditarActionPerformed
 
+    /**
+     * Após uma confirmação, exclui o produto.
+     */
     private void jButtonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirActionPerformed
-        // TODO add your handling code here:
+        int result = JOptionPane.showConfirmDialog(this, "Você tem certeza que deseja excluir este produto?", "Operação destrutiva", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+        if (result == 0) {
+            if (ProdutoController.excluir(this.produto)) {
+                Msg.exibirMensagem("Produto excluido com sucesso", "Sucesso", 1);
+                new Loja(this.usuario, this.loja.getPaginaAtual(), this.loja.getQtdItens());
+                jDialogDetalhesProduto.setVisible(false);
+                this.loja.dispose();
+            }
+        }
     }//GEN-LAST:event_jButtonExcluirActionPerformed
+
+    /**
+     * Manda os dados dos campos para a ProdutoController lidar com a alteração.
+     */
+    private void jButtonSalvarAlteracoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarAlteracoesActionPerformed
+        String pnome = jTextFieldProdutoNome.getText();
+        String pdescricao = jTextAreaProdutoDescricao.getText();
+        try {
+            float ppreco = Float.parseFloat(jTextFieldProdutoPreco.getText());
+
+            if (pnome.isBlank() || pdescricao.isBlank()) {
+                Msg.exibirMensagem("Nome e descrição devem ser preenchidos", "Aviso", 2);
+            } else {
+                Produto p = new Produto();
+                ProdutoController pc = new ProdutoController();
+
+                p.setId(this.produto.getId());
+                p.setNome(pnome);
+                p.setDescricao(pdescricao);
+                p.setPreco(ppreco);
+
+                if (pc.editarProduto(p)) {
+                    Msg.exibirMensagem("Produto editado com sucesso!", "Sucesso", 1);
+                    jDialogConfigProduto.setVisible(false);
+                    this.produto = pc.getProdutoAtualizado();
+                    atualizarDetalhesProduto();
+                    this.loja.dispose();
+                    new Loja(this.usuario, this.loja.getPaginaAtual(), this.loja.getQtdItens());
+                }
+            }
+        } catch (NumberFormatException e) {
+            Msg.exibirMensagem("Insira um preço válido!", "Aviso", 2);
+        }
+    }//GEN-LAST:event_jButtonSalvarAlteracoesActionPerformed
+
+    /**
+     * Fecha a tela de editar o produto.
+     */
+    private void jButtonCancelarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarProdutoActionPerformed
+        jDialogConfigProduto.setVisible(false);
+    }//GEN-LAST:event_jButtonCancelarProdutoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAddCarrinho;
+    private javax.swing.JButton jButtonCancelarProduto;
+    private javax.swing.JButton jButtonCarregarArquivo;
     private javax.swing.JButton jButtonEditar;
     private javax.swing.JButton jButtonExcluir;
     private javax.swing.JButton jButtonFechar;
-    private javax.swing.JDialog jDialogAddCarrinho;
+    private javax.swing.JButton jButtonSalvarAlteracoes;
+    private javax.swing.JDialog jDialogConfigProduto;
+    private javax.swing.JDialog jDialogDetalhesProduto;
     private javax.swing.JLabel jLabelFoto;
     private javax.swing.JLabel jLabelInfoPreco;
     private javax.swing.JLabel jLabelNome;
     private javax.swing.JLabel jLabelPreco;
+    private javax.swing.JLabel jLabelProdutoDescricao;
+    private javax.swing.JLabel jLabelProdutoFoto;
+    private javax.swing.JLabel jLabelProdutoInfo;
+    private javax.swing.JLabel jLabelProdutoNome;
+    private javax.swing.JLabel jLabelProdutoPreco;
     private javax.swing.JLabel jLabelTitulo;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextArea jTextAreaDescricao;
+    private javax.swing.JTextArea jTextAreaProdutoDescricao;
+    private javax.swing.JTextField jTextFieldProdutoNome;
+    private javax.swing.JTextField jTextFieldProdutoPreco;
     // End of variables declaration//GEN-END:variables
 }

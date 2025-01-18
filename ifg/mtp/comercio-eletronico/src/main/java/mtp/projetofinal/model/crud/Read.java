@@ -12,7 +12,7 @@ import mtp.projetofinal.Msg;
 import mtp.projetofinal.model.Conexao;
 
 /**
- * Classe genérica para realizar buscas no banco de dados - (atualmente sem LIMIT)
+ * Classe genérica para realizar buscas no banco de dados
  *
  * @author luiz
  */
