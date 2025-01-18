@@ -134,7 +134,7 @@ public class LoginView extends javax.swing.JFrame {
             LoginController lc = new LoginController();
 
             if (lc.login(email, senha)) {
-                new Loja(lc.getUsuario());
+                new Loja(lc.getUsuario(), 1, 9);
                 this.dispose();
             } else {
                 Msg.exibirMensagem("Email ou senha incorreta", "Aviso", 2);

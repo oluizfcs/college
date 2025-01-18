@@ -22,16 +22,21 @@ public class Read extends Conexao {
     private String tabela, query, whereColuna;
     private Object obj = null, whereValor;
     private final ArrayList<Object> resultado = new ArrayList<>();
+    private int pagina = -1, qtdItens;
 
     /**
      * Busca todos os atributos de um objeto no banco de dados na tabela
      * referente ao nome da classe.
      *
      * @param obj O objeto que será buscado
+     * @param pagina O número da página a ser exibida
+     * @param qtdItens quantidade de itens que será mostrada por página.
      */
-    public void ler(Object obj) {
+    public void ler(Object obj, int pagina, int qtdItens) {
         this.obj = obj;
-
+        this.pagina = pagina;
+        this.qtdItens = qtdItens;
+        
         this.construirQuery();
         this.executarQuery();
     }
@@ -71,6 +76,13 @@ public class Read extends Conexao {
             sb.append(" WHERE " + this.whereColuna + " = ?");
         }
 
+        sb.append(" ORDER BY id DESC");
+        
+        // paginação
+        if(this.pagina != -1) {
+            sb.append(" LIMIT " + this.qtdItens + " OFFSET " + (this.qtdItens * (this.pagina - 1)));
+        }
+        
         this.query = sb.toString();
     }
 

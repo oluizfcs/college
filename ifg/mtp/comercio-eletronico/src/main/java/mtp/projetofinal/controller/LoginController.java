@@ -28,7 +28,7 @@ public class LoginController {
         Read r = new Read();
 
         r.ler(this.usuarioParaLogar, "email", email);
-
+        
         if (!r.getResult().isEmpty()) {
 
             this.usuarioDoBanco = (Usuario) r.getResult().get(0);

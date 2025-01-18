@@ -1,5 +1,6 @@
 package mtp.projetofinal.view;
 
+import mtp.projetofinal.PanelProduto;
 import java.util.ArrayList;
 import mtp.projetofinal.controller.LojaController;
 import mtp.projetofinal.Msg;
@@ -12,16 +13,22 @@ import mtp.projetofinal.model.Usuario;
  */
 public class Loja extends javax.swing.JFrame {
 
-    Usuario usuario;
-    ArrayList<Object> produtos;
+    private Usuario usuario;
+    private ArrayList<Object> produtos;
+    private int paginaAtual = 1;
+    private int qtdItens = 9;
 
     /**
      * Creates new form Loja
      *
      * @param usuario Dados do usuário logado
+     * @param paginaAtual
+     * @param qtdItens
      */
-    public Loja(Usuario usuario) {
+    public Loja(Usuario usuario, int paginaAtual, int qtdItens) {
         this.usuario = usuario;
+        this.paginaAtual = paginaAtual;
+        this.qtdItens = qtdItens;
 
         initComponents();
 
@@ -31,10 +38,16 @@ public class Loja extends javax.swing.JFrame {
         jTextFieldNome.setText(usuario.getNome());
         jTextFieldEmail.setText(usuario.getEmail());
 
+        // Faz com que a barra de rolagem desca mais rápido
         jScrollPaneProdutos.getVerticalScrollBar().setUnitIncrement(16);
-        
-        this.produtos = LojaController.getProdutos();
-        
+
+        this.produtos = LojaController.getProdutos(this.paginaAtual, this.qtdItens);
+
+        // Lógica para mostrar os botões de navegação das páginas
+        jButtonProxima.setVisible(this.produtos.size() == this.qtdItens);
+        jButtonAnterior.setVisible(this.paginaAtual != 1);
+
+        // Verifica se existem produtos
         if (this.produtos.isEmpty()) {
             jLabelSemProduto.setVisible(true);
         } else {
@@ -45,28 +58,41 @@ public class Loja extends javax.swing.JFrame {
         setVisible(true);
     }
 
+    /**
+     * Exibe 9 produtos, um por um dentro panel de produtos dentro do
+     * scrollpanel
+     */
     private void carregarProdutos() {
         int width = 230;
         int height = 280;
         int x = 0;
         int y = 0;
         int z = 1;
-        for(Object obj : this.produtos) {
-            
-            if(x == 3) {
+        for (Object obj : this.produtos) {
+
+            if (x == 3) {
                 x = 0;
                 y++;
                 z = 1;
             }
-            
+
             Produto p = (Produto) obj;
-            PanelProduto pp = new PanelProduto(p);
+            PanelProduto pp = new PanelProduto(p, this.usuario);
             pp.setSize(width, height);
-            pp.setLocation((width * x) + 50 * z, (height * y) + (50 * (y+1)));
+            pp.setLocation((width * x) + 50 * z, (height * y) + (50 * (y + 1)));
             jPanelProdutos.add(pp);
             x++;
             z++;
         }
+    }
+
+    /**
+     * Abre a janela novamente para atualizar as informações (não consegui fazer
+     * de outra forma)
+     */
+    private void atualizarCompontentes() {
+        new Loja(this.usuario, this.paginaAtual, this.qtdItens);
+        this.dispose();
     }
 
     @SuppressWarnings("unchecked")
@@ -116,6 +142,8 @@ public class Loja extends javax.swing.JFrame {
         jLabelAdicionarProduto = new javax.swing.JLabel();
         jScrollPaneProdutos = new javax.swing.JScrollPane();
         jPanelProdutos = new javax.swing.JPanel();
+        jButtonAnterior = new javax.swing.JButton();
+        jButtonProxima = new javax.swing.JButton();
         jLabelSemProduto = new javax.swing.JLabel();
 
         jDialogConfig.setTitle("Configurações");
@@ -316,7 +344,7 @@ public class Loja extends javax.swing.JFrame {
         jTextAreaDescricao.setRows(5);
         jScrollPane1.setViewportView(jTextAreaDescricao);
 
-        jLabelFoto.setText("Foto");
+        jLabelFoto.setText("Foto (opcional)");
 
         jButtonCarregarArquivo.setBackground(new java.awt.Color(254, 255, 255));
         jButtonCarregarArquivo.setText("Carregar Arquivo");
@@ -325,9 +353,19 @@ public class Loja extends javax.swing.JFrame {
         jButtonAdicionar.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         jButtonAdicionar.setForeground(new java.awt.Color(255, 255, 255));
         jButtonAdicionar.setText("Adicionar");
+        jButtonAdicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAdicionarActionPerformed(evt);
+            }
+        });
 
         jButtonCancelarProduto.setBackground(new java.awt.Color(254, 255, 255));
         jButtonCancelarProduto.setText("Cancelar");
+        jButtonCancelarProduto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCancelarProdutoActionPerformed(evt);
+            }
+        });
 
         jLabelInfo.setFont(new java.awt.Font("Liberation Sans", 0, 11)); // NOI18N
         jLabelInfo.setForeground(new java.awt.Color(102, 102, 102));
@@ -360,7 +398,7 @@ public class Loja extends javax.swing.JFrame {
                                     .addComponent(jButtonCarregarArquivo, javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelAddProdutoLayout.createSequentialGroup()
                                         .addComponent(jLabelFoto)
-                                        .addGap(58, 58, 58)))))
+                                        .addGap(23, 23, 23)))))
                         .addGap(51, 51, 51))))
             .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
                 .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -420,8 +458,12 @@ public class Loja extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Comercio Eletrônico");
-        setMaximumSize(new java.awt.Dimension(890, 2147483647));
-        setMinimumSize(new java.awt.Dimension(890, 300));
+        setMaximumSize(new java.awt.Dimension(900, 2147483647));
+        setMinimumSize(new java.awt.Dimension(900, 600));
+        setPreferredSize(new java.awt.Dimension(900, 600));
+
+        jPanelNavBar.setMinimumSize(new java.awt.Dimension(900, 0));
+        jPanelNavBar.setPreferredSize(new java.awt.Dimension(900, 68));
 
         jLabelUsername.setText("nome");
 
@@ -488,13 +530,27 @@ public class Loja extends javax.swing.JFrame {
                 .addGap(10, 10, 10))
         );
 
-        jScrollPaneProdutos.setBackground(new java.awt.Color(255, 255, 255));
         jScrollPaneProdutos.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         jPanelProdutos.setBackground(new java.awt.Color(255, 255, 255));
-        jPanelProdutos.setMaximumSize(new java.awt.Dimension(900, 32767));
-        jPanelProdutos.setMinimumSize(new java.awt.Dimension(900, 1010));
-        jPanelProdutos.setPreferredSize(new java.awt.Dimension(900, 1010));
+        jPanelProdutos.setMinimumSize(new java.awt.Dimension(900, 1100));
+        jPanelProdutos.setPreferredSize(new java.awt.Dimension(900, 1100));
+
+        jButtonAnterior.setBackground(new java.awt.Color(255, 255, 254));
+        jButtonAnterior.setText("Anterior");
+        jButtonAnterior.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAnteriorActionPerformed(evt);
+            }
+        });
+
+        jButtonProxima.setBackground(new java.awt.Color(255, 254, 255));
+        jButtonProxima.setText("Proxima");
+        jButtonProxima.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonProximaActionPerformed(evt);
+            }
+        });
 
         jLabelSemProduto.setText("Não há produtos a serem exibidos");
 
@@ -503,16 +559,26 @@ public class Loja extends javax.swing.JFrame {
         jPanelProdutosLayout.setHorizontalGroup(
             jPanelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelProdutosLayout.createSequentialGroup()
-                .addGap(325, 325, 325)
+                .addGap(217, 217, 217)
+                .addComponent(jButtonAnterior)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 293, Short.MAX_VALUE)
+                .addComponent(jButtonProxima)
+                .addGap(226, 226, 226))
+            .addGroup(jPanelProdutosLayout.createSequentialGroup()
+                .addGap(327, 327, 327)
                 .addComponent(jLabelSemProduto)
-                .addContainerGap(353, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelProdutosLayout.setVerticalGroup(
             jPanelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelProdutosLayout.createSequentialGroup()
-                .addGap(180, 180, 180)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProdutosLayout.createSequentialGroup()
+                .addGap(131, 131, 131)
                 .addComponent(jLabelSemProduto)
-                .addContainerGap(812, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 906, Short.MAX_VALUE)
+                .addGroup(jPanelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonAnterior)
+                    .addComponent(jButtonProxima))
+                .addGap(21, 21, 21))
         );
 
         jScrollPaneProdutos.setViewportView(jPanelProdutos);
@@ -529,7 +595,7 @@ public class Loja extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanelNavBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPaneProdutos, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE))
+                .addComponent(jScrollPaneProdutos, javax.swing.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE))
         );
 
         pack();
@@ -624,13 +690,68 @@ public class Loja extends javax.swing.JFrame {
         jDialogAddProduto.setVisible(true);
     }//GEN-LAST:event_jLabelAdicionarProdutoMouseClicked
 
+    /**
+     * Valida os campos e manda os dados para a controller adicionar um novo
+     * produto
+     */
+    private void jButtonAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAdicionarActionPerformed
+        try {
+
+            Produto p = new Produto();
+            p.setNome(jTextFieldNomeProduto.getText());
+            p.setDescricao(jTextAreaDescricao.getText());
+
+            p.setPreco(Float.parseFloat(jTextFieldPreco.getText()));
+
+            if (p.getNome().isBlank() || p.getDescricao().isBlank()) {
+                Msg.exibirMensagem("Nome e descrição são obrigatórios", "Aviso", 2);
+            } else {
+                LojaController lc = new LojaController();
+
+                if (lc.novoProduto(p)) {
+                    Msg.exibirMensagem("Produto adicionado com sucesso!", "Sucesso", 1);
+                    jDialogAddProduto.setVisible(false);
+                    this.paginaAtual = 1;
+                    this.atualizarCompontentes();
+                }
+            }
+        } catch (NumberFormatException e) {
+            Msg.exibirMensagem("O valor inserido no campo Preço é inválido", "Aviso", 2);
+        }
+    }//GEN-LAST:event_jButtonAdicionarActionPerformed
+
+    /**
+     * fecha a tela de adicionar produto
+     */
+    private void jButtonCancelarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarProdutoActionPerformed
+        jDialogAddProduto.setVisible(false);
+    }//GEN-LAST:event_jButtonCancelarProdutoActionPerformed
+
+    /**
+     * Volta uma página
+     */
+    private void jButtonAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnteriorActionPerformed
+        this.paginaAtual--;
+        this.atualizarCompontentes();
+    }//GEN-LAST:event_jButtonAnteriorActionPerformed
+
+    /**
+     * Avança uma página
+     */
+    private void jButtonProximaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonProximaActionPerformed
+        this.paginaAtual++;
+        this.atualizarCompontentes();
+    }//GEN-LAST:event_jButtonProximaActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAdicionar;
     private javax.swing.JButton jButtonAlterarNome;
+    private javax.swing.JButton jButtonAnterior;
     private javax.swing.JButton jButtonCancelar;
     private javax.swing.JButton jButtonCancelar1;
     private javax.swing.JButton jButtonCancelarProduto;
     private javax.swing.JButton jButtonCarregarArquivo;
+    private javax.swing.JButton jButtonProxima;
     private javax.swing.JButton jButtonSair;
     private javax.swing.JButton jButtonSalvarSenha;
     private javax.swing.JDialog jDialogAddProduto;

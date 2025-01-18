@@ -45,6 +45,8 @@ public class Create extends Conexao {
                 Msg.exibirMensagem(e.getMessage(), "Erro de Reflexão", 0);
             }
         }
+        
+        this.dados.remove("id");
 
         this.construirQuery();
         this.executarQuery();
