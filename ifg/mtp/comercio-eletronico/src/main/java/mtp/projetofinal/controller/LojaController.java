@@ -53,10 +53,28 @@ public class LojaController {
      * @param qtd quantos produtos terá na lista
      * @return a lista contendo a qtd de produtos desejada
      */
-    public static ArrayList<Object> getProdutos(int pagina, int qtd) {
+    public static ArrayList<Produto> getProdutos(int pagina, int qtd) {
         Read r = new Read();
         r.ler(new Produto(), pagina, qtd);
-        return r.getResult();
+
+        ArrayList<Produto> produtos = new ArrayList<>();
+
+        for (Object obj : r.getResult()) {
+            Produto p = (Produto) obj;
+            produtos.add(p);
+
+        }
+        return produtos;
+    }
+
+    /**
+     * Busca quantos produtos existem
+     *
+     * @return a quantidade de produtos existentes no banco de dados
+     */
+    public static int getCountProdutos() {
+        Read r = new Read();
+        return r.ler(new Produto());
     }
 
     /**

@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
-import mtp.projetofinal.Msg;
+import mtp.projetofinal.utils.Msg;
 import mtp.projetofinal.model.Conexao;
 
 /**
@@ -47,6 +47,7 @@ public class Create extends Conexao {
         }
         
         this.dados.remove("id");
+        this.dados.remove("admin");
 
         this.construirQuery();
         this.executarQuery();

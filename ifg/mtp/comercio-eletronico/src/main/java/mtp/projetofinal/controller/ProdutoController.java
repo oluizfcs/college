@@ -1,9 +1,12 @@
 package mtp.projetofinal.controller;
 
+import mtp.projetofinal.model.Carrinho;
 import mtp.projetofinal.model.Produto;
+import mtp.projetofinal.model.Usuario;
 import mtp.projetofinal.model.crud.Delete;
 import mtp.projetofinal.model.crud.Update;
 import mtp.projetofinal.model.crud.Read;
+import mtp.projetofinal.utils.Msg;
 
 /**
  *
@@ -22,9 +25,18 @@ public class ProdutoController {
     public static Boolean excluir(Produto produto) {
         Delete d = new Delete();
 
-        d.apagar(produto);
+        Carrinho c = new Carrinho();
 
-        return d.getResult();
+        int qtdPedidos = c.getQuantidadeDePedidos(produto.getId());
+
+        if (qtdPedidos > 0) {
+            Msg.exibirMensagem("Não foi possível excluir esse produto pois ele possui " + qtdPedidos + " pedido(s)", "Aviso", 2);
+            return false;
+        } else {
+            c.removerDeTodosOsCarrinhos(produto.getId());
+            d.apagar(produto);
+            return d.getResult();
+        }
     }
 
     /**
@@ -58,4 +70,38 @@ public class ProdutoController {
         return p;
     }
 
+    /**
+     * Coloca um produto no carrinho do usuário desejado.
+     *
+     * @param idusuario
+     * @param idproduto
+     * @return true deu certo<br> false não deu certo
+     */
+    public Boolean adicionarCarrinho(int idusuario, int idproduto) {
+
+        Carrinho c = new Carrinho();
+
+        int idcarrinho = c.getCarrinhoId(idusuario);
+
+        if (idcarrinho != -1) { // já exise carrinho, adicionando no existente
+
+            int quantidade = c.getQuantidadeProduto(idcarrinho, idproduto);
+
+            if (quantidade == 0) {
+                return c.inserirProdutoNoCarrinho(idcarrinho, idproduto, 1);
+            } else {
+                return c.alterarQuantidadeDoProduto(idcarrinho, idproduto, quantidade + 1);
+            }
+
+        } else { // ainda não existe carrinho, criando um novo
+            c.criarCarrinho(idusuario);
+            return this.adicionarCarrinho(idusuario, idproduto);
+        }
+    }
+
+    // todo
+    public Produto[] getProdutosCarrinho(Usuario usuario) {
+
+        return null;
+    }
 }

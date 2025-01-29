@@ -1,5 +1,7 @@
 package mtp.projetofinal.model;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author luiz
@@ -9,7 +11,7 @@ public class Produto {
     private int id;
     private String nome;
     private String descricao;
-    private float preco;
+    private BigDecimal preco;
     private String foto;
 
     public int getId() {
@@ -36,11 +38,11 @@ public class Produto {
         this.descricao = descricao;
     }
 
-    public float getPreco() {
+    public BigDecimal getPreco() {
         return preco;
     }
 
-    public void setPreco(float preco) {
+    public void setPreco(BigDecimal preco) {
         this.preco = preco;
     }
 

@@ -1,4 +1,4 @@
-package mtp.projetofinal;
+package mtp.projetofinal.utils;
 
 import javax.swing.JOptionPane;
 

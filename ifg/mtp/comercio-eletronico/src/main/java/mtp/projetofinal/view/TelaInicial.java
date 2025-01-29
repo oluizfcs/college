@@ -2,10 +2,14 @@ package mtp.projetofinal.view;
 
 /**
  * Tela Inicial do projeto, a primeira a ser aberta quando executado.
+ *
  * @author luizf
  */
 public class TelaInicial extends javax.swing.JFrame {
 
+    /**
+     * Cria uma nova tela inicial
+     */
     public TelaInicial() {
         initComponents();
         setVisible(true);
@@ -100,7 +104,7 @@ public class TelaInicial extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-     * Fecha a tela inicial e abre a de cadastro. 
+     * Fecha a tela inicial e abre a de cadastro.
      */
     private void jButtonCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCadastroActionPerformed
         new CadastroView();

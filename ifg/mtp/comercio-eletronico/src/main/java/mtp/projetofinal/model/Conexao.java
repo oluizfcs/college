@@ -3,11 +3,16 @@ package mtp.projetofinal.model;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import mtp.projetofinal.Msg;
+import mtp.projetofinal.utils.Msg;
 
+/**
+ * Responsável por estabelecer uma conexão com o banco de dados.
+ * 
+ * @author luiz
+ */
 public abstract class Conexao {
 
-    private final String url = "jdbc:postgresql://localhost/mtp";
+    private final String url = "jdbc:postgresql://localhost/comercio_eletronico";
     private final String user = "postgres";
     private final String password = "postgres";
     private Connection conn;

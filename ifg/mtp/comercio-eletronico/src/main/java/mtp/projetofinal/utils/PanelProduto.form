@@ -11,6 +11,7 @@
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[400, 465]"/>
         </Property>
+        <Property name="modal" type="boolean" value="true"/>
         <Property name="resizable" type="boolean" value="false"/>
       </Properties>
 
@@ -137,6 +138,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Adicionar ao Carrinho"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonAddCarrinhoActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="jButtonFechar">
               <Properties>
@@ -198,9 +202,7 @@
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[650, 450]"/>
         </Property>
-        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[650, 450]"/>
-        </Property>
+        <Property name="modal" type="boolean" value="true"/>
         <Property name="resizable" type="boolean" value="false"/>
       </Properties>
 
@@ -258,19 +260,16 @@
                               <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
                               <Component id="jLabelProdutoInfo" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jLabelProdutoNome" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabelProdutoDescricao" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabelProdutoPreco" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="jTextFieldProdutoPreco" min="-2" pref="82" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Component id="jTextFieldProdutoNome" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="jScrollPane3" alignment="0" min="-2" pref="241" max="-2" attributes="0"/>
+                          <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="jLabelProdutoNome" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabelProdutoDescricao" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jLabelProdutoPreco" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="jTextFieldProdutoPreco" min="-2" pref="82" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="8" pref="8" max="-2" attributes="0"/>
+                              <Component id="jTextFieldProdutoNome" alignment="0" max="32767" attributes="0"/>
+                              <Component id="jScrollPane3" alignment="0" min="-2" pref="241" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>

@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
-import mtp.projetofinal.Msg;
+import mtp.projetofinal.utils.Msg;
 import mtp.projetofinal.model.Conexao;
 
 /**

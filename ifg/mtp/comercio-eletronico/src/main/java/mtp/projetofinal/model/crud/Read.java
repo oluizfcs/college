@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import mtp.projetofinal.Msg;
+import mtp.projetofinal.utils.Msg;
 import mtp.projetofinal.model.Conexao;
 
 /**
@@ -36,7 +36,7 @@ public class Read extends Conexao {
         this.obj = obj;
         this.pagina = pagina;
         this.qtdItens = qtdItens;
-        
+
         this.construirQuery();
         this.executarQuery();
     }
@@ -59,6 +59,38 @@ public class Read extends Conexao {
     }
 
     /**
+     * Verifica quantos registros existem de determinado objeto
+     *
+     * @param obj quem será contado
+     * @return a quantidade de registros encontrados
+     */
+    public int ler(Object obj) {
+
+        int qtd = 0;
+
+        this.tabela = obj.getClass().getSimpleName().toLowerCase();
+
+        this.query = "SELECT count(*) FROM " + this.tabela;
+
+        try {
+
+            Connection conn = super.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement(this.query);
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            qtd = rs.getInt(1);
+
+            stmt.close();
+
+        } catch (SQLException e) {
+            Msg.exibirMensagem(e.getMessage(), "Erro SQL", 0);
+        }
+
+        return qtd;
+    }
+
+    /**
      * Cria a query de seleção com base nas informações do objeto, como nome da
      * classe e atributos.
      */
@@ -77,12 +109,12 @@ public class Read extends Conexao {
         }
 
         sb.append(" ORDER BY id DESC");
-        
+
         // paginação
-        if(this.pagina != -1) {
+        if (this.pagina != -1) {
             sb.append(" LIMIT " + this.qtdItens + " OFFSET " + (this.qtdItens * (this.pagina - 1)));
         }
-        
+
         this.query = sb.toString();
     }
 

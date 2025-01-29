@@ -1,6 +1,6 @@
 package mtp.projetofinal.view;
 
-import mtp.projetofinal.Msg;
+import mtp.projetofinal.utils.Msg;
 import mtp.projetofinal.controller.LoginController;
 
 /**

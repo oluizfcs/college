@@ -1,6 +1,6 @@
 package mtp.projetofinal.controller;
 
-import mtp.projetofinal.Msg;
+import mtp.projetofinal.utils.Msg;
 import mtp.projetofinal.model.Usuario;
 import mtp.projetofinal.model.crud.Create;
 import mtp.projetofinal.model.crud.Read;

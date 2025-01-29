@@ -8,6 +8,11 @@ import mtp.projetofinal.view.TelaInicial;
  */
 public class Main {
 
+    /**
+     * Abre a tela inicial
+     * 
+     * @param args 
+     */
     public static void main(String[] args) {
         new TelaInicial();
     }

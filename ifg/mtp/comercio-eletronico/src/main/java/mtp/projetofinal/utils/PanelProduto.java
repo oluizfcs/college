@@ -1,6 +1,7 @@
-package mtp.projetofinal;
+package mtp.projetofinal.utils;
 
 import java.awt.Color;
+import java.math.BigDecimal;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -98,6 +99,7 @@ public class PanelProduto extends javax.swing.JPanel {
         jDialogDetalhesProduto.setTitle(this.produto.getNome());
         jDialogDetalhesProduto.setAlwaysOnTop(true);
         jDialogDetalhesProduto.setMinimumSize(new java.awt.Dimension(400, 465));
+        jDialogDetalhesProduto.setModal(true);
         jDialogDetalhesProduto.setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -116,6 +118,11 @@ public class PanelProduto extends javax.swing.JPanel {
         jButtonAddCarrinho.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         jButtonAddCarrinho.setForeground(new java.awt.Color(255, 255, 255));
         jButtonAddCarrinho.setText("Adicionar ao Carrinho");
+        jButtonAddCarrinho.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddCarrinhoActionPerformed(evt);
+            }
+        });
 
         jButtonFechar.setBackground(new java.awt.Color(254, 255, 255));
         jButtonFechar.setText("Fechar");
@@ -211,7 +218,7 @@ public class PanelProduto extends javax.swing.JPanel {
         jDialogConfigProduto.setTitle("Editar Produto");
         jDialogConfigProduto.setAlwaysOnTop(true);
         jDialogConfigProduto.setMinimumSize(new java.awt.Dimension(650, 450));
-        jDialogConfigProduto.setPreferredSize(new java.awt.Dimension(650, 450));
+        jDialogConfigProduto.setModal(true);
         jDialogConfigProduto.setResizable(false);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -277,17 +284,15 @@ public class PanelProduto extends javax.swing.JPanel {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(59, 59, 59)
                         .addComponent(jLabelProdutoInfo))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabelProdutoNome)
-                            .addComponent(jLabelProdutoDescricao)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabelProdutoPreco)
-                                .addGap(18, 18, 18)
-                                .addComponent(jTextFieldProdutoPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jTextFieldProdutoNome)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(8, 8, 8)))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabelProdutoNome)
+                        .addComponent(jLabelProdutoDescricao)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(jLabelProdutoPreco)
+                            .addGap(18, 18, 18)
+                            .addComponent(jTextFieldProdutoPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTextFieldProdutoNome)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButtonCarregarArquivo, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -443,7 +448,7 @@ public class PanelProduto extends javax.swing.JPanel {
         jTextFieldProdutoPreco.setText(String.valueOf(this.produto.getPreco()));
 
         jDialogConfigProduto.setVisible(true);
-        jDialogConfigProduto.setLocationRelativeTo(this);
+        jDialogConfigProduto.setLocationRelativeTo(jDialogDetalhesProduto);
     }//GEN-LAST:event_jButtonEditarActionPerformed
 
     /**
@@ -455,9 +460,8 @@ public class PanelProduto extends javax.swing.JPanel {
         if (result == 0) {
             if (ProdutoController.excluir(this.produto)) {
                 Msg.exibirMensagem("Produto excluido com sucesso", "Sucesso", 1);
-                new Loja(this.usuario, this.loja.getPaginaAtual(), this.loja.getQtdItens());
                 jDialogDetalhesProduto.setVisible(false);
-                this.loja.dispose();
+                this.loja.carregarProdutos();
             }
         }
     }//GEN-LAST:event_jButtonExcluirActionPerformed
@@ -469,7 +473,7 @@ public class PanelProduto extends javax.swing.JPanel {
         String pnome = jTextFieldProdutoNome.getText();
         String pdescricao = jTextAreaProdutoDescricao.getText();
         try {
-            float ppreco = Float.parseFloat(jTextFieldProdutoPreco.getText());
+            BigDecimal ppreco = BigDecimal.valueOf(Double.parseDouble(jTextFieldProdutoPreco.getText()));
 
             if (pnome.isBlank() || pdescricao.isBlank()) {
                 Msg.exibirMensagem("Nome e descrição devem ser preenchidos", "Aviso", 2);
@@ -487,8 +491,7 @@ public class PanelProduto extends javax.swing.JPanel {
                     jDialogConfigProduto.setVisible(false);
                     this.produto = pc.getProdutoAtualizado();
                     atualizarDetalhesProduto();
-                    this.loja.dispose();
-                    new Loja(this.usuario, this.loja.getPaginaAtual(), this.loja.getQtdItens());
+                    this.loja.carregarProdutos();
                 }
             }
         } catch (NumberFormatException e) {
@@ -502,6 +505,19 @@ public class PanelProduto extends javax.swing.JPanel {
     private void jButtonCancelarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarProdutoActionPerformed
         jDialogConfigProduto.setVisible(false);
     }//GEN-LAST:event_jButtonCancelarProdutoActionPerformed
+
+    /**
+     * Adiciona o produto ao carrinho.
+     */
+    private void jButtonAddCarrinhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddCarrinhoActionPerformed
+
+        ProdutoController pc = new ProdutoController();
+
+        if (pc.adicionarCarrinho(this.usuario.getId(), this.produto.getId())) {
+            Msg.exibirMensagem("Produto adicionado ao carrinho com sucesso.", "Sucesso!", 1);
+            jDialogDetalhesProduto.setVisible(false);
+        }
+    }//GEN-LAST:event_jButtonAddCarrinhoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

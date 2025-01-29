@@ -1,6 +1,6 @@
 package mtp.projetofinal.view;
 
-import mtp.projetofinal.Msg;
+import mtp.projetofinal.utils.Msg;
 import mtp.projetofinal.controller.CadastroController;
 import mtp.projetofinal.model.Usuario;
 
@@ -11,6 +11,9 @@ import mtp.projetofinal.model.Usuario;
  */
 public class CadastroView extends javax.swing.JFrame {
 
+    /**
+     * Cria uma nova tela de cadastro
+     */
     public CadastroView() {
         initComponents();
         setVisible(true);
@@ -146,15 +149,15 @@ public class CadastroView extends javax.swing.JFrame {
         } else if (!senha.equals(confirmarSenha)) {
             Msg.exibirMensagem("As senhas não coincidem", "Aviso", 2);
         } else {
-            
+
             Usuario usuario = new Usuario();
             usuario.setNome(nome);
             usuario.setEmail(email);
             usuario.setSenha(senha);
-            
+
             CadastroController cc = new CadastroController();
-            
-            if(cc.cadastrar(usuario)) {
+
+            if (cc.cadastrar(usuario)) {
                 Msg.exibirMensagem("Usuário cadastrado com sucesso!", "Sucesso!", 1);
                 new LoginView();
                 this.dispose();
