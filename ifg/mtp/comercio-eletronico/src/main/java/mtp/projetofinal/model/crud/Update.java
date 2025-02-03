@@ -16,13 +16,14 @@ import mtp.projetofinal.model.Conexao;
 public class Update extends Conexao {
 
     private Object obj, whereValor;
-    private String whereColuna, tabela, query;
+    private String whereColuna = null, query;
     private final HashMap<String, Object> dados = new HashMap<>();
     private int result;
+    private Object[][] condicoes = null;
 
     /**
      * Recebe um objeto e com base na sua classe, procura a tabela no banco de
-     * dados para realizar as atualizações
+     * dados para realizar as atualizações com uma condição
      *
      * @param obj Quem será atualizado
      * @param whereColuna Qual coluna o identifica
@@ -33,10 +34,30 @@ public class Update extends Conexao {
         this.whereColuna = whereColuna;
         this.whereValor = whereValor;
 
-        this.tabela = obj.getClass().getSimpleName().toLowerCase();
+        this.construirQuery();
+        this.executarQuery();
+
+        this.obj = null;
+        this.whereColuna = null;
+        this.whereValor = null;
+    }
+
+    /**
+     * Recebe um objeto e com base na sua classe, procura a tabela no banco de
+     * dados para realizar as atualizações com múltiplas condições
+     *
+     * @param obj Quem será atualizado
+     * @param condicoes WHERE e AND
+     */
+    public void atualizar(Object obj, Object[][] condicoes) {
+        this.obj = obj;
+        this.condicoes = condicoes;
 
         this.construirQuery();
         this.executarQuery();
+
+        this.obj = null;
+        this.condicoes = null;
     }
 
     /**
@@ -44,22 +65,35 @@ public class Update extends Conexao {
      */
     private void construirQuery() {
 
-        StringBuilder sb = new StringBuilder("UPDATE " + this.tabela + " SET ");
+        String tabela = obj.getClass().getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
 
-        for (Field f : this.obj.getClass().getDeclaredFields()) {
+        StringBuilder sb = new StringBuilder("UPDATE " + tabela + " SET ");
+
+        for (Field f : obj.getClass().getDeclaredFields()) {
             f.setAccessible(true);
             try {
-                this.dados.put(f.getName(), f.get(this.obj));
+                dados.put(f.getName(), f.get(obj));
             } catch (IllegalAccessException e) {
                 Msg.exibirMensagem(e.getMessage(), "Erro de reflexão", 0);
             }
         }
 
-        sb.append(String.join(" = ?, ", this.dados.keySet()));
+        sb.append(String.join(" = ?, ", dados.keySet()));
 
-        sb.append(" = ? WHERE " + this.whereColuna + " = ?");
+        if (whereColuna != null) {
+            sb.append(" = ? WHERE " + whereColuna + " = ?");
 
-        this.query = sb.toString();
+        } else if (condicoes != null) {
+            sb.append(" WHERE " + String.valueOf(condicoes[0][0]) + " = ?");
+
+            if (condicoes.length > 1) {
+                for (int i = 1; i < condicoes.length; i++) {
+                    sb.append(" AND " + condicoes[i][0] + " = ?");
+                }
+            }
+        }
+
+        query = sb.toString();
     }
 
     /**
@@ -71,31 +105,32 @@ public class Update extends Conexao {
 
         try {
 
-            PreparedStatement stmt = conn.prepareStatement(this.query);
+            PreparedStatement stmt = conn.prepareStatement(query);
 
             int i = 1;
-            for (String dado : this.dados.keySet()) {
-                stmt.setObject(i, this.dados.get(dado));
+            for (String dado : dados.keySet()) {
+                stmt.setObject(i, dados.get(dado));
                 i++;
             }
-            stmt.setObject(i, this.whereValor);
+            stmt.setObject(i, whereValor);
 
-            this.result = stmt.executeUpdate();
+            result = stmt.executeUpdate();
 
             stmt.close();
 
         } catch (SQLException e) {
-            Msg.exibirMensagem(e.getMessage(), "Erro SQL", 0);
+            Msg.exibirMensagem("Update.executarQuery(): " + e.getMessage(), "Erro SQL", 0);
         }
 
     }
 
     /**
      * Verifica se algum registro do banco de dados foi afetado com a query
-     * 
-     * @return true - caso tenha afetado pelo menos 1<br>false - caso não tenha afetado nenhum
+     *
+     * @return true - caso tenha afetado pelo menos 1<br>false - caso não tenha
+     * afetado nenhum
      */
     public boolean getResult() {
-        return this.result != 0;
+        return result != 0;
     }
 }

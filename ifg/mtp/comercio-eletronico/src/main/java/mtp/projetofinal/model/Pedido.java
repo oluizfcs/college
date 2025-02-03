@@ -1,54 +1,56 @@
 package mtp.projetofinal.model;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author luiz
  */
 public class Pedido {
     
-    private int id;
-    private int idUsuario;
-    private int idEndereco;
-    private float valorTotal;
-    private int idStatus;
+    private Integer id;
+    private Integer idusuario;
+    private Integer idendereco;
+    private BigDecimal valortotal;
+    private Integer idstatus;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getIdUsuario() {
-        return idUsuario;
+    public Integer getIdusuario() {
+        return idusuario;
     }
 
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setIdusuario(Integer idusuario) {
+        this.idusuario = idusuario;
     }
 
-    public int getIdEndereco() {
-        return idEndereco;
+    public Integer getIdendereco() {
+        return idendereco;
     }
 
-    public void setIdEndereco(int idEndereco) {
-        this.idEndereco = idEndereco;
+    public void setIdendereco(Integer idendereco) {
+        this.idendereco = idendereco;
     }
 
-    public float getValorTotal() {
-        return valorTotal;
+    public BigDecimal getValortotal() {
+        return valortotal;
     }
 
-    public void setValorTotal(float valorTotal) {
-        this.valorTotal = valorTotal;
+    public void setValortotal(BigDecimal valortotal) {
+        this.valortotal = valortotal;
     }
 
-    public int getIdStatus() {
-        return idStatus;
+    public Integer getIdstatus() {
+        return idstatus;
     }
 
-    public void setIdStatus(int idStatus) {
-        this.idStatus = idStatus;
+    public void setIdstatus(Integer idstatus) {
+        this.idstatus = idstatus;
     }
 }

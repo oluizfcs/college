@@ -1,8 +1,12 @@
 package mtp.projetofinal.controller;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import mtp.projetofinal.model.Carrinho;
+import mtp.projetofinal.model.Pedido;
+import mtp.projetofinal.model.PedidoProduto;
 import mtp.projetofinal.model.Produto;
-import mtp.projetofinal.model.Usuario;
+import mtp.projetofinal.model.crud.Create;
 import mtp.projetofinal.model.crud.Delete;
 import mtp.projetofinal.model.crud.Update;
 import mtp.projetofinal.model.crud.Read;
@@ -23,19 +27,23 @@ public class ProdutoController {
      * @return true a exclusão deu certo <br> a exclusão não deu certo
      */
     public static Boolean excluir(Produto produto) {
-        Delete d = new Delete();
 
-        Carrinho c = new Carrinho();
-
-        int qtdPedidos = c.getQuantidadeDePedidos(produto.getId());
+        int qtdPedidos = new Carrinho().getQuantidadeDePedidos(produto.getId());
 
         if (qtdPedidos > 0) {
+
             Msg.exibirMensagem("Não foi possível excluir esse produto pois ele possui " + qtdPedidos + " pedido(s)", "Aviso", 2);
+
             return false;
+
         } else {
-            c.removerDeTodosOsCarrinhos(produto.getId());
-            d.apagar(produto);
-            return d.getResult();
+
+            Delete d = new Delete();
+
+            d.apagar(new PedidoProduto(), new Object[][]{{"idproduto", produto.getId()}});
+            d.apagar(produto, new Object[][] {{"id", produto.getId()}});
+
+            return true;
         }
     }
 
@@ -79,29 +87,83 @@ public class ProdutoController {
      */
     public Boolean adicionarCarrinho(int idusuario, int idproduto) {
 
-        Carrinho c = new Carrinho();
+        Read r = new Read();
 
-        int idcarrinho = c.getCarrinhoId(idusuario);
+        r.ler(new Pedido(), new Object[][]{{"idusuario", idusuario}, {"idstatus", 1}});
 
-        if (idcarrinho != -1) { // já exise carrinho, adicionando no existente
+        if (!r.getResult().isEmpty()) { // já existe carrinho, adicionando no existente.
 
-            int quantidade = c.getQuantidadeProduto(idcarrinho, idproduto);
+            Pedido pedido = (Pedido) r.getResult().get(0);
 
-            if (quantidade == 0) {
-                return c.inserirProdutoNoCarrinho(idcarrinho, idproduto, 1);
-            } else {
-                return c.alterarQuantidadeDoProduto(idcarrinho, idproduto, quantidade + 1);
+            r.ler(new PedidoProduto(), new Object[][]{{"idpedido", pedido.getId()}, {"idproduto", idproduto}});
+
+            if (r.getResult().isEmpty()) { // Esse produto ainda não está no carrinho
+
+                PedidoProduto pp = new PedidoProduto();
+
+                pp.setIdpedido(pedido.getId());
+                pp.setIdproduto(idproduto);
+                pp.setQuantidade(1);
+
+                new Create().inserir(pp);
+
+                return true;
+
+            } else { // O produto já está no carrinho, aumentando quantidade.
+
+                PedidoProduto pp = (PedidoProduto) r.getResult().get(0);
+
+                pp.setQuantidade(pp.getQuantidade() + 1);
+
+                Update u = new Update();
+
+                u.atualizar(pp, new Object[][]{{"idpedido", pp.getIdpedido()}, {"idproduto", pp.getIdproduto()}});
+
+                return u.getResult();
             }
 
-        } else { // ainda não existe carrinho, criando um novo
-            c.criarCarrinho(idusuario);
-            return this.adicionarCarrinho(idusuario, idproduto);
+        } else { // criando o "carrinho" antes de adicionar o produto
+
+            Pedido p = new Pedido();
+
+            p.setIdstatus(1);
+            p.setIdusuario(idusuario);
+            p.setValortotal(BigDecimal.ZERO);
+
+            new Create().inserir(p);
+
+            return adicionarCarrinho(idusuario, idproduto);
         }
     }
 
-    // todo
-    public Produto[] getProdutosCarrinho(Usuario usuario) {
+    /**
+     * Busca os produtos no carrinho de usuário x, caso não tenha carrinho, cria
+     * antes.
+     *
+     * @param idusuario
+     * @return Produto, Quantidade
+     */
+    public HashMap<Produto, Integer> getProdutosNoCarrinho(int idusuario) {
 
-        return null;
+        Read r = new Read();
+
+        r.ler(new Pedido(), new Object[][] {{"idusuario", idusuario}, {"idstatus", 1}});
+
+        if (!r.getResult().isEmpty()) {
+            
+            return new Carrinho().getProdutos(idusuario);
+            
+        } else {
+            
+            Pedido p = new Pedido();
+
+            p.setIdstatus(1);
+            p.setIdusuario(idusuario);
+            p.setValortotal(BigDecimal.ZERO);
+
+            new Create().inserir(p);
+            
+            return getProdutosNoCarrinho(idusuario);
+        }
     }
 }

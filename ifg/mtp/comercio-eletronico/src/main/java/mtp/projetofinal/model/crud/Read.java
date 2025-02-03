@@ -19,10 +19,11 @@ import mtp.projetofinal.model.Conexao;
 public class Read extends Conexao {
 
     private final ArrayList<String> colunas = new ArrayList<>();
-    private String tabela, query, whereColuna;
+    private String tabela, whereColuna = null;
     private Object obj = null, whereValor;
     private final ArrayList<Object> resultado = new ArrayList<>();
-    private int pagina = -1, qtdItens;
+    private Object[][] condicoes = null;
+    private StringBuilder query;
 
     /**
      * Busca todos os atributos de um objeto no banco de dados na tabela
@@ -34,11 +35,12 @@ public class Read extends Conexao {
      */
     public void ler(Object obj, int pagina, int qtdItens) {
         this.obj = obj;
-        this.pagina = pagina;
-        this.qtdItens = qtdItens;
 
         this.construirQuery();
+        query.append(" LIMIT " + qtdItens + " OFFSET " + (qtdItens * (pagina - 1)));
         this.executarQuery();
+
+        this.obj = null;
     }
 
     /**
@@ -56,6 +58,28 @@ public class Read extends Conexao {
 
         this.construirQuery();
         this.executarQuery();
+
+        this.whereColuna = null;
+        this.whereValor = null;
+        this.obj = null;
+    }
+
+    /**
+     * Busca todos os atributos de um objeto no banco de dados na tabela
+     * referente ao nome da classe, com as condições desejadas.
+     *
+     * @param obj Objeto que será buscado
+     * @param condicoes WHERE e AND
+     */
+    public void ler(Object obj, Object[][] condicoes) {
+        this.obj = obj;
+        this.condicoes = condicoes;
+
+        this.construirQuery();
+        this.executarQuery();
+
+        this.obj = null;
+        this.condicoes = null;
     }
 
     /**
@@ -68,15 +92,14 @@ public class Read extends Conexao {
 
         int qtd = 0;
 
-        this.tabela = obj.getClass().getSimpleName().toLowerCase();
-
-        this.query = "SELECT count(*) FROM " + this.tabela;
+        // Nome da classe do objeto em camel_case
+        tabela = obj.getClass().getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
 
         try {
 
             Connection conn = super.getConnection();
 
-            PreparedStatement stmt = conn.prepareStatement(this.query);
+            PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM " + tabela);
             ResultSet rs = stmt.executeQuery();
             rs.next();
             qtd = rs.getInt(1);
@@ -84,7 +107,7 @@ public class Read extends Conexao {
             stmt.close();
 
         } catch (SQLException e) {
-            Msg.exibirMensagem(e.getMessage(), "Erro SQL", 0);
+            Msg.exibirMensagem("Read.ler(Object obj): " + e.getMessage(), "Erro SQL", 0);
         }
 
         return qtd;
@@ -96,26 +119,35 @@ public class Read extends Conexao {
      */
     private void construirQuery() {
 
-        this.tabela = this.obj.getClass().getSimpleName().toLowerCase();
+        this.tabela = obj.getClass().getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+
+        this.colunas.clear();
 
         for (Field f : obj.getClass().getDeclaredFields()) {
             this.colunas.add(f.getName());
         }
 
-        StringBuilder sb = new StringBuilder("SELECT " + String.join(", ", colunas) + " FROM " + tabela);
+        StringBuilder query = new StringBuilder("SELECT " + String.join(", ", colunas) + " FROM " + tabela);
 
+        // Ler com uma condição só
         if (this.whereColuna != null) {
-            sb.append(" WHERE " + this.whereColuna + " = ?");
+            query.append(" WHERE " + this.whereColuna + " = ?");
+
+        } else if (condicoes != null) { // com múltiplas condições
+            query.append(" WHERE " + String.valueOf(this.condicoes[0][0]) + " = ?");
+
+            if (this.condicoes.length > 1) {
+                for (int i = 1; i < this.condicoes.length; i++) {
+                    query.append(" AND " + this.condicoes[i][0] + " = ?");
+                }
+            }
         }
 
-        sb.append(" ORDER BY id DESC");
-
-        // paginação
-        if (this.pagina != -1) {
-            sb.append(" LIMIT " + this.qtdItens + " OFFSET " + (this.qtdItens * (this.pagina - 1)));
+        if (this.colunas.contains("id")) {
+            query.append(" ORDER BY id DESC");
         }
 
-        this.query = sb.toString();
+        this.query = query;
     }
 
     /**
@@ -126,9 +158,15 @@ public class Read extends Conexao {
 
             Connection conn = super.getConnection();
 
-            PreparedStatement stmt = conn.prepareStatement(this.query);
+            PreparedStatement stmt = conn.prepareStatement(query.toString());
+
             if (this.whereColuna != null) {
                 stmt.setObject(1, this.whereValor);
+            } else if (condicoes != null) {
+                for (int i = 0; i < condicoes.length; i++) {
+
+                    stmt.setObject(i + 1, condicoes[i][1]);
+                }
             }
 
             ResultSet rs = stmt.executeQuery();
@@ -138,7 +176,7 @@ public class Read extends Conexao {
             stmt.close();
 
         } catch (SQLException e) {
-            Msg.exibirMensagem(e.getMessage(), "Erro SQL", 0);
+            Msg.exibirMensagem("Read.executarQuery(): " + e.getMessage(), "Erro SQL", 0);
         } catch (IllegalAccessException e) {
             Msg.exibirMensagem(e.getMessage(), "Erro de acesso", 0);
         } catch (InvocationTargetException e) {
@@ -151,11 +189,7 @@ public class Read extends Conexao {
     }
 
     /**
-     * esse daqui faz mágica
-     * <hr>
-     * Só funciona pois:<br>
-     * - A query é construida na ordem que os atributos foram declarados.<br>
-     * - O resultSet devolve as colunas buscadas nesta mesma ordem.
+     * Cria um novo objeto para cada registro encontrado e atribui seus valores.
      *
      * @param rs
      * @throws SQLException
@@ -165,32 +199,27 @@ public class Read extends Conexao {
      * @throws InstantiationException
      */
     private void percorerResultSet(ResultSet rs) throws SQLException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
+
+        this.resultado.clear();
+
         while (rs.next()) {
 
-            // Utiliza uma nova instância do objeto a cada registro descoberto
             Object objetoNovo = this.obj.getClass().getDeclaredConstructor().newInstance();
 
-            // Contador que serve apenas para acessar o resultSet
-            int i = 1;
-
-            // Percorre cada coluna (atributo do objeto)
             for (String coluna : this.colunas) {
 
-                // Percorre cada método do objeto
                 for (Method m : this.obj.getClass().getMethods()) {
 
-                    // Filtra os setters
                     if (m.getName().startsWith("set")) {
 
                         // Deixa a primeira letra da coluna (atributo) maiúscula
                         String colunaCapitalizada = coluna.substring(0, 1).toUpperCase() + coluna.substring(1);
 
                         // Verifica se o método tem o mesmo nome da coluna (atributo) que está sendo percorrida no primeiro for
-                        if (m.getName().startsWith("set" + colunaCapitalizada)) {
+                        if (m.getName().equals("set" + colunaCapitalizada)) {
 
                             // Executa o setter passando como único parâmetro o valor do result set
-                            m.invoke(objetoNovo, rs.getObject(i));
-                            i++;
+                            m.invoke(objetoNovo, rs.getObject(coluna));
                         }
                     }
                 }

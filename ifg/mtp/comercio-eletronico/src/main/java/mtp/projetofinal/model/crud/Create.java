@@ -16,8 +16,7 @@ import mtp.projetofinal.model.Conexao;
  */
 public class Create extends Conexao {
 
-    // Nome da tabela
-    private String tabela;
+    private Object obj;
 
     // Dados a serem inseridos
     private final HashMap<String, Object> dados = new HashMap<>();
@@ -35,22 +34,12 @@ public class Create extends Conexao {
      */
     public void inserir(Object objeto) {
 
-        this.tabela = objeto.getClass().getSimpleName().toLowerCase();
+        this.obj = objeto;
 
-        for (Field f : objeto.getClass().getDeclaredFields()) {
-            f.setAccessible(true);
-            try {
-                this.dados.put(f.getName(), f.get(objeto));
-            } catch (IllegalAccessException e) {
-                Msg.exibirMensagem(e.getMessage(), "Erro de Reflexão", 0);
-            }
-        }
+        construirQuery();
+        executarQuery();
         
-        this.dados.remove("id");
-        this.dados.remove("admin");
-
-        this.construirQuery();
-        this.executarQuery();
+        this.obj = null;
     }
 
     /**
@@ -59,11 +48,29 @@ public class Create extends Conexao {
      */
     private void construirQuery() {
 
+        dados.clear();
+        
+        for (Field f : obj.getClass().getDeclaredFields()) {
+            f.setAccessible(true);
+            try {
+                this.dados.put(f.getName(), f.get(obj));
+            } catch (IllegalAccessException e) {
+                Msg.exibirMensagem(e.getMessage(), "Erro de Reflexão", 0);
+            }
+        }
+
+        // Exceções
+        dados.remove("id");
+        dados.remove("admin");
+        dados.remove("idendereco");
+
+        String tabela = obj.getClass().getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+
         String colunas = " (" + String.join(", ", dados.keySet()) + ") ";
 
-        String interrogacoes = ("(" + String.join(", ", Collections.nCopies(this.dados.size(), "?")) + ")");
+        String interrogacoes = ("(" + String.join(", ", Collections.nCopies(dados.size(), "?")) + ")");
 
-        this.query = ("INSERT INTO " + this.tabela + colunas + "VALUES" + interrogacoes);
+        query = ("INSERT INTO " + tabela + colunas + "VALUES" + interrogacoes);
     }
 
     /**
@@ -71,16 +78,16 @@ public class Create extends Conexao {
      */
     private void executarQuery() {
         try {
-            
+
             Connection conn = super.getConnection();
 
-            PreparedStatement stmt = conn.prepareStatement(this.query);
-            this.setarParametros(stmt);
-            this.result = stmt.executeUpdate();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            setarParametros(stmt);
+            result = stmt.executeUpdate();
             stmt.close();
 
         } catch (SQLException e) {
-            Msg.exibirMensagem(e.getMessage(), "Erro SQL", 0);
+            Msg.exibirMensagem("Create.executarQuery(): " + e.getMessage(), "Erro SQL", 0);
         }
 
     }
@@ -99,7 +106,7 @@ public class Create extends Conexao {
                 i++;
             }
         } catch (SQLException e) {
-            Msg.exibirMensagem(e.getMessage(), "Erro SQL", 0);
+            Msg.exibirMensagem("Create.setarParametros(): " + e.getMessage(), "Erro SQL", 0);
         }
     }
 

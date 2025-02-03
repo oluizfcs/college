@@ -17,48 +17,42 @@ import mtp.projetofinal.model.Conexao;
 public class Delete extends Conexao {
 
     private Object objeto;
-    private String tabela;
-    private int id = -1;
-    private Boolean result = false;
+    private String query;
+    private Object[][] condicoes = null;
 
-    /**
-     * Recebe um objeto e a partir do seu id, o apaga.
-     *
-     * @param objeto o objeto a ser apagado
-     */
-    public void apagar(Object objeto) {
+    public void apagar(Object objeto, Object[][] condicoes) {
         this.objeto = objeto;
-        this.tabela = objeto.getClass().getSimpleName().toLowerCase();
-        this.id = getObjectId();
+        this.condicoes = condicoes;
 
+        construirQuery();
         executarQuery();
+
+        this.objeto = null;
+        this.condicoes = null;
     }
 
     /**
-     * Executa o método getId do objeto a ser deletado.
-     *
-     * @return o id do objeto
+     * Cria a query de exclusão
      */
-    private int getObjectId() {
-        int objectId = -1;
-        try {
-            Method m = this.objeto.getClass().getMethod("getId");
+    private void construirQuery() {
 
-            objectId = (int) m.invoke(this.objeto);
-        } catch (NoSuchMethodException e) {
-            Msg.exibirMensagem("Não existe método getId", "Erro", 0);
-        } catch (IllegalAccessException e) {
-            Msg.exibirMensagem("Não foi possível acessar o método getId", "Erro", 0);
-        } catch (InvocationTargetException e) {
-            Msg.exibirMensagem("Erro ao invocar o método getId", "Erro", 0);
+        String tabela = objeto.getClass().getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+
+        StringBuilder sb = new StringBuilder("DELETE FROM " + tabela);
+
+        // excluir com condições
+        if (this.condicoes != null) {
+
+            sb.append(" WHERE " + String.valueOf(this.condicoes[0][0]) + " = ?");
+
+            if (this.condicoes.length > 1) {
+                for (int i = 1; i < this.condicoes.length; i++) {
+                    sb.append(" AND " + this.condicoes[i][0] + " = ?");
+                }
+            }
         }
 
-        for (Field f : this.objeto.getClass().getDeclaredFields()) {
-            f.setAccessible(true);
-
-        }
-
-        return objectId;
+        this.query = sb.toString();
     }
 
     /**
@@ -68,29 +62,17 @@ public class Delete extends Conexao {
         Connection conn = super.getConnection();
 
         try {
-            PreparedStatement stmt = conn.prepareStatement("DELETE FROM " + this.tabela + " WHERE id =  ?");
-            if (this.id != -1) {
-                stmt.setInt(1, this.id);
-                stmt.executeUpdate();
-                this.result = true;
-                stmt.close();
-            } else {
-                Msg.exibirMensagem("Não foi possível excluir por um erro ao encontrar o id do objeto", "Erro", 0);
-                stmt.close();
+            PreparedStatement stmt = conn.prepareStatement(query);
+
+            for (int i = 0; i < condicoes.length; i++) {
+                stmt.setObject(i + 1, condicoes[i][1]);
             }
 
+            stmt.executeUpdate();
+            stmt.close();
+
         } catch (SQLException e) {
-            Msg.exibirMensagem(e.getMessage(), "Erro SQL", 0);
+            Msg.exibirMensagem("Delete.executarQuery(): " + e.getMessage(), "Erro SQL", 0);
         }
-
-    }
-
-    /**
-     * Informa se deu certo ou errado a exclusão
-     *
-     * @return true deu certo <br> false deu errado
-     */
-    public Boolean getResult() {
-        return this.result;
     }
 }

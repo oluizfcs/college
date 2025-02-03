@@ -33,7 +33,7 @@ public abstract class Conexao {
         } catch (ClassNotFoundException e) {
             Msg.exibirMensagem(e.getMessage(), "Classe não encontrada", 0);
         } catch (SQLException e) {
-            Msg.exibirMensagem(e.getMessage(), "Erro SQL", 0);
+            Msg.exibirMensagem("Conexao.conectar(): " + e.getMessage(), "Erro SQL", 0);
         }
 
     }

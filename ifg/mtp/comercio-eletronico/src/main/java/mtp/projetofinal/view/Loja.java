@@ -49,7 +49,6 @@ public class Loja extends javax.swing.JFrame {
         // Organiza os panels dos produtos
         jPanelProdutos.setLayout(new WrapLayout(FlowLayout.CENTER, 50, 50));
 
-        this.produtos = LojaController.getProdutos(this.paginaAtual, this.qtdItens);
         existemProdutos();
 
         setVisible(true);
@@ -60,7 +59,7 @@ public class Loja extends javax.swing.JFrame {
      * informação, muda a propriedade de alguns componentes
      */
     private void existemProdutos() {
-        if (this.produtos.isEmpty()) {
+        if (LojaController.getCountProdutos() == 0) {
             jLabelSemProduto.setVisible(true);
             jButtonProxima.setEnabled(false);
             jButtonAnterior.setEnabled(false);
@@ -68,7 +67,6 @@ public class Loja extends javax.swing.JFrame {
             jButtonUltima.setEnabled(false);
         } else {
             jLabelSemProduto.setVisible(false);
-            this.ultimaPagina = Math.ceilDiv(LojaController.getCountProdutos(), this.qtdItens);
             this.carregarProdutos();
         }
     }
@@ -79,10 +77,16 @@ public class Loja extends javax.swing.JFrame {
     public void carregarProdutos() {
 
         jScrollPaneProdutos.getVerticalScrollBar().setValue(0);
-        
+
         jPanelProdutos.removeAll();
 
         this.produtos = LojaController.getProdutos(this.paginaAtual, this.qtdItens);
+
+        if (this.produtos.isEmpty()) {
+            this.paginaAtual--;
+            this.produtos = LojaController.getProdutos(this.paginaAtual, this.qtdItens);
+        }
+
         this.ultimaPagina = Math.ceilDiv(LojaController.getCountProdutos(), this.qtdItens);
 
         for (Produto p : this.produtos) {
@@ -90,18 +94,18 @@ public class Loja extends javax.swing.JFrame {
             PanelProduto pp = new PanelProduto(this, p, this.usuario);
 
             jPanelProdutos.add(pp);
+            jPanelProdutos.validate();
+            jPanelProdutos.repaint();
         }
 
         botoesNavegacao();
-        jPanelProdutos.repaint();
-        jScrollPaneProdutos.repaint();
     }
 
     /**
      * Lógica para mostrar os botões de navegação das páginas
      */
     private void botoesNavegacao() {
-        jButtonProxima.setEnabled(this.produtos.size() == this.qtdItens);
+        jButtonProxima.setEnabled(this.produtos.size() == this.qtdItens && !LojaController.getProdutos(this.paginaAtual + 1, this.qtdItens).isEmpty());
         jButtonAnterior.setEnabled(this.paginaAtual != 1);
         jLabelNumeroPagina.setText("Página: " + String.valueOf(this.paginaAtual));
         jButtonPrimeira.setEnabled(this.paginaAtual != 1);
@@ -797,6 +801,9 @@ public class Loja extends javax.swing.JFrame {
         this.carregarProdutos();
     }//GEN-LAST:event_jButtonProximaActionPerformed
 
+    /**
+     * Abre o carrinho
+     */
     private void jLabelCarrinhoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelCarrinhoMouseClicked
         this.setEnabled(false);
         new CarrinhoView(this, this.usuario);
