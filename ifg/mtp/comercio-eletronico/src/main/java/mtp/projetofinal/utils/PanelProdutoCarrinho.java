@@ -3,6 +3,8 @@ package mtp.projetofinal.utils;
 import java.math.BigDecimal;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import mtp.projetofinal.controller.ProdutoController;
+import mtp.projetofinal.model.PedidoProduto;
 import mtp.projetofinal.model.Produto;
 import mtp.projetofinal.view.CarrinhoView;
 
@@ -25,7 +27,7 @@ public class PanelProdutoCarrinho extends javax.swing.JPanel {
      * @param quantidade
      */
     public PanelProdutoCarrinho(CarrinhoView cv, Produto produto, Integer quantidade) {
-        
+
         this.cv = cv;
         this.produto = produto;
         this.quantidade = quantidade;
@@ -37,7 +39,7 @@ public class PanelProdutoCarrinho extends javax.swing.JPanel {
 
         // Coloca a foto padrão caso o produto não tenha foto
         if (produto.getFoto() != null) {
-            jLabelFoto.setIcon(new ImageIcon(getClass().getResource("/produtos/" + this.produto.getFoto())));
+            jLabelFoto.setIcon(new ImageIcon("produtos/" + produto.getFoto()));
         }
 
         atualizarQuantidade();
@@ -47,8 +49,11 @@ public class PanelProdutoCarrinho extends javax.swing.JPanel {
         jLabelQuantidade.setText(String.valueOf(quantidade));
         subtotal = BigDecimal.valueOf(quantidade).multiply(produto.getPreco());
         jLabelPrecoSubtotal.setText("R$: " + subtotal);
+
+        cv.produtos.replace(produto, quantidade);
+        cv.atualizarValorTotal();
     }
-    
+
     public BigDecimal getSubtotal() {
         return subtotal;
     }
@@ -97,6 +102,8 @@ public class PanelProdutoCarrinho extends javax.swing.JPanel {
         jLabelPrecoSubtotal.setText("R$: 0,00");
         jLabelPrecoSubtotal.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
+        jButtonMenos.setBackground(new java.awt.Color(254, 255, 255));
+        jButtonMenos.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButtonMenos.setText("-");
         jButtonMenos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -104,6 +111,8 @@ public class PanelProdutoCarrinho extends javax.swing.JPanel {
             }
         });
 
+        jButtonMais.setBackground(new java.awt.Color(254, 255, 255));
+        jButtonMais.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButtonMais.setText("+");
         jButtonMais.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -130,7 +139,7 @@ public class PanelProdutoCarrinho extends javax.swing.JPanel {
                 .addComponent(jLabelQuantidade)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonMais)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
@@ -178,7 +187,15 @@ public class PanelProdutoCarrinho extends javax.swing.JPanel {
             atualizarQuantidade();
         } else {
             if (JOptionPane.showConfirmDialog(this, "Deseja remover o produto do carrinho?", "Confirmação", JOptionPane.YES_NO_OPTION) == 0) {
-                // remover do carrinho
+                
+                PedidoProduto pp = new PedidoProduto();
+                
+                pp.setIdproduto(produto.getId());
+                pp.setIdpedido(cv.getUsuario().pegarIdCarrinho());
+                
+                ProdutoController.removerCarrinho(pp);
+                
+                cv.carregarProdutos();
             }
         }
     }//GEN-LAST:event_jButtonMenosActionPerformed

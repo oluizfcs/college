@@ -1,5 +1,8 @@
 package mtp.projetofinal.view;
 
+import javax.swing.ImageIcon;
+import mtp.projetofinal.utils.FrameUtils;
+
 /**
  * Tela Inicial do projeto, a primeira a ser aberta quando executado.
  *
@@ -12,8 +15,9 @@ public class TelaInicial extends javax.swing.JFrame {
      */
     public TelaInicial() {
         initComponents();
+        FrameUtils.setFrameIcon(this);
         setVisible(true);
-    }
+    } 
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

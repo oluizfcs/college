@@ -1,14 +1,17 @@
 package mtp.projetofinal.view;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.math.BigDecimal;
+import java.awt.event.ActionEvent;
 import mtp.projetofinal.utils.PanelProduto;
 import java.util.ArrayList;
 import mtp.projetofinal.controller.LojaController;
+import mtp.projetofinal.model.Endereco;
 import mtp.projetofinal.utils.Msg;
 import mtp.projetofinal.model.Produto;
 import mtp.projetofinal.model.Usuario;
-import mtp.projetofinal.utils.WrapLayout;
+import mtp.projetofinal.utils.AddOuEditProduto;
+import mtp.projetofinal.utils.FrameUtils;
 
 /**
  *
@@ -20,7 +23,9 @@ public class Loja extends javax.swing.JFrame {
     private ArrayList<Produto> produtos;
     private int paginaAtual = 1;
     private int qtdItens = 9;
-    private int ultimaPagina = this.paginaAtual;
+    private int ultimaPagina = paginaAtual;
+    ArrayList<Endereco> enderecosDoUsuario;
+    private CarrinhoView carrinho = null;
 
     /**
      * Creates new form Loja
@@ -34,7 +39,11 @@ public class Loja extends javax.swing.JFrame {
         this.paginaAtual = paginaAtual;
         this.qtdItens = qtdItens;
 
+        enderecosDoUsuario = usuario.enderecos();
+
         initComponents();
+
+        FrameUtils.setFrameIcon(this);
 
         jLabelAdicionarProduto.setVisible(usuario.getAdmin());
 
@@ -47,28 +56,11 @@ public class Loja extends javax.swing.JFrame {
         jScrollPaneProdutos.getVerticalScrollBar().setUnitIncrement(16);
 
         // Organiza os panels dos produtos
-        jPanelProdutos.setLayout(new WrapLayout(FlowLayout.CENTER, 50, 50));
+        jPanelProdutos.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 50));
 
-        existemProdutos();
+        carregarProdutos();
 
         setVisible(true);
-    }
-
-    /**
-     * Verifica se existem produtos a serem exibidos e a partir dessa
-     * informação, muda a propriedade de alguns componentes
-     */
-    private void existemProdutos() {
-        if (LojaController.getCountProdutos() == 0) {
-            jLabelSemProduto.setVisible(true);
-            jButtonProxima.setEnabled(false);
-            jButtonAnterior.setEnabled(false);
-            jButtonPrimeira.setEnabled(false);
-            jButtonUltima.setEnabled(false);
-        } else {
-            jLabelSemProduto.setVisible(false);
-            this.carregarProdutos();
-        }
     }
 
     /**
@@ -76,48 +68,69 @@ public class Loja extends javax.swing.JFrame {
      */
     public void carregarProdutos() {
 
-        jScrollPaneProdutos.getVerticalScrollBar().setValue(0);
-
         jPanelProdutos.removeAll();
 
-        this.produtos = LojaController.getProdutos(this.paginaAtual, this.qtdItens);
+        if (LojaController.getCountProdutos() == 0) {
+            jPanelProdutos.add(jLabelSemProduto);
+            jLabelSemProduto.setVisible(true);
+            jButtonProxima.setEnabled(false);
+            jButtonAnterior.setEnabled(false);
+            jButtonPrimeira.setEnabled(false);
+            jButtonUltima.setEnabled(false);
 
-        if (this.produtos.isEmpty()) {
-            this.paginaAtual--;
-            this.produtos = LojaController.getProdutos(this.paginaAtual, this.qtdItens);
+        } else {
+            jLabelSemProduto.setVisible(false);
+
+            produtos = LojaController.getProdutos(paginaAtual, qtdItens);
+
+            if (produtos.isEmpty()) {
+                paginaAtual--;
+                produtos = LojaController.getProdutos(paginaAtual, qtdItens);
+            }
+
+            ultimaPagina = Math.ceilDiv(LojaController.getCountProdutos(), qtdItens);
+
+            Dimension dim = new Dimension(700, ((330 * Math.ceilDiv(produtos.size(), 3) + 50)));
+            jPanelProdutos.setPreferredSize(dim);
+            jScrollPaneProdutos.setPreferredSize(dim);
+
+            for (Produto p : produtos) {
+
+                PanelProduto pp = new PanelProduto(this, p, usuario);
+
+                jPanelProdutos.add(pp);
+            }
+
+            botoesNavegacao();
         }
 
-        this.ultimaPagina = Math.ceilDiv(LojaController.getCountProdutos(), this.qtdItens);
-
-        for (Produto p : this.produtos) {
-
-            PanelProduto pp = new PanelProduto(this, p, this.usuario);
-
-            jPanelProdutos.add(pp);
-            jPanelProdutos.validate();
-            jPanelProdutos.repaint();
-        }
-
-        botoesNavegacao();
+        jPanelProdutos.validate();
+        jPanelProdutos.repaint();
+        jScrollPaneProdutos.validate();
+        jScrollPaneProdutos.repaint();
     }
 
     /**
      * Lógica para mostrar os botões de navegação das páginas
      */
     private void botoesNavegacao() {
-        jButtonProxima.setEnabled(this.produtos.size() == this.qtdItens && !LojaController.getProdutos(this.paginaAtual + 1, this.qtdItens).isEmpty());
-        jButtonAnterior.setEnabled(this.paginaAtual != 1);
-        jLabelNumeroPagina.setText("Página: " + String.valueOf(this.paginaAtual));
-        jButtonPrimeira.setEnabled(this.paginaAtual != 1);
-        jButtonUltima.setEnabled(this.paginaAtual != this.ultimaPagina);
+        jButtonProxima.setEnabled(produtos.size() == qtdItens && !LojaController.getProdutos(paginaAtual + 1, qtdItens).isEmpty());
+        jButtonAnterior.setEnabled(paginaAtual != 1);
+        jLabelNumeroPagina.setText("Página: " + String.valueOf(paginaAtual));
+        jButtonPrimeira.setEnabled(paginaAtual != 1);
+        jButtonUltima.setEnabled(paginaAtual != ultimaPagina);
     }
 
+    public void setCarrinho(CarrinhoView carrinho) {
+        this.carrinho = carrinho;
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jDialogConfig = new javax.swing.JDialog();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jTabbedPaneOpcoes = new javax.swing.JTabbedPane();
         jPanelNomeEmail = new javax.swing.JPanel();
         jLabelNome = new javax.swing.JLabel();
         jTextFieldNome = new javax.swing.JTextField();
@@ -135,22 +148,29 @@ public class Loja extends javax.swing.JFrame {
         jPasswordFieldConfirmarNovaSenha = new javax.swing.JPasswordField();
         jButtonSalvarSenha = new javax.swing.JButton();
         jButtonCancelar1 = new javax.swing.JButton();
+        jPanelEndereco = new javax.swing.JPanel();
+        jComboBoxEnderecos = new javax.swing.JComboBox<>();
+        jButtonCriarNovoEndereco = new javax.swing.JButton();
+        jButtonExcluirEnderecoSelecionado = new javax.swing.JButton();
+        jPanelCamposEndereco = new javax.swing.JPanel();
+        jLabelEstado = new javax.swing.JLabel();
+        jTextFieldEstado = new javax.swing.JTextField();
+        jLabelCidade = new javax.swing.JLabel();
+        jTextFieldCidade = new javax.swing.JTextField();
+        jTextFieldBairro = new javax.swing.JTextField();
+        jLabelBairro = new javax.swing.JLabel();
+        jLabelRua = new javax.swing.JLabel();
+        jTextFieldRua = new javax.swing.JTextField();
+        jLabelNumero = new javax.swing.JLabel();
+        jTextFieldNumero = new javax.swing.JTextField();
+        jLabelComplemento = new javax.swing.JLabel();
+        jTextFieldComplemento = new javax.swing.JTextField();
+        jLabelIdentificadorEndereco = new javax.swing.JLabel();
+        jTextFieldIdentificadorEndereco = new javax.swing.JTextField();
+        jLabelExemploIdentificador = new javax.swing.JLabel();
+        jButtonSalvarEndereco = new javax.swing.JButton();
+        jLabelNenhumEnderecoCadastrado = new javax.swing.JLabel();
         jLabelTitulo = new javax.swing.JLabel();
-        jDialogAddProduto = new javax.swing.JDialog();
-        jPanelAddProduto = new javax.swing.JPanel();
-        jLabelNomeProduto = new javax.swing.JLabel();
-        jTextFieldNomeProduto = new javax.swing.JTextField();
-        jLabelDescricao = new javax.swing.JLabel();
-        jLabelPreco = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextAreaDescricao = new javax.swing.JTextArea();
-        jLabelFoto = new javax.swing.JLabel();
-        jButtonCarregarArquivo = new javax.swing.JButton();
-        jButtonAdicionar = new javax.swing.JButton();
-        jButtonCancelarProduto = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JSeparator();
-        jTextFieldPreco = new javax.swing.JTextField();
-        jLabelInfo = new javax.swing.JLabel();
         jPanelNavBar = new javax.swing.JPanel();
         jLabelUsername = new javax.swing.JLabel();
         jButtonSair = new javax.swing.JButton();
@@ -167,11 +187,11 @@ public class Loja extends javax.swing.JFrame {
         jButtonPrimeira = new javax.swing.JButton();
 
         jDialogConfig.setTitle("Configurações");
-        jDialogConfig.setMinimumSize(new java.awt.Dimension(505, 467));
+        jDialogConfig.setMinimumSize(new java.awt.Dimension(505, 450));
         jDialogConfig.setModal(true);
         jDialogConfig.setResizable(false);
 
-        jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
+        jTabbedPaneOpcoes.setBackground(new java.awt.Color(255, 255, 255));
 
         jPanelNomeEmail.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -212,7 +232,7 @@ public class Loja extends javax.swing.JFrame {
         jPanelNomeEmailLayout.setHorizontalGroup(
             jPanelNomeEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelNomeEmailLayout.createSequentialGroup()
-                .addGap(41, 41, 41)
+                .addGap(40, 40, 40)
                 .addGroup(jPanelNomeEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelNomeEmailLayout.createSequentialGroup()
                         .addGroup(jPanelNomeEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -221,34 +241,34 @@ public class Loja extends javax.swing.JFrame {
                             .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabelEmail)
                             .addComponent(jLabelEmailTip))
-                        .addContainerGap(264, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 201, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanelNomeEmailLayout.createSequentialGroup()
                         .addComponent(jButtonAlterarNome)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonCancelar)
-                        .addGap(63, 63, 63))))
+                        .addComponent(jButtonCancelar)))
+                .addGap(64, 64, 64))
         );
         jPanelNomeEmailLayout.setVerticalGroup(
             jPanelNomeEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelNomeEmailLayout.createSequentialGroup()
-                .addGap(53, 53, 53)
+                .addGap(36, 36, 36)
                 .addComponent(jLabelNome)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTextFieldNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                .addGap(53, 53, 53)
                 .addComponent(jLabelEmail)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelEmailTip)
-                .addGap(46, 46, 46)
+                .addGap(65, 65, 65)
                 .addGroup(jPanelNomeEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonAlterarNome)
                     .addComponent(jButtonCancelar))
-                .addGap(21, 21, 21))
+                .addContainerGap(80, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Nome e Email", jPanelNomeEmail);
+        jTabbedPaneOpcoes.addTab("Nome e Email", jPanelNomeEmail);
 
         jPanelSenha.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -291,7 +311,7 @@ public class Loja extends javax.swing.JFrame {
                             .addComponent(jPasswordFieldSenhaAtual, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jPasswordFieldNovaSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jPasswordFieldConfirmarNovaSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(309, Short.MAX_VALUE))
+                        .addContainerGap(339, Short.MAX_VALUE))
                     .addGroup(jPanelSenhaLayout.createSequentialGroup()
                         .addComponent(jButtonSalvarSenha)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -313,14 +333,187 @@ public class Loja extends javax.swing.JFrame {
                 .addComponent(jLabelConfirmarNovaSenha)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPasswordFieldConfirmarNovaSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addGap(46, 46, 46)
                 .addGroup(jPanelSenhaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSalvarSenha)
                     .addComponent(jButtonCancelar1))
-                .addGap(21, 21, 21))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Senha", jPanelSenha);
+        jTabbedPaneOpcoes.addTab("Senha", jPanelSenha);
+
+        jPanelEndereco.setBackground(new java.awt.Color(255, 255, 255));
+
+        jComboBoxEnderecos.setBackground(new java.awt.Color(254, 255, 255));
+        jComboBoxEnderecos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jButtonCriarNovoEndereco.setBackground(new java.awt.Color(254, 255, 255));
+        jButtonCriarNovoEndereco.setText("Novo endereço");
+        jButtonCriarNovoEndereco.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCriarNovoEnderecoActionPerformed(evt);
+            }
+        });
+
+        jButtonExcluirEnderecoSelecionado.setBackground(new java.awt.Color(255, 0, 0));
+        jButtonExcluirEnderecoSelecionado.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButtonExcluirEnderecoSelecionado.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonExcluirEnderecoSelecionado.setText("Excluir Selecionado");
+        jButtonExcluirEnderecoSelecionado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonExcluirEnderecoSelecionadoActionPerformed(evt);
+            }
+        });
+
+        jPanelCamposEndereco.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabelEstado.setText("Estado");
+
+        jLabelCidade.setText("Cidade");
+
+        jLabelBairro.setText("Bairro");
+
+        jLabelRua.setText("Rua");
+
+        jLabelNumero.setText("Numero");
+
+        jLabelComplemento.setText("Complemento (opcional)");
+
+        jLabelIdentificadorEndereco.setText("Identificador do Endereço:");
+
+        jTextFieldIdentificadorEndereco.setToolTipText("");
+
+        jLabelExemploIdentificador.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
+        jLabelExemploIdentificador.setForeground(new java.awt.Color(153, 153, 153));
+        jLabelExemploIdentificador.setText("Exemplo: casa, trabalho...");
+
+        jButtonSalvarEndereco.setBackground(new java.awt.Color(81, 95, 255));
+        jButtonSalvarEndereco.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButtonSalvarEndereco.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonSalvarEndereco.setText("Salvar");
+        jButtonSalvarEndereco.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSalvarEnderecoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanelCamposEnderecoLayout = new javax.swing.GroupLayout(jPanelCamposEndereco);
+        jPanelCamposEndereco.setLayout(jPanelCamposEnderecoLayout);
+        jPanelCamposEnderecoLayout.setHorizontalGroup(
+            jPanelCamposEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelCamposEnderecoLayout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addGroup(jPanelCamposEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelCamposEnderecoLayout.createSequentialGroup()
+                        .addComponent(jButtonSalvarEndereco)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanelCamposEnderecoLayout.createSequentialGroup()
+                        .addGroup(jPanelCamposEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabelCidade)
+                            .addComponent(jLabelEstado)
+                            .addComponent(jLabelBairro)
+                            .addComponent(jTextFieldEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldBairro, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                            .addComponent(jTextFieldCidade))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanelCamposEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelRua)
+                            .addComponent(jLabelNumero)
+                            .addComponent(jTextFieldNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabelComplemento)
+                            .addComponent(jTextFieldRua, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldComplemento, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(34, 34, 34))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCamposEnderecoLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabelExemploIdentificador)
+                .addGap(160, 160, 160))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCamposEnderecoLayout.createSequentialGroup()
+                .addGap(89, 89, 89)
+                .addComponent(jLabelIdentificadorEndereco)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextFieldIdentificadorEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanelCamposEnderecoLayout.setVerticalGroup(
+            jPanelCamposEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelCamposEnderecoLayout.createSequentialGroup()
+                .addContainerGap(32, Short.MAX_VALUE)
+                .addGroup(jPanelCamposEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelIdentificadorEndereco)
+                    .addComponent(jTextFieldIdentificadorEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addComponent(jLabelExemploIdentificador)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelCamposEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanelCamposEnderecoLayout.createSequentialGroup()
+                        .addComponent(jLabelRua)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldRua, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelNumero)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabelComplemento)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldComplemento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelCamposEnderecoLayout.createSequentialGroup()
+                        .addGroup(jPanelCamposEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelCamposEnderecoLayout.createSequentialGroup()
+                                .addGap(22, 22, 22)
+                                .addComponent(jTextFieldEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabelCidade))
+                            .addComponent(jLabelEstado))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldCidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabelBairro)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldBairro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(jButtonSalvarEndereco)
+                .addContainerGap(27, Short.MAX_VALUE))
+        );
+
+        jLabelNenhumEnderecoCadastrado.setForeground(new java.awt.Color(204, 0, 51));
+        jLabelNenhumEnderecoCadastrado.setText("Você não tem nenhum endereço, crie um novo.");
+
+        javax.swing.GroupLayout jPanelEnderecoLayout = new javax.swing.GroupLayout(jPanelEndereco);
+        jPanelEndereco.setLayout(jPanelEnderecoLayout);
+        jPanelEnderecoLayout.setHorizontalGroup(
+            jPanelEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelEnderecoLayout.createSequentialGroup()
+                .addGap(52, 52, 52)
+                .addComponent(jComboBoxEnderecos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                .addComponent(jButtonCriarNovoEndereco)
+                .addGap(30, 30, 30)
+                .addComponent(jButtonExcluirEnderecoSelecionado)
+                .addContainerGap(52, Short.MAX_VALUE))
+            .addGroup(jPanelEnderecoLayout.createSequentialGroup()
+                .addGap(114, 114, 114)
+                .addComponent(jLabelNenhumEnderecoCadastrado)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanelCamposEndereco, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanelEnderecoLayout.setVerticalGroup(
+            jPanelEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelEnderecoLayout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(jPanelEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBoxEnderecos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonCriarNovoEndereco)
+                    .addComponent(jButtonExcluirEnderecoSelecionado))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelNenhumEnderecoCadastrado)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanelCamposEndereco, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPaneOpcoes.addTab("Endereço", jPanelEndereco);
 
         jLabelTitulo.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
         jLabelTitulo.setText("Alteração de dados");
@@ -329,158 +522,24 @@ public class Loja extends javax.swing.JFrame {
         jDialogConfig.getContentPane().setLayout(jDialogConfigLayout);
         jDialogConfigLayout.setHorizontalGroup(
             jDialogConfigLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
             .addGroup(jDialogConfigLayout.createSequentialGroup()
                 .addGap(158, 158, 158)
                 .addComponent(jLabelTitulo)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jTabbedPaneOpcoes)
         );
         jDialogConfigLayout.setVerticalGroup(
             jDialogConfigLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialogConfigLayout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addComponent(jLabelTitulo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-
-        jDialogAddProduto.setTitle("Adicionar Produto");
-        jDialogAddProduto.setMinimumSize(new java.awt.Dimension(550, 433));
-        jDialogAddProduto.setModal(true);
-        jDialogAddProduto.setResizable(false);
-
-        jPanelAddProduto.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabelNomeProduto.setText("Nome do Produto:");
-
-        jLabelDescricao.setText("Descrição");
-
-        jLabelPreco.setText("Preço R$:");
-
-        jTextAreaDescricao.setColumns(20);
-        jTextAreaDescricao.setLineWrap(true);
-        jTextAreaDescricao.setRows(5);
-        jTextAreaDescricao.setTabSize(2);
-        jScrollPane1.setViewportView(jTextAreaDescricao);
-
-        jLabelFoto.setText("Foto (opcional)");
-
-        jButtonCarregarArquivo.setBackground(new java.awt.Color(254, 255, 255));
-        jButtonCarregarArquivo.setText("Carregar Arquivo");
-
-        jButtonAdicionar.setBackground(new java.awt.Color(81, 95, 255));
-        jButtonAdicionar.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
-        jButtonAdicionar.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonAdicionar.setText("Adicionar");
-        jButtonAdicionar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAdicionarActionPerformed(evt);
-            }
-        });
-
-        jButtonCancelarProduto.setBackground(new java.awt.Color(254, 255, 255));
-        jButtonCancelarProduto.setText("Cancelar");
-        jButtonCancelarProduto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCancelarProdutoActionPerformed(evt);
-            }
-        });
-
-        jLabelInfo.setFont(new java.awt.Font("Liberation Sans", 0, 11)); // NOI18N
-        jLabelInfo.setForeground(new java.awt.Color(102, 102, 102));
-        jLabelInfo.setText("Utilize . (ponto) para as casas decimais");
-
-        javax.swing.GroupLayout jPanelAddProdutoLayout = new javax.swing.GroupLayout(jPanelAddProduto);
-        jPanelAddProduto.setLayout(jPanelAddProdutoLayout);
-        jPanelAddProdutoLayout.setHorizontalGroup(
-            jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
-                .addGap(48, 48, 48)
-                .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
-                        .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelDescricao)
-                            .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
-                                .addComponent(jLabelPreco)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextFieldPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabelNomeProduto)
-                            .addComponent(jTextFieldNomeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(320, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelAddProdutoLayout.createSequentialGroup()
-                        .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelAddProdutoLayout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 129, Short.MAX_VALUE)
-                                .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButtonCarregarArquivo, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelAddProdutoLayout.createSequentialGroup()
-                                        .addComponent(jLabelFoto)
-                                        .addGap(23, 23, 23)))))
-                        .addGap(51, 51, 51))))
-            .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
-                .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
-                        .addGap(163, 163, 163)
-                        .addComponent(jButtonAdicionar)
-                        .addGap(43, 43, 43)
-                        .addComponent(jButtonCancelarProduto))
-                    .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
-                        .addGap(77, 77, 77)
-                        .addComponent(jLabelInfo)))
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        jPanelAddProdutoLayout.setVerticalGroup(
-            jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
-                .addGap(43, 43, 43)
-                .addComponent(jLabelNomeProduto)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextFieldNomeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(52, 52, 52)
-                .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
-                        .addComponent(jLabelDescricao)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanelAddProdutoLayout.createSequentialGroup()
-                        .addComponent(jLabelFoto)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonCarregarArquivo, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(6, 6, 6)))
-                .addGap(39, 39, 39)
-                .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelPreco)
-                    .addComponent(jTextFieldPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabelInfo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanelAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonAdicionar)
-                    .addComponent(jButtonCancelarProduto))
-                .addGap(22, 22, 22))
-        );
-
-        javax.swing.GroupLayout jDialogAddProdutoLayout = new javax.swing.GroupLayout(jDialogAddProduto.getContentPane());
-        jDialogAddProduto.getContentPane().setLayout(jDialogAddProdutoLayout);
-        jDialogAddProdutoLayout.setHorizontalGroup(
-            jDialogAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelAddProduto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        jDialogAddProdutoLayout.setVerticalGroup(
-            jDialogAddProdutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelAddProduto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jTabbedPaneOpcoes))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Comercio Eletrônico");
-        setMaximumSize(new java.awt.Dimension(930, 2147483647));
         setMinimumSize(new java.awt.Dimension(930, 600));
-        setPreferredSize(new java.awt.Dimension(920, 572));
 
         jPanelNavBar.setMinimumSize(new java.awt.Dimension(900, 0));
         jPanelNavBar.setPreferredSize(new java.awt.Dimension(900, 68));
@@ -556,11 +615,12 @@ public class Loja extends javax.swing.JFrame {
         );
 
         jScrollPaneProdutos.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPaneProdutos.setPreferredSize(new java.awt.Dimension(902, 1050));
+        jScrollPaneProdutos.setMinimumSize(new java.awt.Dimension(900, 330));
+        jScrollPaneProdutos.setPreferredSize(new java.awt.Dimension(900, 330));
 
         jPanelProdutos.setBackground(new java.awt.Color(255, 255, 255));
-        jPanelProdutos.setMinimumSize(new java.awt.Dimension(900, 1025));
-        jPanelProdutos.setPreferredSize(new java.awt.Dimension(900, 1025));
+        jPanelProdutos.setMinimumSize(new java.awt.Dimension(900, 330));
+        jPanelProdutos.setPreferredSize(new java.awt.Dimension(900, 330));
 
         jLabelSemProduto.setText("Não há produtos a serem exibidos");
 
@@ -578,7 +638,7 @@ public class Loja extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProdutosLayout.createSequentialGroup()
                 .addGap(131, 131, 131)
                 .addComponent(jLabelSemProduto)
-                .addContainerGap(876, Short.MAX_VALUE))
+                .addContainerGap(272, Short.MAX_VALUE))
         );
 
         jScrollPaneProdutos.setViewportView(jPanelProdutos);
@@ -591,7 +651,7 @@ public class Loja extends javax.swing.JFrame {
             }
         });
 
-        jLabelNumeroPagina.setText("Página: x");
+        jLabelNumeroPagina.setText("Página: 1");
 
         jButtonProxima.setBackground(new java.awt.Color(255, 254, 255));
         jButtonProxima.setText(">");
@@ -665,7 +725,7 @@ public class Loja extends javax.swing.JFrame {
      */
     private void jButtonSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSairActionPerformed
         new TelaInicial();
-        this.dispose();
+        dispose();
     }//GEN-LAST:event_jButtonSairActionPerformed
 
     /**
@@ -673,8 +733,50 @@ public class Loja extends javax.swing.JFrame {
      */
     private void jLabelConfigMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelConfigMouseClicked
         jDialogConfig.setLocationRelativeTo(this);
+        verificarEnderecos();
+
+        jComboBoxEnderecos.addActionListener((ActionEvent event) -> {
+            preencherCamposEndereco();
+        });
         jDialogConfig.setVisible(true);
     }//GEN-LAST:event_jLabelConfigMouseClicked
+
+    public void verificarEnderecos() {
+        enderecosDoUsuario = usuario.enderecos();
+        jComboBoxEnderecos.removeAllItems();
+
+        if (enderecosDoUsuario.isEmpty()) {
+            jLabelNenhumEnderecoCadastrado.setVisible(true);
+            jPanelCamposEndereco.setVisible(false);
+            jButtonExcluirEnderecoSelecionado.setVisible(false);
+        } else {
+            jLabelNenhumEnderecoCadastrado.setVisible(false);
+            jPanelCamposEndereco.setVisible(true);
+            jButtonExcluirEnderecoSelecionado.setVisible(true);
+
+            for (int i = 0; i < enderecosDoUsuario.size(); i++) {
+                jComboBoxEnderecos.addItem(enderecosDoUsuario.get(i).getIdentificador());
+            }
+
+            preencherCamposEndereco();
+        }
+    }
+
+    private void preencherCamposEndereco() {
+        int selecionado = jComboBoxEnderecos.getSelectedIndex();
+
+        if (selecionado >= 0) {
+            Endereco e = enderecosDoUsuario.get(selecionado);
+
+            jTextFieldIdentificadorEndereco.setText(e.getIdentificador());
+            jTextFieldEstado.setText(e.getEstado());
+            jTextFieldCidade.setText(e.getCidade());
+            jTextFieldBairro.setText(e.getBairro());
+            jTextFieldRua.setText(e.getRua());
+            jTextFieldNumero.setText(e.getNumero());
+            jTextFieldComplemento.setText(e.getComplemento());
+        }
+    }
 
     /**
      * Esconde a tela de configurações
@@ -692,14 +794,14 @@ public class Loja extends javax.swing.JFrame {
 
         if (!nome.equals("")) {
 
-            this.usuario.setNome(nome);
+            usuario.setNome(nome);
 
             LojaController lc = new LojaController();
 
-            if (lc.alterarDados(this.usuario)) {
+            if (lc.alterarDados(usuario)) {
                 Msg.exibirMensagem("Nome alterado com sucesso!", "Sucesso!", 1);
-                this.usuario = lc.getUsuarioAtualizado();
-                jLabelUsername.setText(this.usuario.getNome());
+                usuario = lc.getUsuarioAtualizado();
+                jLabelUsername.setText(usuario.getNome());
             }
         } else {
             Msg.exibirMensagem("O campo nome não pode estar vazio", "Aviso", 2);
@@ -717,16 +819,16 @@ public class Loja extends javax.swing.JFrame {
 
         if (senhaAtual.equals("") || novaSenha.equals("") || confirmarNovaSenha.equals("")) {
             Msg.exibirMensagem("Todos os campos devem estar preenchidos", "Aviso", 2);
-        } else if (!senhaAtual.equals(this.usuario.getSenha())) {
+        } else if (!senhaAtual.equals(usuario.getSenha())) {
             Msg.exibirMensagem("A senha atual está incorreta!", "Aviso", 2);
         } else if (!novaSenha.equals(confirmarNovaSenha)) {
             Msg.exibirMensagem("A senha nova não coincide", "Aviso", 2);
         } else {
             LojaController lc = new LojaController();
 
-            this.usuario.setSenha(novaSenha);
+            usuario.setSenha(novaSenha);
 
-            if (lc.alterarDados(this.usuario)) {
+            if (lc.alterarDados(usuario)) {
                 Msg.exibirMensagem("Sua senha foi alterada com sucesso!", "Sucesso!", 1);
             }
         }
@@ -744,122 +846,141 @@ public class Loja extends javax.swing.JFrame {
      * acesso
      */
     private void jLabelAdicionarProdutoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelAdicionarProdutoMouseClicked
-        jDialogAddProduto.setLocationRelativeTo(this);
-        jDialogAddProduto.setVisible(true);
+        setEnabled(false);
+        new AddOuEditProduto(this, null, null, AddOuEditProduto.ADD);
     }//GEN-LAST:event_jLabelAdicionarProdutoMouseClicked
-
-    /**
-     * Valida os campos e manda os dados para a controller adicionar um novo
-     * produto
-     */
-    private void jButtonAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAdicionarActionPerformed
-        try {
-
-            Produto p = new Produto();
-            p.setNome(jTextFieldNomeProduto.getText());
-            p.setDescricao(jTextAreaDescricao.getText());
-
-            p.setPreco(BigDecimal.valueOf(Double.parseDouble(jTextFieldPreco.getText())));
-
-            if (p.getNome().isBlank() || p.getDescricao().isBlank()) {
-                Msg.exibirMensagem("Nome e descrição são obrigatórios", "Aviso", 2);
-            } else {
-                LojaController lc = new LojaController();
-
-                if (lc.novoProduto(p)) {
-                    Msg.exibirMensagem("Produto adicionado com sucesso!", "Sucesso", 1);
-                    jDialogAddProduto.setVisible(false);
-                    this.paginaAtual = 1;
-                    carregarProdutos();
-                }
-            }
-        } catch (NumberFormatException e) {
-            Msg.exibirMensagem("O valor inserido no campo Preço é inválido", "Aviso", 2);
-        }
-    }//GEN-LAST:event_jButtonAdicionarActionPerformed
-
-    /**
-     * fecha a tela de adicionar produto
-     */
-    private void jButtonCancelarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarProdutoActionPerformed
-        jDialogAddProduto.setVisible(false);
-    }//GEN-LAST:event_jButtonCancelarProdutoActionPerformed
 
     /**
      * Volta uma página
      */
     private void jButtonAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnteriorActionPerformed
-        this.paginaAtual--;
-        this.carregarProdutos();
+        paginaAtual--;
+        carregarProdutos();
+        jScrollPaneProdutos.getVerticalScrollBar().setValue(0);
     }//GEN-LAST:event_jButtonAnteriorActionPerformed
 
     /**
      * Avança uma página
      */
     private void jButtonProximaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonProximaActionPerformed
-        this.paginaAtual++;
-        this.carregarProdutos();
+        paginaAtual++;
+        carregarProdutos();
+        jScrollPaneProdutos.getVerticalScrollBar().setValue(0);
     }//GEN-LAST:event_jButtonProximaActionPerformed
 
     /**
      * Abre o carrinho
      */
     private void jLabelCarrinhoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelCarrinhoMouseClicked
-        this.setEnabled(false);
-        new CarrinhoView(this, this.usuario);
+        setEnabled(false);
+        new CarrinhoView(this, usuario);
     }//GEN-LAST:event_jLabelCarrinhoMouseClicked
 
     /**
      * Avança para a última página
      */
     private void jButtonUltimaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUltimaActionPerformed
-        this.ultimaPagina = Math.ceilDiv(LojaController.getCountProdutos(), this.qtdItens);
-        this.paginaAtual = this.ultimaPagina;
-        this.carregarProdutos();
+        ultimaPagina = Math.ceilDiv(LojaController.getCountProdutos(), qtdItens);
+        paginaAtual = ultimaPagina;
+        carregarProdutos();
     }//GEN-LAST:event_jButtonUltimaActionPerformed
 
     /**
      * Volta para a primeira página
      */
     private void jButtonPrimeiraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrimeiraActionPerformed
-        this.paginaAtual = 1;
-        this.carregarProdutos();
+        paginaAtual = 1;
+        carregarProdutos();
     }//GEN-LAST:event_jButtonPrimeiraActionPerformed
 
+    private void jButtonSalvarEnderecoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarEnderecoActionPerformed
+
+        Endereco e = enderecosDoUsuario.get(jComboBoxEnderecos.getSelectedIndex());
+
+        if (!jTextFieldIdentificadorEndereco.getText().isEmpty() && !jTextFieldEstado.getText().isEmpty() && !jTextFieldCidade.getText().isEmpty() && !jTextFieldBairro.getText().isEmpty() && !jTextFieldRua.getText().isEmpty() && !jTextFieldNumero.getText().isEmpty()) {
+            e.setIdentificador(jTextFieldIdentificadorEndereco.getText());
+            e.setEstado(jTextFieldEstado.getText());
+            e.setCidade(jTextFieldCidade.getText());
+            e.setBairro(jTextFieldBairro.getText());
+            e.setRua(jTextFieldRua.getText());
+            e.setNumero(jTextFieldNumero.getText());
+
+            if (!jTextFieldComplemento.getText().isEmpty()) {
+                e.setComplemento(jTextFieldComplemento.getText());
+            }
+
+            LojaController lc = new LojaController();
+
+            if (lc.salvarEndereco(usuario, e)) {
+                Msg.exibirMensagem("Endereço salvo com sucesso.", "Sucesso!", 1);
+                verificarEnderecos();
+                if(carrinho != null) {
+                    carrinho.carregarEnderecos();
+                    carrinho = null;
+                }
+            }
+
+        } else {
+            Msg.exibirMensagem("Preencha todos os campos, só o complemento que é opcional.", "Aviso", 2);
+        }
+
+
+    }//GEN-LAST:event_jButtonSalvarEnderecoActionPerformed
+
+    private void jButtonExcluirEnderecoSelecionadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirEnderecoSelecionadoActionPerformed
+        if (LojaController.excluirEndereco(enderecosDoUsuario.get(jComboBoxEnderecos.getSelectedIndex()))) {
+            Msg.exibirMensagem("Endereço excluido com sucesso.", "Sucesso!", 1);
+            verificarEnderecos();
+        }
+    }//GEN-LAST:event_jButtonExcluirEnderecoSelecionadoActionPerformed
+
+    private void jButtonCriarNovoEnderecoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCriarNovoEnderecoActionPerformed
+        if (LojaController.adicionarEndereco(usuario)) {
+            verificarEnderecos();
+            jTextFieldIdentificadorEndereco.requestFocus();
+            jTextFieldIdentificadorEndereco.selectAll();
+        }
+    }//GEN-LAST:event_jButtonCriarNovoEnderecoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonAdicionar;
     private javax.swing.JButton jButtonAlterarNome;
     private javax.swing.JButton jButtonAnterior;
     private javax.swing.JButton jButtonCancelar;
     private javax.swing.JButton jButtonCancelar1;
-    private javax.swing.JButton jButtonCancelarProduto;
-    private javax.swing.JButton jButtonCarregarArquivo;
+    private javax.swing.JButton jButtonCriarNovoEndereco;
+    private javax.swing.JButton jButtonExcluirEnderecoSelecionado;
     private javax.swing.JButton jButtonPrimeira;
     private javax.swing.JButton jButtonProxima;
     private javax.swing.JButton jButtonSair;
+    private javax.swing.JButton jButtonSalvarEndereco;
     private javax.swing.JButton jButtonSalvarSenha;
     private javax.swing.JButton jButtonUltima;
-    private javax.swing.JDialog jDialogAddProduto;
-    private javax.swing.JDialog jDialogConfig;
+    private javax.swing.JComboBox<String> jComboBoxEnderecos;
+    public javax.swing.JDialog jDialogConfig;
     private javax.swing.JLabel jLabelAdicionarProduto;
+    private javax.swing.JLabel jLabelBairro;
     private javax.swing.JLabel jLabelCarrinho;
+    private javax.swing.JLabel jLabelCidade;
+    private javax.swing.JLabel jLabelComplemento;
     private javax.swing.JLabel jLabelConfig;
     private javax.swing.JLabel jLabelConfirmarNovaSenha;
-    private javax.swing.JLabel jLabelDescricao;
     private javax.swing.JLabel jLabelEmail;
     private javax.swing.JLabel jLabelEmailTip;
-    private javax.swing.JLabel jLabelFoto;
-    private javax.swing.JLabel jLabelInfo;
+    private javax.swing.JLabel jLabelEstado;
+    private javax.swing.JLabel jLabelExemploIdentificador;
+    private javax.swing.JLabel jLabelIdentificadorEndereco;
+    private javax.swing.JLabel jLabelNenhumEnderecoCadastrado;
     private javax.swing.JLabel jLabelNome;
-    private javax.swing.JLabel jLabelNomeProduto;
     private javax.swing.JLabel jLabelNovaSenha;
+    private javax.swing.JLabel jLabelNumero;
     private javax.swing.JLabel jLabelNumeroPagina;
-    private javax.swing.JLabel jLabelPreco;
+    private javax.swing.JLabel jLabelRua;
     private javax.swing.JLabel jLabelSemProduto;
     private javax.swing.JLabel jLabelSenhaAtual;
     private javax.swing.JLabel jLabelTitulo;
     private javax.swing.JLabel jLabelUsername;
-    private javax.swing.JPanel jPanelAddProduto;
+    private javax.swing.JPanel jPanelCamposEndereco;
+    private javax.swing.JPanel jPanelEndereco;
     private javax.swing.JPanel jPanelNavBar;
     private javax.swing.JPanel jPanelNomeEmail;
     private javax.swing.JPanel jPanelProdutos;
@@ -867,14 +988,16 @@ public class Loja extends javax.swing.JFrame {
     private javax.swing.JPasswordField jPasswordFieldConfirmarNovaSenha;
     private javax.swing.JPasswordField jPasswordFieldNovaSenha;
     private javax.swing.JPasswordField jPasswordFieldSenhaAtual;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPaneProdutos;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextArea jTextAreaDescricao;
+    public javax.swing.JTabbedPane jTabbedPaneOpcoes;
+    private javax.swing.JTextField jTextFieldBairro;
+    private javax.swing.JTextField jTextFieldCidade;
+    private javax.swing.JTextField jTextFieldComplemento;
     private javax.swing.JTextField jTextFieldEmail;
+    private javax.swing.JTextField jTextFieldEstado;
+    private javax.swing.JTextField jTextFieldIdentificadorEndereco;
     private javax.swing.JTextField jTextFieldNome;
-    private javax.swing.JTextField jTextFieldNomeProduto;
-    private javax.swing.JTextField jTextFieldPreco;
+    private javax.swing.JTextField jTextFieldNumero;
+    private javax.swing.JTextField jTextFieldRua;
     // End of variables declaration//GEN-END:variables
 }

@@ -6,6 +6,7 @@ import mtp.projetofinal.model.Carrinho;
 import mtp.projetofinal.model.Pedido;
 import mtp.projetofinal.model.PedidoProduto;
 import mtp.projetofinal.model.Produto;
+import mtp.projetofinal.model.Usuario;
 import mtp.projetofinal.model.crud.Create;
 import mtp.projetofinal.model.crud.Delete;
 import mtp.projetofinal.model.crud.Update;
@@ -41,7 +42,7 @@ public class ProdutoController {
             Delete d = new Delete();
 
             d.apagar(new PedidoProduto(), new Object[][]{{"idproduto", produto.getId()}});
-            d.apagar(produto, new Object[][] {{"id", produto.getId()}});
+            d.apagar(produto, new Object[][]{{"id", produto.getId()}});
 
             return true;
         }
@@ -140,30 +141,30 @@ public class ProdutoController {
      * Busca os produtos no carrinho de usuário x, caso não tenha carrinho, cria
      * antes.
      *
-     * @param idusuario
+     * @param usuario
      * @return Produto, Quantidade
      */
-    public HashMap<Produto, Integer> getProdutosNoCarrinho(int idusuario) {
+    public static HashMap<Produto, Integer> getProdutosNoCarrinho(Usuario usuario) {
 
-        Read r = new Read();
+        if (usuario.pegarIdCarrinho() != null) {
 
-        r.ler(new Pedido(), new Object[][] {{"idusuario", idusuario}, {"idstatus", 1}});
+            return new Carrinho().getProdutos(usuario.getId());
 
-        if (!r.getResult().isEmpty()) {
-            
-            return new Carrinho().getProdutos(idusuario);
-            
         } else {
-            
+
             Pedido p = new Pedido();
 
             p.setIdstatus(1);
-            p.setIdusuario(idusuario);
+            p.setIdusuario(usuario.getId());
             p.setValortotal(BigDecimal.ZERO);
 
             new Create().inserir(p);
-            
-            return getProdutosNoCarrinho(idusuario);
+
+            return getProdutosNoCarrinho(usuario);
         }
+    }
+
+    public static void removerCarrinho(PedidoProduto pp) {
+        new Delete().apagar(pp, new Object[][]{{"idpedido", pp.getIdpedido()}, {"idproduto", pp.getIdproduto()}});
     }
 }

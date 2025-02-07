@@ -1,13 +1,17 @@
 package mtp.projetofinal.model;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+import mtp.projetofinal.model.crud.Read;
+import mtp.projetofinal.model.crud.Update;
 
 /**
  *
  * @author luiz
  */
 public class Pedido {
-    
+
     private Integer id;
     private Integer idusuario;
     private Integer idendereco;
@@ -52,5 +56,35 @@ public class Pedido {
 
     public void setIdstatus(Integer idstatus) {
         this.idstatus = idstatus;
+    }
+
+    public void atualizarProdutosCarrinho(HashMap<Produto, Integer> produtos, Usuario usuario) {
+
+        Integer idpedido = usuario.pegarIdCarrinho();
+
+        Update u = new Update();
+
+        for (Map.Entry<Produto, Integer> entry : produtos.entrySet()) {
+
+            Produto produto = (Produto) entry.getKey();
+
+            PedidoProduto pp = new PedidoProduto();
+
+            pp.setIdpedido(idpedido);
+            pp.setIdproduto(produto.getId());
+            pp.setQuantidade(entry.getValue());
+
+            u.atualizar(pp, new Object[][]{{"idpedido", idpedido}, {"idproduto", produto.getId()}});
+        }
+    }
+
+    public void finalizarCompra() {
+
+        setIdstatus(2);
+
+        Update u = new Update();
+
+        u.atualizar(this, "id", id);
+
     }
 }

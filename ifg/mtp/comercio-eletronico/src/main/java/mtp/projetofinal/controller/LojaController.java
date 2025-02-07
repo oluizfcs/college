@@ -1,11 +1,22 @@
 package mtp.projetofinal.controller;
 
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
+import mtp.projetofinal.model.Endereco;
+import mtp.projetofinal.model.Pedido;
 import mtp.projetofinal.model.Produto;
 import mtp.projetofinal.model.Usuario;
 import mtp.projetofinal.model.crud.Create;
+import mtp.projetofinal.model.crud.Delete;
 import mtp.projetofinal.model.crud.Update;
 import mtp.projetofinal.model.crud.Read;
+import mtp.projetofinal.utils.Msg;
+import org.apache.commons.lang.RandomStringUtils;
 
 /**
  *
@@ -44,6 +55,67 @@ public class LojaController {
      */
     public Usuario getUsuarioAtualizado() {
         return this.usuario;
+    }
+
+    public static Boolean adicionarEndereco(Usuario user) {
+
+        Create c = new Create();
+
+        Endereco e = new Endereco();
+
+        e.setIdusuario(user.getId());
+        e.setIdentificador("novo endereço");
+        e.setEstado(" ");
+        e.setCidade(" ");
+        e.setBairro(" ");
+        e.setRua(" ");
+        e.setNumero(" ");
+        e.setComplemento(" ");
+
+        c.inserir(e);
+        
+        return c.getResult();
+    }
+
+    public Boolean salvarEndereco(Usuario user, Endereco e) {
+
+        Read r = new Read();
+
+        r.ler(new Pedido(), "idendereco", e.getId());
+
+        int quantidadeUsosEndereco = r.getResult().size();
+
+        if (quantidadeUsosEndereco > 0) {
+
+            Msg.exibirMensagem("Não foi possível editar este endereço pois ele já foi utilizado em algum pedido.", "Aviso", 2);
+            return false;
+        }
+
+        Update u = new Update();
+
+        u.atualizar(e, new Object[][]{{"id", e.getId()}, {"idusuario", user.getId()}});
+
+        return u.getResult();
+    }
+
+    public static Boolean excluirEndereco(Endereco e) {
+        Read r = new Read();
+
+        r.ler(new Pedido(), "idendereco", e.getId());
+
+        int quantidadeUsosEndereco = r.getResult().size();
+
+        if (quantidadeUsosEndereco > 0) {
+
+            Msg.exibirMensagem("Não foi possível excluir este endereço pois ele já foi utilizado em algum pedido.", "Aviso", 2);
+            return false;
+        }
+
+        Delete d = new Delete();
+
+        d.apagar(e, new Object[][]{{"id", e.getId()}});
+
+        return true;
     }
 
     /**
@@ -90,5 +162,62 @@ public class LojaController {
         c.inserir(produto);
 
         return c.getResult();
+    }
+
+    public String salvarFoto(File arquivo) {
+
+        String nomeFoto = null;
+
+        try {
+
+            BufferedImage imagem = ImageIO.read(arquivo);
+            BufferedImage imagemRedimensionada = redimensionarImagemProporcional(imagem, 180, 155);
+
+            File diretorioProdutos = new File("produtos/");
+
+            if (!diretorioProdutos.exists()) {
+                diretorioProdutos.mkdir();
+            }
+
+            nomeFoto = RandomStringUtils.random(100, true, true) + ".jpg";
+
+            String caminhoDestino = "produtos/" + nomeFoto;
+
+            File novaImagem = new File(caminhoDestino);
+
+            ImageIO.write(imagemRedimensionada, "jpg", novaImagem);
+
+        } catch (IOException | NullPointerException ex) {
+            Msg.exibirMensagem("Não foi possível utilizar esta imagem, tente outra.", "Erro", 0);
+            nomeFoto = null;
+        } catch (IllegalArgumentException e) {
+            Msg.exibirMensagem("Não foi possível identificar o tipo dessa imagem.", "Erro", 0);
+            nomeFoto = null;
+        }
+
+        return nomeFoto;
+    }
+
+    public static BufferedImage redimensionarImagemProporcional(BufferedImage imagem, int larguraMaxima, int alturaMaxima) {
+        int larguraOriginal = imagem.getWidth();
+        int alturaOriginal = imagem.getHeight();
+
+        // Calcular as novas dimensões mantendo a proporção
+        double proporcaoLargura = (double) larguraMaxima / larguraOriginal;
+        double proporcaoAltura = (double) alturaMaxima / alturaOriginal;
+        double proporcao = Math.min(proporcaoLargura, proporcaoAltura);
+
+        // Calcular a nova largura e altura
+        int novaLargura = (int) (larguraOriginal * proporcao);
+        int novaAltura = (int) (alturaOriginal * proporcao);
+
+        // Criar a imagem redimensionada
+        BufferedImage imagemRedimensionada = new BufferedImage(novaLargura, novaAltura, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = imagemRedimensionada.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g2d.drawImage(imagem, 0, 0, novaLargura, novaAltura, null);
+        g2d.dispose();
+
+        return imagemRedimensionada;
     }
 }

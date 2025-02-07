@@ -2,6 +2,7 @@ package mtp.projetofinal.view;
 
 import mtp.projetofinal.utils.Msg;
 import mtp.projetofinal.controller.LoginController;
+import mtp.projetofinal.utils.FrameUtils;
 
 /**
  * Tela de Login
@@ -15,6 +16,7 @@ public class LoginView extends javax.swing.JFrame {
      */
     public LoginView() {
         initComponents();
+        FrameUtils.setFrameIcon(this);
         setVisible(true);
     }
 
@@ -41,6 +43,7 @@ public class LoginView extends javax.swing.JFrame {
         jLabelSenha.setText("Senha");
 
         jButtonEntrar.setBackground(new java.awt.Color(81, 95, 255));
+        jButtonEntrar.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
         jButtonEntrar.setForeground(new java.awt.Color(255, 255, 255));
         jButtonEntrar.setText("Entrar");
         jButtonEntrar.addActionListener(new java.awt.event.ActionListener() {
@@ -50,6 +53,7 @@ public class LoginView extends javax.swing.JFrame {
         });
 
         jButtonCancelar.setBackground(new java.awt.Color(254, 255, 255));
+        jButtonCancelar.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
         jButtonCancelar.setText("Cancelar");
         jButtonCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

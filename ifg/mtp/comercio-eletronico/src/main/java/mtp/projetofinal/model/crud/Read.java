@@ -36,6 +36,10 @@ public class Read extends Conexao {
     public void ler(Object obj, int pagina, int qtdItens) {
         this.obj = obj;
 
+        if (pagina <= 0) {
+            pagina = 1;
+        }
+
         this.construirQuery();
         query.append(" LIMIT " + qtdItens + " OFFSET " + (qtdItens * (pagina - 1)));
         this.executarQuery();

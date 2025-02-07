@@ -79,9 +79,10 @@ public class Update extends Conexao {
         }
 
         sb.append(String.join(" = ?, ", dados.keySet()));
+        sb.append(" = ?");
 
         if (whereColuna != null) {
-            sb.append(" = ? WHERE " + whereColuna + " = ?");
+            sb.append(" WHERE " + whereColuna + " = ?");
 
         } else if (condicoes != null) {
             sb.append(" WHERE " + String.valueOf(condicoes[0][0]) + " = ?");
@@ -112,7 +113,14 @@ public class Update extends Conexao {
                 stmt.setObject(i, dados.get(dado));
                 i++;
             }
-            stmt.setObject(i, whereValor);
+            
+            if(whereValor != null) {
+                stmt.setObject(dados.size() + 1, whereValor);
+            } else if(condicoes != null) {
+                for(int j = 0; j < condicoes.length; j++) {
+                    stmt.setObject(dados.size() + 1 + j, condicoes[j][1]);;
+                }
+            }
 
             result = stmt.executeUpdate();
 

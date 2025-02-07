@@ -3,6 +3,7 @@ package mtp.projetofinal.view;
 import mtp.projetofinal.utils.Msg;
 import mtp.projetofinal.controller.CadastroController;
 import mtp.projetofinal.model.Usuario;
+import mtp.projetofinal.utils.FrameUtils;
 
 /**
  * Tela de Cadastro
@@ -16,6 +17,7 @@ public class CadastroView extends javax.swing.JFrame {
      */
     public CadastroView() {
         initComponents();
+        FrameUtils.setFrameIcon(this);
         setVisible(true);
     }
 
@@ -115,7 +117,7 @@ public class CadastroView extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonCadastrar)
                     .addComponent(jButtonCancelar))
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
