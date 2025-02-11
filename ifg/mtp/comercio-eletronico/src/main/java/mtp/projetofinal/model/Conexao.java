@@ -10,49 +10,30 @@ import mtp.projetofinal.utils.Msg;
  *
  * @author luiz
  */
-public abstract class Conexao {
+public class Conexao {
 
-    private final String url = "jdbc:postgresql://localhost/comercio_eletronico";
-    private final String user = "postgres";
-    private final String password = "postgres";
-    private Connection conn;
+    private static final String URL = "jdbc:postgresql://localhost/comercio_eletronico";
+    private static final String USER = "postgres";
+    private static final String PASSWORD = "postgres";
 
-    /**
-     * Método para conexão com o banco de dados.
-     *
-     * Carrega o driver e cria a conexão com o BD.
-     */
-    private void conectar() {
+    private static Connection conn;
 
-        try {
-
-            Class.forName("org.postgresql.Driver");
-
-            this.conn = DriverManager.getConnection(this.url, this.user, this.password);
-
-        } catch (ClassNotFoundException e) {
-            Msg.exibirMensagem(e.getMessage(), "Classe não encontrada", 0);
-        } catch (SQLException e) {
-            Msg.exibirMensagem("Conexao.conectar(): " + e.getMessage(), "Erro SQL", 0);
-        }
-
+    private Conexao() {
     }
 
     /**
-     * Retorna a conexão com o banco de dados.
-     *
-     * @return Connection objeto de conexão com o banco de dados
+     * @return Conexão com o banco de dados
      */
-    protected Connection getConnection() {
-        conectar();
-
-        if (conn != null) {
-            return conn;
-        } else {
-
-            Msg.exibirMensagem("Não há conexão com o banco de dados. Encerrando Sistema.", "ERRO FATAL", 0);
-            System.exit(1);
-            return null;
+    public static Connection getConnection() {
+        if (conn == null) {
+            try {
+                Class.forName("org.postgresql.Driver");
+                conn = DriverManager.getConnection(URL, USER, PASSWORD);
+            } catch (ClassNotFoundException | SQLException e) {
+                Msg.exibirMensagem("Não há conexão com o banco de dados. Encerrando Sistema." + e.getMessage(), "ERRO FATAL", 0);
+                System.exit(1);
+            }
         }
+        return conn;
     }
 }

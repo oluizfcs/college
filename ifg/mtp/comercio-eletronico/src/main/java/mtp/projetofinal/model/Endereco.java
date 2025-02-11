@@ -4,7 +4,7 @@ package mtp.projetofinal.model;
  *
  * @author luizf
  */
-public class Endereco extends Conexao {
+public class Endereco {
     
     private Integer id;
     private Integer idusuario;

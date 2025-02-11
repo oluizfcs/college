@@ -1,6 +1,5 @@
 package mtp.projetofinal.model;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,17 +11,7 @@ import mtp.projetofinal.utils.Msg;
  *
  * @author luiz
  */
-public class Carrinho extends Conexao {
-
-    Connection conn;
-
-    /**
-     * Cria um novo carrinho, responsável pela maior parte das interações entre
-     * usuario-pedido-produto no banco de dados.
-     */
-    public Carrinho() {
-        this.conn = super.getConnection();
-    }
+public class Carrinho {
 
     /**
      * Busca quantos pedidos um determinado produto possui.
@@ -34,23 +23,24 @@ public class Carrinho extends Conexao {
 
         int qtd = 0;
 
-        try {
+        String query = """
+            SELECT COUNT(idproduto) 
+            FROM pedido_produto
+            JOIN pedido ON idpedido = pedido.id
+            WHERE idstatus = 2 AND pedido_produto.idproduto = ?
+        """;
 
-            PreparedStatement stmt = this.conn.prepareStatement("""
-                SELECT COUNT(idproduto) 
-                FROM pedido_produto
-                JOIN pedido ON idpedido = pedido.id
-                WHERE idstatus = 2 AND pedido_produto.idproduto = ?
-            """);
+        try (PreparedStatement stmt = Conexao.getConnection().prepareStatement(query)) {
 
             stmt.setInt(1, idproduto);
-            ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
-                qtd = rs.getInt(1);
+            try (ResultSet rs = stmt.executeQuery()) {
+                
+                if (rs.next()) {
+                    qtd = rs.getInt(1);
+                }
             }
 
-            stmt.close();
         } catch (SQLException e) {
             Msg.exibirMensagem("Carrinho.getQuantidadeDePedidos(): " + e.getMessage(), "Erro SQL", 0);
         }
@@ -68,38 +58,67 @@ public class Carrinho extends Conexao {
 
         HashMap<Produto, Integer> produtos = new HashMap<>();
 
-        try {
+        String query = """
+            SELECT  produto.id, produto.nome, produto.descricao, produto.preco, produto.foto, pedido_produto.quantidade
+            FROM produto
+            JOIN pedido_produto ON produto.id = pedido_produto.idproduto
+            JOIN pedido ON pedido.id = pedido_produto.idpedido
+            WHERE idusuario = ? AND idstatus = 1
+        """;
 
-            PreparedStatement stmt = this.conn.prepareStatement("""
-                SELECT  produto.id, produto.nome, produto.descricao, produto.preco, produto.foto, pedido_produto.quantidade
-                FROM produto
-                JOIN pedido_produto ON produto.id = pedido_produto.idproduto
-                JOIN pedido ON pedido.id = pedido_produto.idpedido
-                WHERE idusuario = ? AND idstatus = 1
-            """);
+        try (PreparedStatement stmt = Conexao.getConnection().prepareStatement(query)) {
 
             stmt.setInt(1, idusuario);
-            ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
+            try (ResultSet rs = stmt.executeQuery()) {
 
-                Produto p = new Produto();
+                while (rs.next()) {
 
-                p.setId(rs.getInt("id"));
-                p.setNome(rs.getString("nome"));
-                p.setDescricao(rs.getString("descricao"));
-                p.setPreco(rs.getBigDecimal("preco"));
-                p.setFoto(rs.getString("foto"));
+                    Produto p = new Produto();
 
-                produtos.put(p, rs.getInt("quantidade"));
+                    p.setId(rs.getInt("id"));
+                    p.setNome(rs.getString("nome"));
+                    p.setDescricao(rs.getString("descricao"));
+                    p.setPreco(rs.getBigDecimal("preco"));
+                    p.setFoto(rs.getString("foto"));
+
+                    produtos.put(p, rs.getInt("quantidade"));
+                }
             }
-
-            stmt.close();
 
         } catch (SQLException e) {
             Msg.exibirMensagem("Carrinho.getQuantidadeDePedidos(): " + e.getMessage(), "Erro SQL", 0);
         }
 
         return produtos;
+    }
+
+    public Boolean produtoEstaNoCarrinho(Integer idproduto, Integer idpedido) {
+
+        String query = """
+            SELECT COUNT(produto.id)
+            FROM produto
+            JOIN pedido_produto ON produto.id = pedido_produto.idproduto
+            JOIN pedido ON pedido.id = pedido_produto.idpedido
+            WHERE produto.id = ? AND pedido.id = ?
+        """;
+
+        try (PreparedStatement stmt = Conexao.getConnection().prepareStatement(query)) {
+
+            stmt.setInt(1, idproduto);
+            stmt.setInt(2, idpedido);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+
+        } catch (SQLException e) {
+            Msg.exibirMensagem("Carrinho.produtoEstaNoCarrinho(): " + e.getMessage(), "Erro SQL", 0);
+        }
+
+        return false;
     }
 }

@@ -1,12 +1,12 @@
 package mtp.projetofinal.utils;
 
-import static com.sun.java.accessibility.util.AWTEventMonitor.addWindowListener;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import mtp.projetofinal.controller.PedidoController;
 import mtp.projetofinal.controller.ProdutoController;
 import mtp.projetofinal.model.Produto;
 import mtp.projetofinal.model.Usuario;
@@ -39,14 +39,15 @@ public class PanelProduto extends javax.swing.JPanel {
 
         initComponents();
 
-        jLabelNome.setText(produto.getNome());
-        jLabelPreco.setText("R$: " + String.valueOf(produto.getPreco()));
+        atualizarDetalhesProduto();
 
-        // Coloca a foto padrão caso o produto não tenha foto
-        if (produto.getFoto() != null) {
-            jLabelFoto.setIcon(new ImageIcon("produtos/" + produto.getFoto()));
-        }
-        
+        jDialogDetalhesProduto.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                loja.setEnabled(true);
+            }
+        });
+
         setVisible(true);
     }
 
@@ -54,17 +55,35 @@ public class PanelProduto extends javax.swing.JPanel {
      * Coloca as informações do produto no card de detalhamento
      */
     public void atualizarDetalhesProduto() {
+        
+        jLabelNome.setText(produto.getNome());
+        jLabelPreco.setText("R$: " + String.valueOf(this.produto.getPreco()));
+        
         jTextAreaDescricao.setText(this.produto.getDescricao());
         jLabelInfoPreco.setText("R$: " + String.valueOf(this.produto.getPreco()));
+
+        // Coloca a foto padrão caso o produto não tenha foto
+        if (produto.getFoto() != null) {
+            jLabelFoto.setIcon(new ImageIcon("produtos/" + produto.getFoto()));
+        }
 
         if (!this.usuario.getAdmin()) {
             jButtonEditar.setVisible(false);
             jButtonExcluir.setVisible(false);
         }
 
+        jLabelNoCarrinho.setVisible(PedidoController.produtoEstaNoCarrinho(usuario, produto));
+
         jDialogDetalhesProduto.setTitle(this.produto.getNome());
     }
 
+    /**
+     * @param produto Produto a ser atualizado 
+     */
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -82,6 +101,7 @@ public class PanelProduto extends javax.swing.JPanel {
         jLabelPreco = new javax.swing.JLabel();
         jLabelNome = new javax.swing.JLabel();
         jLabelFoto = new javax.swing.JLabel();
+        jLabelNoCarrinho = new javax.swing.JLabel();
 
         jDialogDetalhesProduto.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         jDialogDetalhesProduto.setTitle(this.produto.getNome());
@@ -96,7 +116,9 @@ public class PanelProduto extends javax.swing.JPanel {
 
         jTextAreaDescricao.setEditable(false);
         jTextAreaDescricao.setColumns(20);
+        jTextAreaDescricao.setLineWrap(true);
         jTextAreaDescricao.setRows(5);
+        jTextAreaDescricao.setTabSize(2);
         jTextAreaDescricao.setFocusable(false);
         jScrollPane1.setViewportView(jTextAreaDescricao);
 
@@ -233,28 +255,35 @@ public class PanelProduto extends javax.swing.JPanel {
 
         jLabelFoto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/produto-sem-foto.png"))); // NOI18N
 
+        jLabelNoCarrinho.setIcon(new javax.swing.ImageIcon(getClass().getResource("/carrinho-pequeno.png"))); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(24, Short.MAX_VALUE)
-                .addComponent(jLabelFoto)
-                .addContainerGap(24, Short.MAX_VALUE))
             .addComponent(jLabelNome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(27, Short.MAX_VALUE)
+                .addComponent(jLabelFoto)
+                .addGap(21, 21, 21))
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabelPreco, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabelPreco, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelNoCarrinho)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelNome)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelFoto)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
-                .addComponent(jLabelPreco)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelPreco, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabelNoCarrinho, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -330,6 +359,8 @@ public class PanelProduto extends javax.swing.JPanel {
             Msg.exibirMensagem("Produto adicionado ao carrinho com sucesso.", "Sucesso!", 1);
             jDialogDetalhesProduto.setVisible(false);
             loja.setEnabled(true);
+            atualizarDetalhesProduto();
+            loja.setQtdNoCarrinho(ProdutoController.getProdutosNoCarrinho(usuario).size());
         }
     }//GEN-LAST:event_jButtonAddCarrinhoActionPerformed
 
@@ -342,6 +373,7 @@ public class PanelProduto extends javax.swing.JPanel {
     public javax.swing.JDialog jDialogDetalhesProduto;
     private javax.swing.JLabel jLabelFoto;
     private javax.swing.JLabel jLabelInfoPreco;
+    private javax.swing.JLabel jLabelNoCarrinho;
     private javax.swing.JLabel jLabelNome;
     private javax.swing.JLabel jLabelPreco;
     private javax.swing.JLabel jLabelTitulo;

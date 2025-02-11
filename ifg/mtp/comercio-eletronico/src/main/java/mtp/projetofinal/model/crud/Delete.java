@@ -1,6 +1,5 @@
 package mtp.projetofinal.model.crud;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import mtp.projetofinal.utils.Msg;
@@ -11,12 +10,19 @@ import mtp.projetofinal.model.Conexao;
  *
  * @author luiz
  */
-public class Delete extends Conexao {
+public class Delete {
 
     private Object objeto;
     private String query;
     private Object[][] condicoes = null;
 
+    /**
+     * Apaga um objeto do banco de dados respeitando as condições passadas
+     *
+     * @param objeto O objeto que representa o nome da tabela onde será
+     * procurado o registro a ser excluido
+     * @param condicoes regras para filtrar o objeto
+     */
     public void apagar(Object objeto, Object[][] condicoes) {
         this.objeto = objeto;
         this.condicoes = condicoes;
@@ -56,17 +62,14 @@ public class Delete extends Conexao {
      * Executa a query de exclusão
      */
     private void executarQuery() {
-        Connection conn = super.getConnection();
 
-        try {
-            PreparedStatement stmt = conn.prepareStatement(query);
+        try (PreparedStatement stmt = Conexao.getConnection().prepareStatement(query)) {
 
             for (int i = 0; i < condicoes.length; i++) {
                 stmt.setObject(i + 1, condicoes[i][1]);
             }
 
             stmt.executeUpdate();
-            stmt.close();
 
         } catch (SQLException e) {
             Msg.exibirMensagem("Delete.executarQuery(): " + e.getMessage(), "Erro SQL", 0);

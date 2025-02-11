@@ -1,7 +1,6 @@
 package mtp.projetofinal.model.crud;
 
 import java.lang.reflect.Field;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -14,7 +13,7 @@ import mtp.projetofinal.model.Conexao;
  *
  * @author luiz
  */
-public class Create extends Conexao {
+public class Create {
 
     private Object obj;
 
@@ -38,7 +37,7 @@ public class Create extends Conexao {
 
         construirQuery();
         executarQuery();
-        
+
         this.obj = null;
     }
 
@@ -49,7 +48,7 @@ public class Create extends Conexao {
     private void construirQuery() {
 
         dados.clear();
-        
+
         for (Field f : obj.getClass().getDeclaredFields()) {
             f.setAccessible(true);
             try {
@@ -77,14 +76,12 @@ public class Create extends Conexao {
      * Executa a query de inserção
      */
     private void executarQuery() {
-        try {
-
-            Connection conn = super.getConnection();
-
-            PreparedStatement stmt = conn.prepareStatement(query);
+        
+        try (PreparedStatement stmt = Conexao.getConnection().prepareStatement(query)) {
+            
             setarParametros(stmt);
+            
             result = stmt.executeUpdate();
-            stmt.close();
 
         } catch (SQLException e) {
             Msg.exibirMensagem("Create.executarQuery(): " + e.getMessage(), "Erro SQL", 0);

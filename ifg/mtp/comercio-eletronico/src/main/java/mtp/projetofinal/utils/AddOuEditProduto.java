@@ -2,7 +2,10 @@ package mtp.projetofinal.utils;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.instrument.IllegalClassFormatException;
 import java.math.BigDecimal;
+import java.util.IllegalFormatException;
+import java.util.InputMismatchException;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import mtp.projetofinal.controller.LojaController;
@@ -22,7 +25,14 @@ public class AddOuEditProduto extends javax.swing.JFrame {
     private String fotoDoProduto = null;
     private Produto produto;
 
+    /**
+     * Representa a ação de adicionar um produto ao banco de dados
+     */
     public static final int ADD = 1;
+
+    /**
+     * Representa a ação de editar um produto do banco de dados
+     */
     public static final int EDIT = 2;
 
     /**
@@ -52,9 +62,9 @@ public class AddOuEditProduto extends javax.swing.JFrame {
         if (acao == ADD) {
             jButtonAdicionarSalvar.setText("Adicionar");
         } else if (acao == EDIT) {
-            
+
             pp.jDialogDetalhesProduto.setEnabled(false);
-            
+
             jButtonAdicionarSalvar.setText("Salvar Alterações");
             jTextFieldNome.setText(this.produto.getNome());
             jTextAreaDescricao.setText(this.produto.getDescricao());
@@ -71,10 +81,10 @@ public class AddOuEditProduto extends javax.swing.JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if(acao == ADD) {
+                if (acao == ADD) {
                     loja.setEnabled(true);
                 }
-                
+
                 if (pp != null) {
                     pp.jDialogDetalhesProduto.setEnabled(true);
                 }
@@ -105,7 +115,7 @@ public class AddOuEditProduto extends javax.swing.JFrame {
         jLabelFotoAdicionando = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Adicionar ou Editar Produto");
+        setTitle(acao == 1 ? "Adicionar Produto" : "Editar Produto");
         setResizable(false);
 
         jPanelPrincipal.setBackground(new java.awt.Color(255, 255, 255));
@@ -250,22 +260,34 @@ public class AddOuEditProduto extends javax.swing.JFrame {
 
     private void jButtonAdicionarSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAdicionarSalvarActionPerformed
 
-        if (acao == ADD) {
+        String nome = jTextFieldNome.getText();
+        String descricao = jTextAreaDescricao.getText();
+        String stringPreco = jTextFieldPreco.getText();
+
+        if (nome.isBlank() || descricao.isBlank() || stringPreco.isBlank()) {
+            Msg.exibirMensagem("Nenhum campo pode estar vazio.", "Aviso", 2);
+        } else if (nome.length() > 45) {
+            Msg.exibirMensagem("O nome do produto deve ter no máximo 45 caracteres.", "Aviso", 2);
+        } else {
             try {
-
-                Produto p = new Produto();
-                p.setNome(jTextFieldNome.getText());
-                p.setDescricao(jTextAreaDescricao.getText());
-
-                p.setPreco(BigDecimal.valueOf(Double.parseDouble(jTextFieldPreco.getText())));
-
-                if (fotoDoProduto != null) {
-                    p.setFoto(fotoDoProduto);
+                
+                BigDecimal preco = BigDecimal.valueOf(Double.parseDouble(stringPreco));
+                
+                if(preco.compareTo(new BigDecimal(99999999)) == 1) {
+                    throw new InputMismatchException("O preço deve ser menor que 100 milhões.");
                 }
 
-                if (p.getNome().isBlank() || p.getDescricao().isBlank()) {
-                    Msg.exibirMensagem("Nome e descrição são obrigatórios", "Aviso", 2);
-                } else {
+                if (acao == ADD) {
+
+                    Produto p = new Produto();
+                    p.setNome(nome);
+                    p.setDescricao(descricao);
+                    p.setPreco(preco);
+
+                    if (fotoDoProduto != null) {
+                        p.setFoto(fotoDoProduto);
+                    }
+
                     LojaController lc = new LojaController();
 
                     if (lc.novoProduto(p)) {
@@ -275,42 +297,28 @@ public class AddOuEditProduto extends javax.swing.JFrame {
                         loja.setEnabled(true);
                     }
                 }
-            } catch (NumberFormatException e) {
-                Msg.exibirMensagem("O valor inserido no campo Preço é inválido", "Aviso", 2);
-            }
-        }
 
-        if (acao == EDIT) {
+                if (acao == EDIT) {
 
-            String pnome = jTextFieldNome.getText();
-            String pdescricao = jTextAreaDescricao.getText();
-
-            try {
-                BigDecimal ppreco = BigDecimal.valueOf(Double.parseDouble(jTextFieldPreco.getText()));
-
-                if (pnome.isBlank() || pdescricao.isBlank()) {
-                    Msg.exibirMensagem("Nome e descrição devem ser preenchidos", "Aviso", 2);
-                } else {
                     Produto p = new Produto();
-                    ProdutoController pc = new ProdutoController();
-
                     p.setId(produto.getId());
-                    p.setNome(pnome);
-                    p.setDescricao(pdescricao);
-                    p.setPreco(ppreco);
+                    p.setNome(nome);
+                    p.setDescricao(descricao);
+                    p.setPreco(preco);
                     p.setFoto(fotoDoProduto);
 
-                    if (pc.editarProduto(p)) {
+                    if (ProdutoController.editarProduto(p)) {
                         Msg.exibirMensagem("Produto editado com sucesso!", "Sucesso", 1);
-                        dispose();
-                        produto = pc.getProdutoAtualizado();
-                        pp.jDialogDetalhesProduto.setEnabled(true);
+                        pp.setProduto(p);
                         pp.atualizarDetalhesProduto();
-                        this.loja.carregarProdutos();
+                        pp.jDialogDetalhesProduto.setEnabled(true);
+                        dispose();
                     }
                 }
             } catch (NumberFormatException e) {
-                Msg.exibirMensagem("Insira um preço válido!", "Aviso", 2);
+                Msg.exibirMensagem("O preço deve conter um número de até duas casas decimais separadas por ponto Exemplo: 49.90", "Aviso", 2);
+            } catch (InputMismatchException e) {
+                Msg.exibirMensagem(e.getMessage(), "Aviso", 2);
             }
         }
     }//GEN-LAST:event_jButtonAdicionarSalvarActionPerformed
@@ -319,7 +327,7 @@ public class AddOuEditProduto extends javax.swing.JFrame {
 
         dispose();
 
-        if(acao == ADD) {
+        if (acao == ADD) {
             loja.setEnabled(true);
         }
 

@@ -17,8 +17,8 @@ CREATE TABLE produto (
 CREATE TABLE endereco (
 	id serial UNIQUE NOT NULL PRIMARY KEY,
 	idUsuario integer NOT NULL,
-    identificador varchar(20) NOT NULL,
-	estado varchar(45) NOT NULL,
+        identificador varchar(20) NOT NULL,
+	estado varchar(2) NOT NULL,
 	cidade varchar(45) NOT NULL,
 	bairro varchar(45) NOT NULL,
 	rua varchar(45) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE pedido (
 	id serial UNIQUE NOT NULL PRIMARY KEY,
 	idUsuario integer NOT NULL,
 	idEndereco integer,
-	valorTotal numeric(10,2) NOT NULL DEFAULT 0,
+	valorTotal numeric(15,2) NOT NULL DEFAULT 0,
 	idStatus integer NOT NULL,
 	FOREIGN KEY (idUsuario) REFERENCES usuario(id),
 	FOREIGN KEY (idEndereco) REFERENCES endereco(id)

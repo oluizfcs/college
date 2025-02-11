@@ -8,7 +8,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import mtp.projetofinal.controller.PedidoController;
 import mtp.projetofinal.controller.ProdutoController;
+import mtp.projetofinal.controller.UsuarioController;
 import mtp.projetofinal.model.Endereco;
 import mtp.projetofinal.model.Pedido;
 import mtp.projetofinal.model.Produto;
@@ -22,12 +24,17 @@ import mtp.projetofinal.utils.PanelProdutoCarrinho;
  * @author luiz
  */
 public class CarrinhoView extends javax.swing.JFrame {
-    
-    private final Loja loja;
-    private final Usuario usuario;
+
+    private Loja loja = null;
+    private Usuario usuario = null;
+    private MeusPedidos meusPedidos = null;
+
+    /**
+     * Relação de produtos e quantidades no carrinho
+     */
     public HashMap<Produto, Integer> produtos;
     ArrayList<Endereco> enderecosDoUsuario;
-    private final Pedido pedido = new Pedido();
+    private Pedido pedido = new Pedido();
     BigDecimal total = BigDecimal.ZERO;
 
     /**
@@ -39,20 +46,22 @@ public class CarrinhoView extends javax.swing.JFrame {
     public CarrinhoView(Loja loja, Usuario usuario) {
         this.loja = loja;
         this.usuario = usuario;
-        
+
         initComponents();
-        
-        pedido.setId(usuario.pegarIdCarrinho());
+
+        pedido.setId(UsuarioController.getIdCarrinho(usuario));
         pedido.setIdusuario(usuario.getId());
-        
+
         FrameUtils.setFrameIcon(this);
-        
+
         setLocationRelativeTo(loja);
-        
+
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
-        
+
+        jButtonFechar.setText("Comprar depois");
+
         carregarProdutos();
-        
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -60,72 +69,171 @@ public class CarrinhoView extends javax.swing.JFrame {
                 loja.setEnabled(true);
             }
         });
-        
+
         setVisible(true);
     }
-    
+
+    public CarrinhoView(MeusPedidos meusPedidos, Pedido pedido) {
+        this.meusPedidos = meusPedidos;
+        this.pedido = pedido;
+        initComponents();
+        FrameUtils.setFrameIcon(this);
+        setLocationRelativeTo(meusPedidos);
+        jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
+        carregarProdutos();
+        jButtonComprar.setVisible(false);
+        jButtonFechar.setText("Fechar");
+        setTitle("Detalhes do Pedido #" + pedido.getId());
+        setVisible(true);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                meusPedidos.setEnabled(true);
+            }
+        });
+    }
+
+    /**
+     * @return O usuário dono do carrinho
+     */
     public Usuario getUsuario() {
         return usuario;
     }
-    
+
+    /**
+     * @return A loja vinculada a este carrinho
+     */
+    public Loja getLoja() {
+        return loja;
+    }
+
+    /**
+     * Atualiza a lista de produtos que estão no carrinho
+     */
     public void carregarProdutos() {
-        
+
         jPanelProdutos.setLayout(new FlowLayout());
-        
+
         jPanelProdutos.removeAll();
-        
-        produtos = ProdutoController.getProdutosNoCarrinho(usuario);
-        
-        if (produtos != null) {
-            
+
+        Boolean modificavel = false;
+
+        if (loja != null) {
+            produtos = ProdutoController.getProdutosNoCarrinho(usuario);
             jPanelProdutos.setPreferredSize(new Dimension(700, 200 * produtos.size()));
-            
+            modificavel = true;
+        }
+
+        if (meusPedidos != null) {
+            produtos = pedido.produtos();
+            jPanelProdutos.setPreferredSize(new Dimension(700, 200 * (produtos.size() + 1)));
+            modificavel = false;
+        }
+
+        if (produtos != null) {
+
             for (Map.Entry<Produto, Integer> entry : produtos.entrySet()) {
-                
-                PanelProdutoCarrinho ppc = new PanelProdutoCarrinho(this, entry.getKey(), entry.getValue());
-                
+
+                PanelProdutoCarrinho ppc = new PanelProdutoCarrinho(this, entry.getKey(), entry.getValue(), modificavel);
+
                 jPanelProdutos.add(ppc);
             }
-            
+
             atualizarValorTotal();
+
+            if (meusPedidos != null) {
+
+                Endereco e = pedido.endereco();
+
+                String estado = e.getEstado();
+                
+                estado = switch (estado) {
+                    case "AC" -> "Acre";
+                    case "AL" -> "Alagoas";
+                    case "AP" -> "Amapá";
+                    case "AM" -> "Amazonas";
+                    case "BA" -> "Bahia";
+                    case "CE" -> "Ceará";
+                    case "DF" -> "Distrito Federal";
+                    case "ES" -> "Espírito Santo";
+                    case "GO" -> "Goiás";
+                    case "MA" -> "Maranhão";
+                    case "MT" -> "Mato Grosso";
+                    case "MS" -> "Mato Grosso do Sul";
+                    case "MG" -> "Minas Gerais";
+                    case "PA" -> "Pará";
+                    case "PB" -> "Paraíba";
+                    case "PR" -> "Paraná";
+                    case "PE" -> "Pernambuco";
+                    case "PI" -> "Piauí";
+                    case "RJ" -> "Rio de Janeiro";
+                    case "RN" -> "Rio Grande do Norte";
+                    case "RS" -> "Rio Grande do Sul";
+                    case "RO" -> "Rondônia";
+                    case "RR" -> "Roraima";
+                    case "SC" -> "Santa Catarina";
+                    case "SP" -> "São Paulo";
+                    case "SE" -> "Sergipe";
+                    case "TO" -> "Tocantins";
+                    default -> "Sigla inválida";
+                };
+                
+
+                jPanelProdutos.add(jPanelEntregarEm);
+                jLabelRuaNumero.setText("Rua: " + e.getRua() + " Nº" + e.getNumero());
+                jLabelBairro.setText(e.getBairro());
+                jLabelCidadeEstado.setText(e.getCidade() + ", " + estado);
+                jLabelComplemento.setText(e.getComplemento());
+
+            }
         }
-        
+
         jPanelProdutos.validate();
         jPanelProdutos.repaint();
     }
-    
+
+    /**
+     * Percorre a relação de produtos e quantidades, salvando a soma da
+     * multiplicação dos valores unitários e da quantidade de cada um deles numa
+     * variável só, chamada total;
+     */
     public void atualizarValorTotal() {
-        
+
         total = BigDecimal.ZERO;
-        
+
         for (Map.Entry<Produto, Integer> entry : produtos.entrySet()) {
-            
+
             Produto p = (Produto) entry.getKey();
-            
+
             BigDecimal subtotal = p.getPreco().multiply(new BigDecimal(entry.getValue()));
-            
+
             total = total.add(subtotal);
-            
+
         }
         jLabelTotal.setText("R$: " + total);
     }
-    
+
+    /**
+     * Atualiza a lista de endereços do usuário que é mostrada no jComboBox no
+     * jDialog de finalização de compra
+     */
     public void carregarEnderecos() {
         jComboBoxEndereco.removeAllItems();
-        
-        enderecosDoUsuario = usuario.enderecos();
-        
+
+        enderecosDoUsuario = UsuarioController.getEnderecos(usuario);
+
         jLabelNenhumEnderecoCadastrado.setVisible(enderecosDoUsuario.isEmpty());
-        
-        for (Endereco e : usuario.enderecos()) {
+
+        for (Endereco e : enderecosDoUsuario) {
             jComboBoxEndereco.addItem(e.getIdentificador());
         }
     }
-    
+
     private void salvarAlteracoes() {
-        new Pedido().atualizarProdutosCarrinho(produtos, usuario);
+        PedidoController.atualizarProdutosCarrinho(produtos, usuario);
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -139,6 +247,13 @@ public class CarrinhoView extends javax.swing.JFrame {
         jButtonCancelar = new javax.swing.JButton();
         jButtonGerenciarEnderecos = new javax.swing.JButton();
         jLabelNenhumEnderecoCadastrado = new javax.swing.JLabel();
+        jPanelEntregarEm = new javax.swing.JPanel();
+        jLabelDecorativaEntregarEm = new javax.swing.JLabel();
+        jLabelRuaNumero = new javax.swing.JLabel();
+        jLabelBairro = new javax.swing.JLabel();
+        jLabelCidadeEstado = new javax.swing.JLabel();
+        jLabelDecorativoComplemento = new javax.swing.JLabel();
+        jLabelComplemento = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jButtonFechar = new javax.swing.JButton();
         jButtonComprar = new javax.swing.JButton();
@@ -242,6 +357,71 @@ public class CarrinhoView extends javax.swing.JFrame {
         jDialogComprarLayout.setVerticalGroup(
             jDialogComprarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        jPanelEntregarEm.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabelDecorativaEntregarEm.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jLabelDecorativaEntregarEm.setText("Entregar em:");
+
+        jLabelRuaNumero.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        jLabelRuaNumero.setText("Rua: x Nº");
+
+        jLabelBairro.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        jLabelBairro.setText("Bairro");
+
+        jLabelCidadeEstado.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        jLabelCidadeEstado.setText("Cidade, estado");
+
+        jLabelDecorativoComplemento.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        jLabelDecorativoComplemento.setText("Complemento:");
+
+        jLabelComplemento.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        jLabelComplemento.setText("algum complemento");
+
+        javax.swing.GroupLayout jPanelEntregarEmLayout = new javax.swing.GroupLayout(jPanelEntregarEm);
+        jPanelEntregarEm.setLayout(jPanelEntregarEmLayout);
+        jPanelEntregarEmLayout.setHorizontalGroup(
+            jPanelEntregarEmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelEntregarEmLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(jPanelEntregarEmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelEntregarEmLayout.createSequentialGroup()
+                        .addGroup(jPanelEntregarEmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelRuaNumero, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabelBairro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanelEntregarEmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelEntregarEmLayout.createSequentialGroup()
+                                .addComponent(jLabelDecorativoComplemento, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(3, 3, 3))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelEntregarEmLayout.createSequentialGroup()
+                                .addComponent(jLabelComplemento, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())))
+                    .addGroup(jPanelEntregarEmLayout.createSequentialGroup()
+                        .addGroup(jPanelEntregarEmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelEntregarEmLayout.createSequentialGroup()
+                                .addComponent(jLabelDecorativaEntregarEm)
+                                .addGap(0, 501, Short.MAX_VALUE))
+                            .addComponent(jLabelCidadeEstado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
+        );
+        jPanelEntregarEmLayout.setVerticalGroup(
+            jPanelEntregarEmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelEntregarEmLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jLabelDecorativaEntregarEm)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanelEntregarEmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelRuaNumero)
+                    .addComponent(jLabelDecorativoComplemento))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanelEntregarEmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelBairro)
+                    .addComponent(jLabelComplemento))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabelCidadeEstado)
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -350,24 +530,32 @@ public class CarrinhoView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFecharActionPerformed
-        loja.setEnabled(true);
-        salvarAlteracoes();
+        if (loja != null) {
+            loja.setEnabled(true);
+            salvarAlteracoes();
+
+        }
+
+        if (meusPedidos != null) {
+            meusPedidos.setEnabled(true);
+        }
+
         dispose();
     }//GEN-LAST:event_jButtonFecharActionPerformed
 
     private void jButtonComprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonComprarActionPerformed
-        
+
         if (!produtos.isEmpty()) {
             salvarAlteracoes();
             setEnabled(false);
             carregarEnderecos();
-            
+
             pedido.setValortotal(total);
             jLabelValorTotalCompra.setText("R$: " + total);
-            
+
             jDialogComprar.setLocationRelativeTo(this);
             jDialogComprar.setVisible(true);
-            
+
         } else {
             Msg.exibirMensagem("Coloque alguns produtos no carrinho antes.", "Aviso", 2);
         }
@@ -376,7 +564,7 @@ public class CarrinhoView extends javax.swing.JFrame {
     private void jButtonGerenciarEnderecosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGerenciarEnderecosActionPerformed
         loja.jDialogConfig.setLocationRelativeTo(this);
         loja.jTabbedPaneOpcoes.setSelectedIndex(2);
-        loja.verificarEnderecos();
+        loja.carregarEnderecos();
         loja.setCarrinho(this);
         loja.jDialogConfig.setVisible(true);
     }//GEN-LAST:event_jButtonGerenciarEnderecosActionPerformed
@@ -389,14 +577,15 @@ public class CarrinhoView extends javax.swing.JFrame {
     private void jButtonFinalizarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFinalizarCompraActionPerformed
         if (!enderecosDoUsuario.isEmpty()) {
             pedido.setIdendereco(enderecosDoUsuario.get(jComboBoxEndereco.getSelectedIndex()).getId());
-            
-            pedido.finalizarCompra();
-            
+
+            PedidoController.finalizarCompra(pedido);
+
             jDialogComprar.setVisible(false);
             dispose();
             Msg.exibirMensagem("Compra realizada com sucesso, acompanhe o status do seu pedido na sua lista de pedidos!", "Pedido #" + pedido.getId(), 1);
             loja.setEnabled(true);
-            
+            loja.carregarProdutos();
+
         } else {
             Msg.exibirMensagem("É necessário cadastrar um endereço de entrega.", "Aviso", 2);
         }
@@ -410,12 +599,19 @@ public class CarrinhoView extends javax.swing.JFrame {
     private javax.swing.JButton jButtonGerenciarEnderecos;
     private javax.swing.JComboBox<String> jComboBoxEndereco;
     private javax.swing.JDialog jDialogComprar;
+    private javax.swing.JLabel jLabelBairro;
+    private javax.swing.JLabel jLabelCidadeEstado;
+    private javax.swing.JLabel jLabelComplemento;
+    private javax.swing.JLabel jLabelDecorativaEntregarEm;
+    private javax.swing.JLabel jLabelDecorativoComplemento;
     private javax.swing.JLabel jLabelEntregarEm;
     private javax.swing.JLabel jLabelNenhumEnderecoCadastrado;
+    private javax.swing.JLabel jLabelRuaNumero;
     private javax.swing.JLabel jLabelTotal;
     private javax.swing.JLabel jLabelValorTotalCompra;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanelEntregarEm;
     private javax.swing.JPanel jPanelProdutos;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;

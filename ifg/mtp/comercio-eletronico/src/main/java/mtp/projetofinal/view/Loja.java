@@ -1,11 +1,14 @@
 package mtp.projetofinal.view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import mtp.projetofinal.utils.PanelProduto;
 import java.util.ArrayList;
 import mtp.projetofinal.controller.LojaController;
+import mtp.projetofinal.controller.ProdutoController;
+import mtp.projetofinal.controller.UsuarioController;
 import mtp.projetofinal.model.Endereco;
 import mtp.projetofinal.utils.Msg;
 import mtp.projetofinal.model.Produto;
@@ -39,7 +42,7 @@ public class Loja extends javax.swing.JFrame {
         this.paginaAtual = paginaAtual;
         this.qtdItens = qtdItens;
 
-        enderecosDoUsuario = usuario.enderecos();
+        enderecosDoUsuario = UsuarioController.getEnderecos(usuario);
 
         initComponents();
 
@@ -67,6 +70,8 @@ public class Loja extends javax.swing.JFrame {
      * Exibe os produtos na loja
      */
     public void carregarProdutos() {
+
+        setQtdNoCarrinho(ProdutoController.getProdutosNoCarrinho(usuario).size());
 
         jPanelProdutos.removeAll();
 
@@ -121,10 +126,19 @@ public class Loja extends javax.swing.JFrame {
         jButtonUltima.setEnabled(paginaAtual != ultimaPagina);
     }
 
+    /**
+     * Usado para atualizar as informações do carrinho quando necessário
+     *
+     * @param carrinho a view do carrinho
+     */
     public void setCarrinho(CarrinhoView carrinho) {
         this.carrinho = carrinho;
     }
-    
+
+    public void setQtdNoCarrinho(Integer qtd) {
+        jLabelQtdTotalNoCarrinho.setText(String.valueOf(qtd));
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -154,7 +168,6 @@ public class Loja extends javax.swing.JFrame {
         jButtonExcluirEnderecoSelecionado = new javax.swing.JButton();
         jPanelCamposEndereco = new javax.swing.JPanel();
         jLabelEstado = new javax.swing.JLabel();
-        jTextFieldEstado = new javax.swing.JTextField();
         jLabelCidade = new javax.swing.JLabel();
         jTextFieldCidade = new javax.swing.JTextField();
         jTextFieldBairro = new javax.swing.JTextField();
@@ -169,6 +182,7 @@ public class Loja extends javax.swing.JFrame {
         jTextFieldIdentificadorEndereco = new javax.swing.JTextField();
         jLabelExemploIdentificador = new javax.swing.JLabel();
         jButtonSalvarEndereco = new javax.swing.JButton();
+        jComboBoxEstados = new javax.swing.JComboBox<>();
         jLabelNenhumEnderecoCadastrado = new javax.swing.JLabel();
         jLabelTitulo = new javax.swing.JLabel();
         jPanelNavBar = new javax.swing.JPanel();
@@ -177,6 +191,8 @@ public class Loja extends javax.swing.JFrame {
         jLabelConfig = new javax.swing.JLabel();
         jLabelCarrinho = new javax.swing.JLabel();
         jLabelAdicionarProduto = new javax.swing.JLabel();
+        jLabelMeusPedidos = new javax.swing.JLabel();
+        jLabelQtdTotalNoCarrinho = new javax.swing.JLabel();
         jScrollPaneProdutos = new javax.swing.JScrollPane();
         jPanelProdutos = new javax.swing.JPanel();
         jLabelSemProduto = new javax.swing.JLabel();
@@ -397,6 +413,8 @@ public class Loja extends javax.swing.JFrame {
             }
         });
 
+        jComboBoxEstados.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" }));
+
         javax.swing.GroupLayout jPanelCamposEnderecoLayout = new javax.swing.GroupLayout(jPanelCamposEndereco);
         jPanelCamposEndereco.setLayout(jPanelCamposEnderecoLayout);
         jPanelCamposEnderecoLayout.setHorizontalGroup(
@@ -408,13 +426,14 @@ public class Loja extends javax.swing.JFrame {
                         .addComponent(jButtonSalvarEndereco)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanelCamposEnderecoLayout.createSequentialGroup()
-                        .addGroup(jPanelCamposEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabelCidade)
-                            .addComponent(jLabelEstado)
-                            .addComponent(jLabelBairro)
-                            .addComponent(jTextFieldEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextFieldBairro, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
-                            .addComponent(jTextFieldCidade))
+                        .addGroup(jPanelCamposEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelCamposEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabelCidade)
+                                .addComponent(jLabelEstado)
+                                .addComponent(jLabelBairro)
+                                .addComponent(jTextFieldBairro, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                                .addComponent(jTextFieldCidade))
+                            .addComponent(jComboBoxEstados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanelCamposEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabelRua)
@@ -433,7 +452,7 @@ public class Loja extends javax.swing.JFrame {
                 .addComponent(jLabelIdentificadorEndereco)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextFieldIdentificadorEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 122, Short.MAX_VALUE))
         );
         jPanelCamposEnderecoLayout.setVerticalGroup(
             jPanelCamposEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -459,13 +478,11 @@ public class Loja extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldComplemento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanelCamposEnderecoLayout.createSequentialGroup()
-                        .addGroup(jPanelCamposEnderecoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelCamposEnderecoLayout.createSequentialGroup()
-                                .addGap(22, 22, 22)
-                                .addComponent(jTextFieldEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabelCidade))
-                            .addComponent(jLabelEstado))
+                        .addComponent(jLabelEstado)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxEstados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addComponent(jLabelCidade)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldCidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -558,6 +575,7 @@ public class Loja extends javax.swing.JFrame {
         });
 
         jLabelConfig.setIcon(new javax.swing.ImageIcon(getClass().getResource("/config.png"))); // NOI18N
+        jLabelConfig.setToolTipText("Alterarção de dados");
         jLabelConfig.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabelConfig.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -566,6 +584,7 @@ public class Loja extends javax.swing.JFrame {
         });
 
         jLabelCarrinho.setIcon(new javax.swing.ImageIcon(getClass().getResource("/carrinho.png"))); // NOI18N
+        jLabelCarrinho.setToolTipText("Carrinho");
         jLabelCarrinho.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabelCarrinho.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -574,6 +593,7 @@ public class Loja extends javax.swing.JFrame {
         });
 
         jLabelAdicionarProduto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/adicionar.png"))); // NOI18N
+        jLabelAdicionarProduto.setToolTipText("Adicionar Produto");
         jLabelAdicionarProduto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabelAdicionarProduto.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -581,37 +601,59 @@ public class Loja extends javax.swing.JFrame {
             }
         });
 
+        jLabelMeusPedidos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/meus-pedidos.png"))); // NOI18N
+        jLabelMeusPedidos.setToolTipText("Meus Pedidos");
+        jLabelMeusPedidos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabelMeusPedidos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabelMeusPedidosMouseClicked(evt);
+            }
+        });
+
+        jLabelQtdTotalNoCarrinho.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        jLabelQtdTotalNoCarrinho.setText("0");
+
         javax.swing.GroupLayout jPanelNavBarLayout = new javax.swing.GroupLayout(jPanelNavBar);
         jPanelNavBar.setLayout(jPanelNavBarLayout);
         jPanelNavBarLayout.setHorizontalGroup(
             jPanelNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelNavBarLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelNavBarLayout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addComponent(jLabelConfig)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabelUsername)
                     .addComponent(jButtonSair))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 687, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 603, Short.MAX_VALUE)
                 .addComponent(jLabelAdicionarProduto)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
+                .addComponent(jLabelMeusPedidos)
+                .addGap(18, 18, 18)
                 .addComponent(jLabelCarrinho)
-                .addGap(24, 24, 24))
+                .addGap(7, 7, 7)
+                .addComponent(jLabelQtdTotalNoCarrinho, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23))
         );
         jPanelNavBarLayout.setVerticalGroup(
             jPanelNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelNavBarLayout.createSequentialGroup()
-                .addGap(16, 16, 16)
                 .addGroup(jPanelNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabelConfig)
                     .addGroup(jPanelNavBarLayout.createSequentialGroup()
-                        .addComponent(jLabelUsername)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonSair))
-                    .addGroup(jPanelNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jLabelAdicionarProduto)
-                        .addComponent(jLabelCarrinho)))
-                .addGap(10, 10, 10))
+                        .addGap(16, 16, 16)
+                        .addGroup(jPanelNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelConfig)
+                            .addGroup(jPanelNavBarLayout.createSequentialGroup()
+                                .addComponent(jLabelUsername)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonSair))
+                            .addGroup(jPanelNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabelAdicionarProduto)
+                                .addComponent(jLabelCarrinho)
+                                .addComponent(jLabelMeusPedidos))))
+                    .addGroup(jPanelNavBarLayout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(jLabelQtdTotalNoCarrinho)))
+                .addGap(26, 26, 26))
         );
 
         jScrollPaneProdutos.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -703,10 +745,10 @@ public class Loja extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanelNavBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPaneProdutos, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanelNavBar, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPaneProdutos, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonProxima)
                     .addComponent(jLabelNumeroPagina)
@@ -733,7 +775,7 @@ public class Loja extends javax.swing.JFrame {
      */
     private void jLabelConfigMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelConfigMouseClicked
         jDialogConfig.setLocationRelativeTo(this);
-        verificarEnderecos();
+        carregarEnderecos();
 
         jComboBoxEnderecos.addActionListener((ActionEvent event) -> {
             preencherCamposEndereco();
@@ -741,8 +783,12 @@ public class Loja extends javax.swing.JFrame {
         jDialogConfig.setVisible(true);
     }//GEN-LAST:event_jLabelConfigMouseClicked
 
-    public void verificarEnderecos() {
-        enderecosDoUsuario = usuario.enderecos();
+    /**
+     * Atualiza a lista de endereços do usuário que é mostrada no jComboBox da
+     * aba de alteração de dados.
+     */
+    public void carregarEnderecos() {
+        enderecosDoUsuario = UsuarioController.getEnderecos(usuario);
         jComboBoxEnderecos.removeAllItems();
 
         if (enderecosDoUsuario.isEmpty()) {
@@ -769,12 +815,24 @@ public class Loja extends javax.swing.JFrame {
             Endereco e = enderecosDoUsuario.get(selecionado);
 
             jTextFieldIdentificadorEndereco.setText(e.getIdentificador());
-            jTextFieldEstado.setText(e.getEstado());
+            jComboBoxEstados.setSelectedItem(e.getEstado());
             jTextFieldCidade.setText(e.getCidade());
             jTextFieldBairro.setText(e.getBairro());
             jTextFieldRua.setText(e.getRua());
             jTextFieldNumero.setText(e.getNumero());
             jTextFieldComplemento.setText(e.getComplemento());
+
+            Boolean editavel = !LojaController.enderecoJaFoiUsado(e);
+
+            jTextFieldIdentificadorEndereco.setEditable(editavel);
+            jComboBoxEstados.setEnabled(editavel);
+            jComboBoxEstados.setForeground(Color.BLACK);
+            jTextFieldCidade.setEditable(editavel);
+            jTextFieldBairro.setEditable(editavel);
+            jTextFieldRua.setEditable(editavel);
+            jTextFieldNumero.setEditable(editavel);
+            jTextFieldComplemento.setEditable(editavel);
+
         }
     }
 
@@ -792,7 +850,11 @@ public class Loja extends javax.swing.JFrame {
 
         String nome = jTextFieldNome.getText();
 
-        if (!nome.equals("")) {
+        if (nome.isBlank()) {
+            Msg.exibirMensagem("O campo nome não pode estar vazio", "Aviso", 2);
+        } else if (nome.length() > 45) {
+            Msg.exibirMensagem("O nome pode ter no máximo 45 caracteres.", "Aviso", 2);
+        } else {
 
             usuario.setNome(nome);
 
@@ -803,10 +865,7 @@ public class Loja extends javax.swing.JFrame {
                 usuario = lc.getUsuarioAtualizado();
                 jLabelUsername.setText(usuario.getNome());
             }
-        } else {
-            Msg.exibirMensagem("O campo nome não pode estar vazio", "Aviso", 2);
         }
-
     }//GEN-LAST:event_jButtonAlterarNomeActionPerformed
 
     /**
@@ -817,12 +876,14 @@ public class Loja extends javax.swing.JFrame {
         String novaSenha = String.valueOf(jPasswordFieldNovaSenha.getPassword());
         String confirmarNovaSenha = String.valueOf(jPasswordFieldConfirmarNovaSenha.getPassword());
 
-        if (senhaAtual.equals("") || novaSenha.equals("") || confirmarNovaSenha.equals("")) {
+        if (senhaAtual.isBlank() || novaSenha.isBlank() || confirmarNovaSenha.isBlank()) {
             Msg.exibirMensagem("Todos os campos devem estar preenchidos", "Aviso", 2);
         } else if (!senhaAtual.equals(usuario.getSenha())) {
             Msg.exibirMensagem("A senha atual está incorreta!", "Aviso", 2);
         } else if (!novaSenha.equals(confirmarNovaSenha)) {
             Msg.exibirMensagem("A senha nova não coincide", "Aviso", 2);
+        } else if (novaSenha.length() > 255) {
+            Msg.exibirMensagem("A sua senha é desnecessáriamente grande", "Aviso", 2);
         } else {
             LojaController lc = new LojaController();
 
@@ -895,52 +956,76 @@ public class Loja extends javax.swing.JFrame {
 
     private void jButtonSalvarEnderecoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarEnderecoActionPerformed
 
-        Endereco e = enderecosDoUsuario.get(jComboBoxEnderecos.getSelectedIndex());
+        String identificador = jTextFieldIdentificadorEndereco.getText();
+        String cidade = jTextFieldCidade.getText();
+        String bairro = jTextFieldBairro.getText();
+        String rua = jTextFieldRua.getText();
+        String numero = jTextFieldNumero.getText();
 
-        if (!jTextFieldIdentificadorEndereco.getText().isEmpty() && !jTextFieldEstado.getText().isEmpty() && !jTextFieldCidade.getText().isEmpty() && !jTextFieldBairro.getText().isEmpty() && !jTextFieldRua.getText().isEmpty() && !jTextFieldNumero.getText().isEmpty()) {
+        if (identificador.isBlank() || cidade.isBlank() || bairro.isBlank() || rua.isBlank() || numero.isBlank()) {
+            Msg.exibirMensagem("Preencha todos os campos, só o complemento que é opcional.", "Aviso", 2);
+        } else if (identificador.length() > 20) {
+            Msg.exibirMensagem("O identificador pode ter no máximo 20 caracteres.", "Aviso", 2);
+        } else if (cidade.length() > 45) {
+            Msg.exibirMensagem("A cidade pode ter no máximo 45 caracteres.", "Aviso", 2);
+        } else if (bairro.length() > 45) {
+            Msg.exibirMensagem("O bairro pode ter no máximo 45 caracteres.", "Aviso", 2);
+        } else if (rua.length() > 45) {
+            Msg.exibirMensagem("A rua pode ter no máximo 45 caracteres.", "Aviso", 2);
+        } else if (numero.length() > 10) {
+            Msg.exibirMensagem("O número pode ter no máximo 10 caracteres.", "Aviso", 2);
+        } else {
+            
+            Endereco e = enderecosDoUsuario.get(jComboBoxEnderecos.getSelectedIndex());
+
             e.setIdentificador(jTextFieldIdentificadorEndereco.getText());
-            e.setEstado(jTextFieldEstado.getText());
+
+            e.setEstado((String) jComboBoxEstados.getSelectedItem());
             e.setCidade(jTextFieldCidade.getText());
             e.setBairro(jTextFieldBairro.getText());
             e.setRua(jTextFieldRua.getText());
             e.setNumero(jTextFieldNumero.getText());
 
-            if (!jTextFieldComplemento.getText().isEmpty()) {
-                e.setComplemento(jTextFieldComplemento.getText());
+            if (!jTextFieldComplemento.getText().isBlank()) {
+                if (jTextFieldComplemento.getText().length() > 45) {
+                    Msg.exibirMensagem("O complemento pode ter no máximo 45 caracteres.", "Aviso", 2);
+                } else {
+                    e.setComplemento(jTextFieldComplemento.getText());
+                }
             }
 
             LojaController lc = new LojaController();
 
             if (lc.salvarEndereco(usuario, e)) {
                 Msg.exibirMensagem("Endereço salvo com sucesso.", "Sucesso!", 1);
-                verificarEnderecos();
-                if(carrinho != null) {
+                carregarEnderecos();
+                if (carrinho != null) {
                     carrinho.carregarEnderecos();
                     carrinho = null;
                 }
             }
-
-        } else {
-            Msg.exibirMensagem("Preencha todos os campos, só o complemento que é opcional.", "Aviso", 2);
         }
-
-
     }//GEN-LAST:event_jButtonSalvarEnderecoActionPerformed
 
     private void jButtonExcluirEnderecoSelecionadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirEnderecoSelecionadoActionPerformed
-        if (LojaController.excluirEndereco(enderecosDoUsuario.get(jComboBoxEnderecos.getSelectedIndex()))) {
+        if (new LojaController().excluirEndereco(enderecosDoUsuario.get(jComboBoxEnderecos.getSelectedIndex()))) {
             Msg.exibirMensagem("Endereço excluido com sucesso.", "Sucesso!", 1);
-            verificarEnderecos();
+            carregarEnderecos();
         }
     }//GEN-LAST:event_jButtonExcluirEnderecoSelecionadoActionPerformed
 
     private void jButtonCriarNovoEnderecoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCriarNovoEnderecoActionPerformed
         if (LojaController.adicionarEndereco(usuario)) {
-            verificarEnderecos();
+            carregarEnderecos();
             jTextFieldIdentificadorEndereco.requestFocus();
             jTextFieldIdentificadorEndereco.selectAll();
         }
     }//GEN-LAST:event_jButtonCriarNovoEnderecoActionPerformed
+
+    private void jLabelMeusPedidosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelMeusPedidosMouseClicked
+        setEnabled(false);
+        new MeusPedidos(this, usuario);
+    }//GEN-LAST:event_jLabelMeusPedidosMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAlterarNome;
@@ -956,6 +1041,7 @@ public class Loja extends javax.swing.JFrame {
     private javax.swing.JButton jButtonSalvarSenha;
     private javax.swing.JButton jButtonUltima;
     private javax.swing.JComboBox<String> jComboBoxEnderecos;
+    private javax.swing.JComboBox<String> jComboBoxEstados;
     public javax.swing.JDialog jDialogConfig;
     private javax.swing.JLabel jLabelAdicionarProduto;
     private javax.swing.JLabel jLabelBairro;
@@ -969,11 +1055,13 @@ public class Loja extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelEstado;
     private javax.swing.JLabel jLabelExemploIdentificador;
     private javax.swing.JLabel jLabelIdentificadorEndereco;
+    private javax.swing.JLabel jLabelMeusPedidos;
     private javax.swing.JLabel jLabelNenhumEnderecoCadastrado;
     private javax.swing.JLabel jLabelNome;
     private javax.swing.JLabel jLabelNovaSenha;
     private javax.swing.JLabel jLabelNumero;
     private javax.swing.JLabel jLabelNumeroPagina;
+    private javax.swing.JLabel jLabelQtdTotalNoCarrinho;
     private javax.swing.JLabel jLabelRua;
     private javax.swing.JLabel jLabelSemProduto;
     private javax.swing.JLabel jLabelSenhaAtual;
@@ -994,7 +1082,6 @@ public class Loja extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldCidade;
     private javax.swing.JTextField jTextFieldComplemento;
     private javax.swing.JTextField jTextFieldEmail;
-    private javax.swing.JTextField jTextFieldEstado;
     private javax.swing.JTextField jTextFieldIdentificadorEndereco;
     private javax.swing.JTextField jTextFieldNome;
     private javax.swing.JTextField jTextFieldNumero;

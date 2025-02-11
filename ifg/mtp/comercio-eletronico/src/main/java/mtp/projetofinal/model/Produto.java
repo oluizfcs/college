@@ -13,7 +13,7 @@ public class Produto {
     private String descricao;
     private BigDecimal preco;
     private String foto;
-    
+
     public Integer getId() {
         return id;
     }

@@ -57,6 +57,12 @@ public class LojaController {
         return this.usuario;
     }
 
+    /**
+     * Cria um novo endereço para o usuário modificar e salvar depois
+     *
+     * @param user Em quem será adicionado o novo endereço
+     * @return true deu certo<br> false deu errado
+     */
     public static Boolean adicionarEndereco(Usuario user) {
 
         Create c = new Create();
@@ -65,28 +71,37 @@ public class LojaController {
 
         e.setIdusuario(user.getId());
         e.setIdentificador("novo endereço");
-        e.setEstado(" ");
-        e.setCidade(" ");
-        e.setBairro(" ");
-        e.setRua(" ");
-        e.setNumero(" ");
-        e.setComplemento(" ");
+        e.setEstado("");
+        e.setCidade("");
+        e.setBairro("");
+        e.setRua("");
+        e.setNumero("");
+        e.setComplemento("");
 
         c.inserir(e);
-        
+
         return c.getResult();
     }
 
+    public static Boolean enderecoJaFoiUsado(Endereco e) {
+        Read r = new Read();
+        
+        r.ler(new Pedido(), "idendereco", e.getId());
+        
+        return !r.getResult().isEmpty();
+    }
+    
+    /**
+     * Permite fazer alterações em um endereço do usuário caso ele ainda não
+     * tenha nenhum pedido vinculado.
+     *
+     * @param user usuário dono do endereço
+     * @param e endereço a ser atualizado
+     * @return true deu certo<br> false deu errado
+     */
     public Boolean salvarEndereco(Usuario user, Endereco e) {
 
-        Read r = new Read();
-
-        r.ler(new Pedido(), "idendereco", e.getId());
-
-        int quantidadeUsosEndereco = r.getResult().size();
-
-        if (quantidadeUsosEndereco > 0) {
-
+        if (enderecoJaFoiUsado(e)) {
             Msg.exibirMensagem("Não foi possível editar este endereço pois ele já foi utilizado em algum pedido.", "Aviso", 2);
             return false;
         }
@@ -98,15 +113,15 @@ public class LojaController {
         return u.getResult();
     }
 
-    public static Boolean excluirEndereco(Endereco e) {
-        Read r = new Read();
+    /**
+     * Apaga um endereço caso o mesmo não tenha nenhum pedido relacionado a ele
+     *
+     * @param e o endereço a ser excluido
+     * @return true deu certo<br>false deu errado
+     */
+    public Boolean excluirEndereco(Endereco e) {
 
-        r.ler(new Pedido(), "idendereco", e.getId());
-
-        int quantidadeUsosEndereco = r.getResult().size();
-
-        if (quantidadeUsosEndereco > 0) {
-
+        if (enderecoJaFoiUsado(e)) {
             Msg.exibirMensagem("Não foi possível excluir este endereço pois ele já foi utilizado em algum pedido.", "Aviso", 2);
             return false;
         }
@@ -164,6 +179,12 @@ public class LojaController {
         return c.getResult();
     }
 
+    /**
+     * Salva a foto no diretório produtos/
+     *
+     * @param arquivo foto a ser salva
+     * @return O nome da foto no diretório para ser localizada futuramente
+     */
     public String salvarFoto(File arquivo) {
 
         String nomeFoto = null;
@@ -198,6 +219,14 @@ public class LojaController {
         return nomeFoto;
     }
 
+    /**
+     * Altera as dimensões da imagem para ela caber dentro dos Panels de produto
+     *
+     * @param imagem Imagem a ser modificada
+     * @param larguraMaxima
+     * @param alturaMaxima
+     * @return a imagem modificada
+     */
     public static BufferedImage redimensionarImagemProporcional(BufferedImage imagem, int larguraMaxima, int alturaMaxima) {
         int larguraOriginal = imagem.getWidth();
         int alturaOriginal = imagem.getHeight();

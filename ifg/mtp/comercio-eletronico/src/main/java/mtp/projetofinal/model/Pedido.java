@@ -1,10 +1,12 @@
 package mtp.projetofinal.model;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Map;
 import mtp.projetofinal.model.crud.Read;
-import mtp.projetofinal.model.crud.Update;
+import mtp.projetofinal.utils.Msg;
 
 /**
  *
@@ -58,33 +60,51 @@ public class Pedido {
         this.idstatus = idstatus;
     }
 
-    public void atualizarProdutosCarrinho(HashMap<Produto, Integer> produtos, Usuario usuario) {
+    public HashMap<Produto, Integer> produtos() {
 
-        Integer idpedido = usuario.pegarIdCarrinho();
+        HashMap<Produto, Integer> produtos = new HashMap<>();
 
-        Update u = new Update();
+        String query = """
+            SELECT  produto.id, produto.nome, produto.descricao, produto.preco, produto.foto, pedido_produto.quantidade
+            FROM produto
+            JOIN pedido_produto ON produto.id = pedido_produto.idproduto
+            JOIN pedido ON pedido.id = pedido_produto.idpedido
+            WHERE idpedido = ?
+        """;
 
-        for (Map.Entry<Produto, Integer> entry : produtos.entrySet()) {
-
-            Produto produto = (Produto) entry.getKey();
-
-            PedidoProduto pp = new PedidoProduto();
-
-            pp.setIdpedido(idpedido);
-            pp.setIdproduto(produto.getId());
-            pp.setQuantidade(entry.getValue());
-
-            u.atualizar(pp, new Object[][]{{"idpedido", idpedido}, {"idproduto", produto.getId()}});
+        try (PreparedStatement stmt = Conexao.getConnection().prepareStatement(query)) {
+            
+            stmt.setInt(1, id);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                
+                while (rs.next()) {
+                    
+                    Produto p = new Produto();
+                    
+                    p.setId(rs.getInt("id"));
+                    p.setNome(rs.getString("nome"));
+                    p.setDescricao(rs.getString("descricao"));
+                    p.setPreco(rs.getBigDecimal("preco"));
+                    p.setFoto(rs.getString("foto"));
+                    
+                    produtos.put(p, rs.getInt("quantidade"));
+                }
+            }
+            
+        } catch (SQLException e) {
+            Msg.exibirMensagem("Pedido.produtos(): " + e.getMessage(), "Erro SQL", 0);
         }
+
+        return produtos;
     }
 
-    public void finalizarCompra() {
+    public Endereco endereco() {
 
-        setIdstatus(2);
+        Read r = new Read();
 
-        Update u = new Update();
+        r.ler(new Endereco(), "id", idendereco);
 
-        u.atualizar(this, "id", id);
-
+        return (Endereco) r.getResult().get(0);
     }
 }

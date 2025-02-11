@@ -54,29 +54,13 @@ public class ProdutoController {
      * @param produto qual produto será editado
      * @return true a alteração deu certo <br> a alteração deu errado
      */
-    public boolean editarProduto(Produto produto) {
+    public static boolean editarProduto(Produto produto) {
+        
         Update u = new Update();
-
-        this.produto = produto;
-
+        
         u.atualizar(produto, "id", produto.getId());
 
         return u.getResult();
-    }
-
-    /**
-     * Busca o produto com as informações atualizadas e o retorna
-     *
-     * @return o produto atualizado
-     */
-    public Produto getProdutoAtualizado() {
-        Read r = new Read();
-
-        r.ler(this.produto, "id", this.produto.getId());
-
-        Produto p = (Produto) r.getResult().get(0);
-
-        return p;
     }
 
     /**
@@ -146,7 +130,7 @@ public class ProdutoController {
      */
     public static HashMap<Produto, Integer> getProdutosNoCarrinho(Usuario usuario) {
 
-        if (usuario.pegarIdCarrinho() != null) {
+        if (UsuarioController.getIdCarrinho(usuario) != null) {
 
             return new Carrinho().getProdutos(usuario.getId());
 
@@ -164,7 +148,13 @@ public class ProdutoController {
         }
     }
 
-    public static void removerCarrinho(PedidoProduto pp) {
+    /**
+     * Retira um produto do carirnho do usuário apagando o registro na relação
+     * pedido_produto
+     *
+     * @param pp
+     */
+    public static void removerDoCarrinho(PedidoProduto pp) {
         new Delete().apagar(pp, new Object[][]{{"idpedido", pp.getIdpedido()}, {"idproduto", pp.getIdproduto()}});
     }
 }

@@ -3,7 +3,6 @@ package mtp.projetofinal.model.crud;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,7 +15,7 @@ import mtp.projetofinal.model.Conexao;
  *
  * @author luiz
  */
-public class Read extends Conexao {
+public class Read {
 
     private final ArrayList<String> colunas = new ArrayList<>();
     private String tabela, whereColuna = null;
@@ -99,17 +98,13 @@ public class Read extends Conexao {
         // Nome da classe do objeto em camel_case
         tabela = obj.getClass().getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
 
-        try {
+        try (PreparedStatement stmt = Conexao.getConnection().prepareStatement("SELECT COUNT(*) FROM " + tabela)) {
 
-            Connection conn = super.getConnection();
+            try (ResultSet rs = stmt.executeQuery()) {
 
-            PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM " + tabela);
-            ResultSet rs = stmt.executeQuery();
-            rs.next();
-            qtd = rs.getInt(1);
-
-            stmt.close();
-
+                rs.next();
+                qtd = rs.getInt(1);
+            }
         } catch (SQLException e) {
             Msg.exibirMensagem("Read.ler(Object obj): " + e.getMessage(), "Erro SQL", 0);
         }
@@ -131,38 +126,34 @@ public class Read extends Conexao {
             this.colunas.add(f.getName());
         }
 
-        StringBuilder query = new StringBuilder("SELECT " + String.join(", ", colunas) + " FROM " + tabela);
+        StringBuilder sb = new StringBuilder("SELECT " + String.join(", ", colunas) + " FROM " + tabela);
 
         // Ler com uma condição só
         if (this.whereColuna != null) {
-            query.append(" WHERE " + this.whereColuna + " = ?");
+            sb.append(" WHERE " + this.whereColuna + " = ?");
 
         } else if (condicoes != null) { // com múltiplas condições
-            query.append(" WHERE " + String.valueOf(this.condicoes[0][0]) + " = ?");
+            sb.append(" WHERE " + String.valueOf(this.condicoes[0][0]) + " = ?");
 
             if (this.condicoes.length > 1) {
                 for (int i = 1; i < this.condicoes.length; i++) {
-                    query.append(" AND " + this.condicoes[i][0] + " = ?");
+                    sb.append(" AND " + this.condicoes[i][0] + " = ?");
                 }
             }
         }
 
         if (this.colunas.contains("id")) {
-            query.append(" ORDER BY id DESC");
+            sb.append(" ORDER BY id DESC");
         }
 
-        this.query = query;
+        this.query = sb;
     }
 
     /**
      * Executa a query de busca.
      */
     private void executarQuery() {
-        try {
-
-            Connection conn = super.getConnection();
-
-            PreparedStatement stmt = conn.prepareStatement(query.toString());
+        try (PreparedStatement stmt = Conexao.getConnection().prepareStatement(query.toString())) {
 
             if (this.whereColuna != null) {
                 stmt.setObject(1, this.whereValor);
@@ -173,12 +164,10 @@ public class Read extends Conexao {
                 }
             }
 
-            ResultSet rs = stmt.executeQuery();
+            try (ResultSet rs = stmt.executeQuery()) {
 
-            this.percorerResultSet(rs);
-
-            stmt.close();
-
+                percorerResultSet(rs);
+            }
         } catch (SQLException e) {
             Msg.exibirMensagem("Read.executarQuery(): " + e.getMessage(), "Erro SQL", 0);
         } catch (IllegalAccessException e) {

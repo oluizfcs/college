@@ -1,7 +1,7 @@
 package mtp.projetofinal.view;
 
 import mtp.projetofinal.utils.Msg;
-import mtp.projetofinal.controller.CadastroController;
+import mtp.projetofinal.controller.UsuarioController;
 import mtp.projetofinal.model.Usuario;
 import mtp.projetofinal.utils.FrameUtils;
 
@@ -146,10 +146,16 @@ public class CadastroView extends javax.swing.JFrame {
         String senha = String.valueOf(jPasswordFieldSenha.getPassword());
         String confirmarSenha = String.valueOf(jPasswordFieldConfirmarSenha.getPassword());
 
-        if (nome.equals("") || email.equals("") || senha.equals("") || confirmarSenha.equals("")) {
+        if (nome.isBlank() || email.isBlank() || senha.isBlank() || confirmarSenha.isBlank()) {
             Msg.exibirMensagem("Todos os campos devem ser preenchidos", "Aviso", 2);
         } else if (!senha.equals(confirmarSenha)) {
             Msg.exibirMensagem("As senhas não coincidem", "Aviso", 2);
+        } else if(nome.length() > 45) {
+            Msg.exibirMensagem("O nome pode ter no máximo 45 caracteres.", "Aviso", 2);
+        } else if(email.length() > 50) {
+            Msg.exibirMensagem("O E-mail pode ter no máximo 50 caracteres.", "Aviso", 2);
+        } else if(senha.length() > 255) {
+            Msg.exibirMensagem("A sua senha é desnecessáriamente grande", "Aviso", 2);
         } else {
 
             Usuario usuario = new Usuario();
@@ -157,12 +163,10 @@ public class CadastroView extends javax.swing.JFrame {
             usuario.setEmail(email);
             usuario.setSenha(senha);
 
-            CadastroController cc = new CadastroController();
-
-            if (cc.cadastrar(usuario)) {
+            if (UsuarioController.cadastrar(usuario)) {
                 Msg.exibirMensagem("Usuário cadastrado com sucesso!", "Sucesso!", 1);
                 new LoginView();
-                this.dispose();
+                dispose();
             }
         }
     }//GEN-LAST:event_jButtonCadastrarActionPerformed
@@ -172,7 +176,7 @@ public class CadastroView extends javax.swing.JFrame {
      */
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
         new TelaInicial();
-        this.dispose();
+        dispose();
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

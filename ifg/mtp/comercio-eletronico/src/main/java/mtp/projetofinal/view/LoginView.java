@@ -1,7 +1,8 @@
 package mtp.projetofinal.view;
 
 import mtp.projetofinal.utils.Msg;
-import mtp.projetofinal.controller.LoginController;
+import mtp.projetofinal.controller.UsuarioController;
+import mtp.projetofinal.model.Usuario;
 import mtp.projetofinal.utils.FrameUtils;
 
 /**
@@ -119,7 +120,7 @@ public class LoginView extends javax.swing.JFrame {
      */
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
         new TelaInicial();
-        this.dispose();
+        dispose();
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
     /**
@@ -135,11 +136,17 @@ public class LoginView extends javax.swing.JFrame {
         if (email.equals("") | senha.equals("")) {
             Msg.exibirMensagem("Todos os campos devem ser preenchidos", "Aviso", 2);
         } else {
-            LoginController lc = new LoginController();
+            
+            Usuario usuario = new Usuario();
+            
+            usuario.setEmail(email);
+            usuario.setSenha(senha);
+            
+            usuario = UsuarioController.login(usuario);
 
-            if (lc.login(email, senha)) {
-                new Loja(lc.getUsuario(), 1, 9);
-                this.dispose();
+            if (usuario != null) {
+                new Loja(usuario, 1, 9);
+                dispose();
             } else {
                 Msg.exibirMensagem("Email ou senha incorreta", "Aviso", 2);
             }

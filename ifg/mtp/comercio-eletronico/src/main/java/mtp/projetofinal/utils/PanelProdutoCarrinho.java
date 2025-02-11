@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import mtp.projetofinal.controller.ProdutoController;
+import mtp.projetofinal.controller.UsuarioController;
 import mtp.projetofinal.model.PedidoProduto;
 import mtp.projetofinal.model.Produto;
 import mtp.projetofinal.view.CarrinhoView;
@@ -25,8 +26,9 @@ public class PanelProdutoCarrinho extends javax.swing.JPanel {
      * @param cv
      * @param produto
      * @param quantidade
+     * @param modificavel
      */
-    public PanelProdutoCarrinho(CarrinhoView cv, Produto produto, Integer quantidade) {
+    public PanelProdutoCarrinho(CarrinhoView cv, Produto produto, Integer quantidade, Boolean modificavel) {
 
         this.cv = cv;
         this.produto = produto;
@@ -43,6 +45,9 @@ public class PanelProdutoCarrinho extends javax.swing.JPanel {
         }
 
         atualizarQuantidade();
+        
+        jButtonMais.setEnabled(modificavel);
+        jButtonMenos.setEnabled(modificavel);
     }
 
     private void atualizarQuantidade() {
@@ -54,6 +59,9 @@ public class PanelProdutoCarrinho extends javax.swing.JPanel {
         cv.atualizarValorTotal();
     }
 
+    /**
+     * @return O valor unitário do produto vezes a quantidade dele no carrinho
+     */
     public BigDecimal getSubtotal() {
         return subtotal;
     }
@@ -187,15 +195,16 @@ public class PanelProdutoCarrinho extends javax.swing.JPanel {
             atualizarQuantidade();
         } else {
             if (JOptionPane.showConfirmDialog(this, "Deseja remover o produto do carrinho?", "Confirmação", JOptionPane.YES_NO_OPTION) == 0) {
-                
+
                 PedidoProduto pp = new PedidoProduto();
-                
+
                 pp.setIdproduto(produto.getId());
-                pp.setIdpedido(cv.getUsuario().pegarIdCarrinho());
-                
-                ProdutoController.removerCarrinho(pp);
-                
+                pp.setIdpedido(UsuarioController.getIdCarrinho(cv.getUsuario()));
+
+                ProdutoController.removerDoCarrinho(pp);
+
                 cv.carregarProdutos();
+                cv.getLoja().carregarProdutos();
             }
         }
     }//GEN-LAST:event_jButtonMenosActionPerformed
