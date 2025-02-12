@@ -23,6 +23,8 @@ public class Read {
     private final ArrayList<Object> resultado = new ArrayList<>();
     private Object[][] condicoes = null;
     private StringBuilder query;
+    private String busca;
+    private int qtdBusca;
 
     /**
      * Busca todos os atributos de um objeto no banco de dados na tabela
@@ -31,19 +33,24 @@ public class Read {
      * @param obj O objeto que será buscado
      * @param pagina O número da página a ser exibida
      * @param qtdItens quantidade de itens que será mostrada por página.
+     * @param busca O que será pesquisado
      */
-    public void ler(Object obj, int pagina, int qtdItens) {
+    public void ler(Object obj, int pagina, int qtdItens, String busca) {
         this.obj = obj;
+        this.busca = busca;
 
         if (pagina <= 0) {
             pagina = 1;
         }
 
         this.construirQuery();
+        executarQuery();
+        qtdBusca = getResult().size();
         query.append(" LIMIT " + qtdItens + " OFFSET " + (qtdItens * (pagina - 1)));
-        this.executarQuery();
+        executarQuery();
 
         this.obj = null;
+        this.busca = null;
     }
 
     /**
@@ -140,6 +147,8 @@ public class Read {
                     sb.append(" AND " + this.condicoes[i][0] + " = ?");
                 }
             }
+        } else if (busca != null) {
+            sb.append(" WHERE LOWER(nome) LIKE ? OR LOWER(descricao) LIKE ?");
         }
 
         if (this.colunas.contains("id")) {
@@ -162,6 +171,12 @@ public class Read {
 
                     stmt.setObject(i + 1, condicoes[i][1]);
                 }
+            } else if (busca != null) {
+                
+                String buscaFormatada = "%" + busca.toLowerCase() + "%";
+                
+                stmt.setString(1, buscaFormatada);
+                stmt.setString(2, buscaFormatada);
             }
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -229,5 +244,9 @@ public class Read {
      */
     public ArrayList<Object> getResult() {
         return this.resultado;
+    }
+    
+    public int getQtdBusca() {
+        return qtdBusca;
     }
 }

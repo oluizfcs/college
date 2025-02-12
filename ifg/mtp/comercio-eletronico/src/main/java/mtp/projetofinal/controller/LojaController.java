@@ -25,6 +25,7 @@ import org.apache.commons.lang.RandomStringUtils;
 public class LojaController {
 
     private Usuario usuario;
+    private int qtdItensNaBusca;
 
     /**
      * Com base no e-mail do usuário recebido, envia para a model atualizá-lo.
@@ -85,12 +86,12 @@ public class LojaController {
 
     public static Boolean enderecoJaFoiUsado(Endereco e) {
         Read r = new Read();
-        
+
         r.ler(new Pedido(), "idendereco", e.getId());
-        
+
         return !r.getResult().isEmpty();
     }
-    
+
     /**
      * Permite fazer alterações em um endereço do usuário caso ele ainda não
      * tenha nenhum pedido vinculado.
@@ -138,12 +139,15 @@ public class LojaController {
      *
      * @param pagina qual página será buscada
      * @param qtd quantos produtos terá na lista
+     * @param busca o que será pesquisado
      * @return a lista contendo a qtd de produtos desejada
      */
-    public static ArrayList<Produto> getProdutos(int pagina, int qtd) {
+    public ArrayList<Produto> getProdutos(int pagina, int qtd, String busca) {
         Read r = new Read();
-        r.ler(new Produto(), pagina, qtd);
+        r.ler(new Produto(), pagina, qtd, busca);
 
+        qtdItensNaBusca = r.getQtdBusca();
+        
         ArrayList<Produto> produtos = new ArrayList<>();
 
         for (Object obj : r.getResult()) {
@@ -162,6 +166,15 @@ public class LojaController {
     public static int getCountProdutos() {
         Read r = new Read();
         return r.ler(new Produto());
+    }
+
+    /**
+     * Busca quantos produtos existem
+     *
+     * @return a quantidade de produtos existentes no banco de dados
+     */
+    public int getCountProdutosBusca() {
+        return qtdItensNaBusca;
     }
 
     /**

@@ -730,7 +730,11 @@
                       <Component id="jLabelUsername" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonSair" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="603" max="32767" attributes="0"/>
+                  <EmptySpace pref="187" max="32767" attributes="0"/>
+                  <Component id="jLabelPesquisaIcon" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                  <Component id="jTextFieldPesquisar" min="-2" pref="241" max="-2" attributes="0"/>
+                  <EmptySpace pref="146" max="32767" attributes="0"/>
                   <Component id="jLabelAdicionarProduto" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jLabelMeusPedidos" min="-2" max="-2" attributes="0"/>
@@ -759,6 +763,10 @@
                                   <Component id="jLabelAdicionarProduto" alignment="1" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabelCarrinho" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabelMeusPedidos" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" alignment="1" groupAlignment="3" attributes="0">
+                                      <Component id="jTextFieldPesquisar" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabelPesquisaIcon" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
                       </Group>
@@ -862,6 +870,18 @@
             <Property name="text" type="java.lang.String" value="0"/>
           </Properties>
         </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldPesquisar">
+          <Events>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextFieldPesquisarKeyTyped"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabelPesquisaIcon">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/pesquisa.png"/>
+            </Property>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JScrollPane" name="jScrollPaneProdutos">
@@ -894,9 +914,9 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace pref="327" max="32767" attributes="0"/>
+                      <EmptySpace pref="348" max="32767" attributes="0"/>
                       <Component id="jLabelSemProduto" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="351" max="32767" attributes="0"/>
+                      <EmptySpace pref="372" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>

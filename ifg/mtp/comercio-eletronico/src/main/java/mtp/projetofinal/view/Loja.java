@@ -29,6 +29,7 @@ public class Loja extends javax.swing.JFrame {
     private int ultimaPagina = paginaAtual;
     ArrayList<Endereco> enderecosDoUsuario;
     private CarrinhoView carrinho = null;
+    private String busca = null;
 
     /**
      * Creates new form Loja
@@ -70,12 +71,15 @@ public class Loja extends javax.swing.JFrame {
      * Exibe os produtos na loja
      */
     public void carregarProdutos() {
+        LojaController lc = new LojaController();
 
         setQtdNoCarrinho(ProdutoController.getProdutosNoCarrinho(usuario).size());
 
         jPanelProdutos.removeAll();
 
-        if (LojaController.getCountProdutos() == 0) {
+        produtos = lc.getProdutos(paginaAtual, qtdItens, busca);
+
+        if (produtos.isEmpty()) {
             jPanelProdutos.add(jLabelSemProduto);
             jLabelSemProduto.setVisible(true);
             jButtonProxima.setEnabled(false);
@@ -86,14 +90,16 @@ public class Loja extends javax.swing.JFrame {
         } else {
             jLabelSemProduto.setVisible(false);
 
-            produtos = LojaController.getProdutos(paginaAtual, qtdItens);
-
             if (produtos.isEmpty()) {
                 paginaAtual--;
-                produtos = LojaController.getProdutos(paginaAtual, qtdItens);
+                produtos = lc.getProdutos(paginaAtual, qtdItens, busca);
             }
 
-            ultimaPagina = Math.ceilDiv(LojaController.getCountProdutos(), qtdItens);
+            if (busca != null) {
+                ultimaPagina = Math.ceilDiv(lc.getCountProdutosBusca(), qtdItens);
+            } else {
+                ultimaPagina = Math.ceilDiv(LojaController.getCountProdutos(), qtdItens);
+            }
 
             Dimension dim = new Dimension(700, ((330 * Math.ceilDiv(produtos.size(), 3) + 50)));
             jPanelProdutos.setPreferredSize(dim);
@@ -119,7 +125,7 @@ public class Loja extends javax.swing.JFrame {
      * Lógica para mostrar os botões de navegação das páginas
      */
     private void botoesNavegacao() {
-        jButtonProxima.setEnabled(produtos.size() == qtdItens && !LojaController.getProdutos(paginaAtual + 1, qtdItens).isEmpty());
+        jButtonProxima.setEnabled(produtos.size() == qtdItens && !new LojaController().getProdutos(paginaAtual + 1, qtdItens, busca).isEmpty());
         jButtonAnterior.setEnabled(paginaAtual != 1);
         jLabelNumeroPagina.setText("Página: " + String.valueOf(paginaAtual));
         jButtonPrimeira.setEnabled(paginaAtual != 1);
@@ -193,6 +199,8 @@ public class Loja extends javax.swing.JFrame {
         jLabelAdicionarProduto = new javax.swing.JLabel();
         jLabelMeusPedidos = new javax.swing.JLabel();
         jLabelQtdTotalNoCarrinho = new javax.swing.JLabel();
+        jTextFieldPesquisar = new javax.swing.JTextField();
+        jLabelPesquisaIcon = new javax.swing.JLabel();
         jScrollPaneProdutos = new javax.swing.JScrollPane();
         jPanelProdutos = new javax.swing.JPanel();
         jLabelSemProduto = new javax.swing.JLabel();
@@ -613,6 +621,14 @@ public class Loja extends javax.swing.JFrame {
         jLabelQtdTotalNoCarrinho.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
         jLabelQtdTotalNoCarrinho.setText("0");
 
+        jTextFieldPesquisar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextFieldPesquisarKeyTyped(evt);
+            }
+        });
+
+        jLabelPesquisaIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pesquisa.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanelNavBarLayout = new javax.swing.GroupLayout(jPanelNavBar);
         jPanelNavBar.setLayout(jPanelNavBarLayout);
         jPanelNavBarLayout.setHorizontalGroup(
@@ -624,7 +640,11 @@ public class Loja extends javax.swing.JFrame {
                 .addGroup(jPanelNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabelUsername)
                     .addComponent(jButtonSair))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 603, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 187, Short.MAX_VALUE)
+                .addComponent(jLabelPesquisaIcon)
+                .addGap(4, 4, 4)
+                .addComponent(jTextFieldPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
                 .addComponent(jLabelAdicionarProduto)
                 .addGap(18, 18, 18)
                 .addComponent(jLabelMeusPedidos)
@@ -649,7 +669,10 @@ public class Loja extends javax.swing.JFrame {
                             .addGroup(jPanelNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(jLabelAdicionarProduto)
                                 .addComponent(jLabelCarrinho)
-                                .addComponent(jLabelMeusPedidos))))
+                                .addComponent(jLabelMeusPedidos)
+                                .addGroup(jPanelNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextFieldPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabelPesquisaIcon)))))
                     .addGroup(jPanelNavBarLayout.createSequentialGroup()
                         .addGap(26, 26, 26)
                         .addComponent(jLabelQtdTotalNoCarrinho)))
@@ -671,9 +694,9 @@ public class Loja extends javax.swing.JFrame {
         jPanelProdutosLayout.setHorizontalGroup(
             jPanelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelProdutosLayout.createSequentialGroup()
-                .addContainerGap(327, Short.MAX_VALUE)
+                .addContainerGap(348, Short.MAX_VALUE)
                 .addComponent(jLabelSemProduto)
-                .addContainerGap(351, Short.MAX_VALUE))
+                .addContainerGap(372, Short.MAX_VALUE))
         );
         jPanelProdutosLayout.setVerticalGroup(
             jPanelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -941,7 +964,6 @@ public class Loja extends javax.swing.JFrame {
      * Avança para a última página
      */
     private void jButtonUltimaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUltimaActionPerformed
-        ultimaPagina = Math.ceilDiv(LojaController.getCountProdutos(), qtdItens);
         paginaAtual = ultimaPagina;
         carregarProdutos();
     }//GEN-LAST:event_jButtonUltimaActionPerformed
@@ -975,7 +997,7 @@ public class Loja extends javax.swing.JFrame {
         } else if (numero.length() > 10) {
             Msg.exibirMensagem("O número pode ter no máximo 10 caracteres.", "Aviso", 2);
         } else {
-            
+
             Endereco e = enderecosDoUsuario.get(jComboBoxEnderecos.getSelectedIndex());
 
             e.setIdentificador(jTextFieldIdentificadorEndereco.getText());
@@ -1027,6 +1049,12 @@ public class Loja extends javax.swing.JFrame {
         new MeusPedidos(this, usuario);
     }//GEN-LAST:event_jLabelMeusPedidosMouseClicked
 
+    private void jTextFieldPesquisarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldPesquisarKeyTyped
+        busca = jTextFieldPesquisar.getText();
+        paginaAtual = 1;
+        carregarProdutos();
+    }//GEN-LAST:event_jTextFieldPesquisarKeyTyped
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAlterarNome;
     private javax.swing.JButton jButtonAnterior;
@@ -1061,6 +1089,7 @@ public class Loja extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelNovaSenha;
     private javax.swing.JLabel jLabelNumero;
     private javax.swing.JLabel jLabelNumeroPagina;
+    private javax.swing.JLabel jLabelPesquisaIcon;
     private javax.swing.JLabel jLabelQtdTotalNoCarrinho;
     private javax.swing.JLabel jLabelRua;
     private javax.swing.JLabel jLabelSemProduto;
@@ -1085,6 +1114,7 @@ public class Loja extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldIdentificadorEndereco;
     private javax.swing.JTextField jTextFieldNome;
     private javax.swing.JTextField jTextFieldNumero;
+    private javax.swing.JTextField jTextFieldPesquisar;
     private javax.swing.JTextField jTextFieldRua;
     // End of variables declaration//GEN-END:variables
 }
