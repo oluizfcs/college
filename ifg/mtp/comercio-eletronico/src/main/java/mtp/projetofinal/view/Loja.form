@@ -1,0 +1,993 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <NonVisualComponents>
+    <Container class="javax.swing.JDialog" name="jDialogConfig">
+      <Properties>
+        <Property name="title" type="java.lang.String" value="Configura&#xe7;&#xf5;es"/>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[505, 450]"/>
+        </Property>
+        <Property name="modal" type="boolean" value="true"/>
+        <Property name="resizable" type="boolean" value="false"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+      </AuxValues>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <EmptySpace min="-2" pref="158" max="-2" attributes="0"/>
+                  <Component id="jLabelTitulo" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
+              </Group>
+              <Component id="jTabbedPaneOpcoes" alignment="0" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
+                  <Component id="jLabelTitulo" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="jTabbedPaneOpcoes" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Container class="javax.swing.JTabbedPane" name="jTabbedPaneOpcoes">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+          </AuxValues>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
+          <SubComponents>
+            <Container class="javax.swing.JPanel" name="jPanelNomeEmail">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="Nome e Email">
+                    <Property name="tabTitle" type="java.lang.String" value="Nome e Email"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabelNome" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jTextFieldNome" min="-2" pref="200" max="-2" attributes="0"/>
+                                      <Component id="jTextFieldEmail" min="-2" pref="200" max="-2" attributes="0"/>
+                                      <Component id="jLabelEmail" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabelEmailTip" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace pref="201" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jButtonAlterarNome" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="jButtonCancelar" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                          <Component id="jLabelNome" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="jTextFieldNome" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
+                          <Component id="jLabelEmail" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="jTextFieldEmail" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jLabelEmailTip" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jButtonAlterarNome" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButtonCancelar" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace pref="80" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jLabelNome">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Nome:"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="jTextFieldNome">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="usuario"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="jTextFieldEmail">
+                  <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="66" green="66" red="66" type="rgb"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="usuario@email.com"/>
+                    <Property name="focusable" type="boolean" value="false"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabelEmail">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Email:"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabelEmailTip">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Liberation Sans" size="10" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="O e-mail n&#xe3;o pode ser editado."/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="jButtonAlterarNome">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="5f" red="51" type="rgb"/>
+                    </Property>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Liberation Sans" size="15" style="1"/>
+                    </Property>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Alterar Nome"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonAlterarNomeActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="jButtonCancelar">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="fe" type="rgb"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Cancelar"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCancelarActionPerformed"/>
+                  </Events>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="jPanelSenha">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="Senha">
+                    <Property name="tabTitle" type="java.lang.String" value="Senha"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabelSenhaAtual" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabelNovaSenha" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabelConfirmarNovaSenha" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jPasswordFieldSenhaAtual" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                                      <Component id="jPasswordFieldNovaSenha" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                                      <Component id="jPasswordFieldConfirmarNovaSenha" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace pref="339" max="32767" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jButtonSalvarSenha" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="jButtonCancelar1" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                          <Component id="jLabelSenhaAtual" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jPasswordFieldSenhaAtual" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
+                          <Component id="jLabelNovaSenha" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jPasswordFieldNovaSenha" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="jLabelConfirmarNovaSenha" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jPasswordFieldConfirmarNovaSenha" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jButtonSalvarSenha" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButtonCancelar1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace pref="78" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jLabelSenhaAtual">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Senha atual:"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabelNovaSenha">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Nova senha:"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabelConfirmarNovaSenha">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Confirme a nova senha:"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JPasswordField" name="jPasswordFieldSenhaAtual">
+                </Component>
+                <Component class="javax.swing.JPasswordField" name="jPasswordFieldNovaSenha">
+                </Component>
+                <Component class="javax.swing.JPasswordField" name="jPasswordFieldConfirmarNovaSenha">
+                </Component>
+                <Component class="javax.swing.JButton" name="jButtonSalvarSenha">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="5f" red="51" type="rgb"/>
+                    </Property>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Liberation Sans" size="15" style="1"/>
+                    </Property>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Alterar Senha"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonSalvarSenhaActionPerformed"/>
+                  </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="Loja_jButtonAlterarSenha"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JButton" name="jButtonCancelar1">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="fe" type="rgb"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Cancelar"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCancelar1ActionPerformed"/>
+                  </Events>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="jPanelEndereco">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="Endere&#xe7;o">
+                    <Property name="tabTitle" type="java.lang.String" value="Endere&#xe7;o"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
+                          <Component id="jComboBoxEnderecos" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="51" max="32767" attributes="0"/>
+                          <Component id="jButtonCriarNovoEndereco" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="jButtonExcluirEnderecoSelecionado" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="52" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="114" max="-2" attributes="0"/>
+                          <Component id="jLabelNenhumEnderecoCadastrado" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                      </Group>
+                      <Component id="jPanelCamposEndereco" alignment="1" max="32767" attributes="0"/>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jComboBoxEnderecos" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButtonCriarNovoEndereco" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButtonExcluirEnderecoSelecionado" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jLabelNenhumEnderecoCadastrado" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="jPanelCamposEndereco" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JComboBox" name="jComboBoxEnderecos">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="fe" type="rgb"/>
+                    </Property>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="4">
+                        <StringItem index="0" value="Item 1"/>
+                        <StringItem index="1" value="Item 2"/>
+                        <StringItem index="2" value="Item 3"/>
+                        <StringItem index="3" value="Item 4"/>
+                      </StringArray>
+                    </Property>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JButton" name="jButtonCriarNovoEndereco">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="fe" type="rgb"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Novo endere&#xe7;o"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCriarNovoEnderecoActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="jButtonExcluirEnderecoSelecionado">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="0" green="0" red="ff" type="rgb"/>
+                    </Property>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Segoe UI" size="12" style="1"/>
+                    </Property>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Excluir Selecionado"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonExcluirEnderecoSelecionadoActionPerformed"/>
+                  </Events>
+                </Component>
+                <Container class="javax.swing.JPanel" name="jPanelCamposEndereco">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                    </Property>
+                  </Properties>
+
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="jButtonSalvarEndereco" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                              <Component id="jLabelCidade" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabelEstado" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabelBairro" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jTextFieldBairro" pref="160" max="32767" attributes="0"/>
+                                              <Component id="jTextFieldCidade" alignment="0" max="32767" attributes="0"/>
+                                          </Group>
+                                          <Component id="jComboBoxEstados" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabelRua" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabelNumero" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jTextFieldNumero" alignment="0" min="-2" pref="90" max="-2" attributes="0"/>
+                                          <Component id="jLabelComplemento" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jTextFieldRua" min="-2" pref="170" max="-2" attributes="0"/>
+                                          <Component id="jTextFieldComplemento" min="-2" pref="200" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="jLabelExemploIdentificador" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="160" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace min="-2" pref="89" max="-2" attributes="0"/>
+                              <Component id="jLabelIdentificadorEndereco" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jTextFieldIdentificadorEndereco" min="-2" pref="149" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="122" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace pref="32" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabelIdentificadorEndereco" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jTextFieldIdentificadorEndereco" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                              <Component id="jLabelExemploIdentificador" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="jLabelRua" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jTextFieldRua" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jLabelNumero" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jTextFieldNumero" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabelComplemento" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jTextFieldComplemento" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Component id="jLabelEstado" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jComboBoxEstados" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace pref="12" max="32767" attributes="0"/>
+                                      <Component id="jLabelCidade" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jTextFieldCidade" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabelBairro" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jTextFieldBairro" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="jButtonSalvarEndereco" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace pref="27" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="jLabelEstado">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Estado"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabelCidade">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Cidade"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="jTextFieldCidade">
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="jTextFieldBairro">
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabelBairro">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Bairro"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabelRua">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Rua"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="jTextFieldRua">
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabelNumero">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Numero"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="jTextFieldNumero">
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabelComplemento">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Complemento (opcional)"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="jTextFieldComplemento">
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabelIdentificadorEndereco">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Identificador do Endere&#xe7;o:"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="jTextFieldIdentificadorEndereco">
+                      <Properties>
+                        <Property name="toolTipText" type="java.lang.String" value=""/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabelExemploIdentificador">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="11" style="0"/>
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="99" green="99" red="99" type="rgb"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Exemplo: casa, trabalho..."/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="jButtonSalvarEndereco">
+                      <Properties>
+                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="ff" green="5f" red="51" type="rgb"/>
+                        </Property>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="12" style="1"/>
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Salvar"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonSalvarEnderecoActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JComboBox" name="jComboBoxEstados">
+                      <Properties>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="27">
+                            <StringItem index="0" value="AC"/>
+                            <StringItem index="1" value="AL"/>
+                            <StringItem index="2" value="AP"/>
+                            <StringItem index="3" value="AM"/>
+                            <StringItem index="4" value="BA"/>
+                            <StringItem index="5" value="CE"/>
+                            <StringItem index="6" value="DF"/>
+                            <StringItem index="7" value="ES"/>
+                            <StringItem index="8" value="GO"/>
+                            <StringItem index="9" value="MA"/>
+                            <StringItem index="10" value="MT"/>
+                            <StringItem index="11" value="MS"/>
+                            <StringItem index="12" value="MG"/>
+                            <StringItem index="13" value="PA"/>
+                            <StringItem index="14" value="PB"/>
+                            <StringItem index="15" value="PR"/>
+                            <StringItem index="16" value="PE"/>
+                            <StringItem index="17" value="PI"/>
+                            <StringItem index="18" value="RJ"/>
+                            <StringItem index="19" value="RN"/>
+                            <StringItem index="20" value="RS"/>
+                            <StringItem index="21" value="RO"/>
+                            <StringItem index="22" value="RR"/>
+                            <StringItem index="23" value="SC"/>
+                            <StringItem index="24" value="SP"/>
+                            <StringItem index="25" value="SE"/>
+                            <StringItem index="26" value="TO"/>
+                          </StringArray>
+                        </Property>
+                      </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                      </AuxValues>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Component class="javax.swing.JLabel" name="jLabelNenhumEnderecoCadastrado">
+                  <Properties>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="33" green="0" red="cc" type="rgb"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Voc&#xea; n&#xe3;o tem nenhum endere&#xe7;o, crie um novo."/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+          </SubComponents>
+        </Container>
+        <Component class="javax.swing.JLabel" name="jLabelTitulo">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Liberation Sans" size="18" style="1"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Altera&#xe7;&#xe3;o de dados"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+  </NonVisualComponents>
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="3"/>
+    <Property name="title" type="java.lang.String" value="Comercio Eletr&#xf4;nico"/>
+    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="[930, 600]"/>
+    </Property>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="true"/>
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Component id="jPanelNavBar" max="32767" attributes="0"/>
+          <Group type="102" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jScrollPaneProdutos" alignment="0" pref="0" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="jButtonPrimeira" min="-2" pref="48" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jButtonAnterior" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jLabelNumeroPagina" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="jButtonProxima" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jButtonUltima" min="-2" pref="48" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <Component id="jPanelNavBar" min="-2" pref="80" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jScrollPaneProdutos" pref="421" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jButtonProxima" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabelNumeroPagina" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonAnterior" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonUltima" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonPrimeira" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="javax.swing.JPanel" name="jPanelNavBar">
+      <Properties>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[900, 0]"/>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[900, 68]"/>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
+                  <Component id="jLabelConfig" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jLabelUsername" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonSair" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="187" max="32767" attributes="0"/>
+                  <Component id="jLabelPesquisaIcon" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                  <Component id="jTextFieldPesquisar" min="-2" pref="241" max="-2" attributes="0"/>
+                  <EmptySpace pref="146" max="32767" attributes="0"/>
+                  <Component id="jLabelAdicionarProduto" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Component id="jLabelMeusPedidos" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                  <Component id="jLabelCarrinho" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
+                  <Component id="jLabelQtdTotalNoCarrinho" min="-2" pref="25" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jLabelConfig" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jLabelUsername" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jButtonSair" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="jLabelAdicionarProduto" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabelCarrinho" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabelMeusPedidos" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" alignment="1" groupAlignment="3" attributes="0">
+                                      <Component id="jTextFieldPesquisar" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabelPesquisaIcon" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                          <Component id="jLabelQtdTotalNoCarrinho" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="jLabelUsername">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="nome"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonSair">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="f2" green="f2" red="f2" type="rgb"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="5f" red="51" type="rgb"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="sair"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="null"/>
+            </Property>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Hand Cursor"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonSairActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabelConfig">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/config.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Alterar&#xe7;&#xe3;o de dados"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Hand Cursor"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabelConfigMouseClicked"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabelCarrinho">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/carrinho.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Carrinho"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Hand Cursor"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabelCarrinhoMouseClicked"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabelAdicionarProduto">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/adicionar.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Adicionar Produto"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Hand Cursor"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabelAdicionarProdutoMouseClicked"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabelMeusPedidos">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/meus-pedidos.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Meus Pedidos"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Hand Cursor"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabelMeusPedidosMouseClicked"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabelQtdTotalNoCarrinho">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Yu Gothic UI Semibold" size="14" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="0"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldPesquisar">
+          <Events>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextFieldPesquisarKeyTyped"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabelPesquisaIcon">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/pesquisa.png"/>
+            </Property>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JScrollPane" name="jScrollPaneProdutos">
+      <Properties>
+        <Property name="horizontalScrollBarPolicy" type="int" value="31"/>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[900, 330]"/>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[900, 330]"/>
+        </Property>
+      </Properties>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Container class="javax.swing.JPanel" name="jPanelProdutos">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+            </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[900, 330]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[900, 330]"/>
+            </Property>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace pref="348" max="32767" attributes="0"/>
+                      <Component id="jLabelSemProduto" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="372" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="-2" pref="131" max="-2" attributes="0"/>
+                      <Component id="jLabelSemProduto" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="272" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="jLabelSemProduto">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="N&#xe3;o h&#xe1; produtos a serem exibidos"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.JButton" name="jButtonAnterior">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="fe" green="ff" red="ff" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="&lt;"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonAnteriorActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelNumeroPagina">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="P&#xe1;gina: 1"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButtonProxima">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="fe" red="ff" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="&gt;"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonProximaActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButtonUltima">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="fe" red="ff" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="&gt;&gt;"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonUltimaActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButtonPrimeira">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="fe" green="ff" red="ff" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="&lt;&lt;"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonPrimeiraActionPerformed"/>
+      </Events>
+    </Component>
+  </SubComponents>
+</Form>
