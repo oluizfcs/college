@@ -10,6 +10,8 @@ Subjects:
 - `bd` - databases
 - `ed` - data structures
 - `mtp` - programming methods and techniques
+- `poo` - object oriented programming
+- `sd` - distributed systems
 - `so` - operating systems
 
 > Most content is in Portuguese 🇧🇷
