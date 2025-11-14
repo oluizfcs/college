@@ -11,6 +11,7 @@ Subjects:
 - `ed` - data structures
 - `mtp` - programming methods and techniques
 - `poo` - object oriented programming
+- `ppw` - web development
 - `sd` - distributed systems
 - `so` - operating systems
 
