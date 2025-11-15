@@ -1,0 +1,10 @@
+#container {
+    display: flex;
+    gap: 50px;
+    /* background-color: red; */
+    padding: 50px;
+}
+
+textarea {
+    resize: vertical;
+}
