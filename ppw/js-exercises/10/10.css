@@ -1,0 +1,14 @@
+button {
+    font-size: 70px;
+    border: 0;
+    box-shadow: 0 0 10px black inset;
+}
+
+button:hover {
+    box-shadow: 0 0 30px black inset;
+}
+
+p {
+    color: white;
+    font-size: 40px;
+}
